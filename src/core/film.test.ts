@@ -197,6 +197,19 @@ describe("gas release", () => {
 describe("charge mode", () => {
   // S + 2 Li -> Li2S: full decomposition takes 2 F per S (32.065 g/mol)
   const full = (2 * 96485.33212) / (3.6 * 32.065);
+  // SCl lies above S + Cl: its x = 0 equilibrium is decomposition without transferred charge.
+  const metastable = computeProfile({
+    entries: [
+      entry("Li", { Li: 1 }, 0, 20),
+      entry("S", { S: 1 }, 0, 25),
+      entry("Cl", { Cl: 1 }, 0, 30),
+      entry("SCl", { S: 1, Cl: 1 }, 0.1, 22),
+      entry("LiCl", { Li: 1, Cl: 1 }, -2, 20),
+    ],
+    formula: "SCl",
+    ion: "Li",
+  });
+  const atZero = metastable.regions.find((r) => Math.abs(r.x) < 1e-9)!;
 
   it("derives the decomposed fraction from the reacted charge", () => {
     const byCharge = filmForRegion(profile, lithiated, {
@@ -227,25 +240,41 @@ describe("charge mode", () => {
     expect(film.fullyDecomposed).toBe(true);
   });
 
+  it("leaves the particle intact for zero charge even with a nonzero fraction option", () => {
+    const film = filmForRegion(profile, lithiated, { diameterUm: 2, fraction: 0.5, chargeMAhG: 0 });
+    if (film.kind !== "film") throw new Error(film.kind);
+    expect(film.fraction).toBe(0);
+    expect(film.thicknessNm).toBe(0);
+    expect(film.coreDiameterUm).toBe(2);
+    expect(film.capacityMAhG).toBe(0);
+    expect(film.capped).toBe(false);
+  });
+
   it("cannot set the fraction of a decomposition without charge transfer (x = 0)", () => {
-    // SCl lies above S + Cl, so at x = 0 it is already decomposed: no Li, no charge.
-    const metastable = computeProfile({
-      entries: [
-        entry("Li", { Li: 1 }, 0, 20),
-        entry("S", { S: 1 }, 0, 25),
-        entry("Cl", { Cl: 1 }, 0, 30),
-        entry("SCl", { S: 1, Cl: 1 }, 0.1, 22),
-        entry("LiCl", { Li: 1, Cl: 1 }, -2, 20),
-      ],
-      formula: "SCl",
-      ion: "Li",
-    });
-    const atZero = metastable.regions.find((r) => Math.abs(r.x) < 1e-9)!;
     expect(atZero.phases.map((p) => p.entry.name).sort()).toEqual(["Cl", "S"]);
     expect(
       filmForRegion(metastable, atZero, { diameterUm: 1, fraction: 0, chargeMAhG: 10 }).kind,
     ).toBe("chargeless");
     // Without charge mode the same region still has a film (Cl leaves as gas).
     expect(filmForRegion(metastable, atZero, { diameterUm: 1, fraction: 0.1 }).kind).toBe("film");
+  });
+
+  it.each([-1e-10, 1e-10])(
+    "does not infer complete decomposition from numerical charge noise %s",
+    (x) => {
+      expect(
+        filmForRegion(metastable, { ...atZero, x }, { diameterUm: 1, fraction: 0, chargeMAhG: 10 }),
+      ).toEqual({ kind: "chargeless" });
+    },
+  );
+
+  it("reports indeterminate charge-free decomposition even when target volume is missing", () => {
+    const withoutVolume = {
+      ...metastable,
+      targetEntry: { ...metastable.targetEntry!, volumePerAtom: undefined },
+    };
+    expect(
+      filmForRegion(withoutVolume, atZero, { diameterUm: 1, fraction: 0, chargeMAhG: 10 }),
+    ).toEqual({ kind: "chargeless" });
   });
 });

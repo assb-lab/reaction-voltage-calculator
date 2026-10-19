@@ -107,6 +107,18 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
   if (region.phases.length === 1 && target && region.phases[0].entry === target)
     return { kind: "none" };
 
+  const fullChargeMAhG = capacity(profile, region, 1);
+  let f: number;
+  let capped = false;
+  if (opts.chargeMAhG !== undefined) {
+    if (fullChargeMAhG === null || !(fullChargeMAhG > 0)) return { kind: "chargeless" };
+    const raw = Math.max(0, opts.chargeMAhG) / fullChargeMAhG;
+    capped = raw > 1;
+    f = Math.min(1, raw);
+  } else {
+    f = Math.min(1, Math.max(0, opts.fraction));
+  }
+
   const isGas = gasMatcher(opts.gasPhases);
   const solids = region.phases.filter((p) => !isGas(p.entry));
   const gases = region.phases.filter((p) => isGas(p.entry));
@@ -121,17 +133,6 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
   const productVolume = volumes.reduce((a, b) => a + b, 0);
   const volumeRatio = productVolume / targetVolume;
 
-  const fullChargeMAhG = capacity(profile, region, 1);
-  let f: number;
-  let capped = false;
-  if (opts.chargeMAhG !== undefined) {
-    if (fullChargeMAhG === null || !(fullChargeMAhG > 0)) return { kind: "chargeless" };
-    const raw = Math.max(0, opts.chargeMAhG) / fullChargeMAhG;
-    capped = raw > 1;
-    f = Math.min(1, raw);
-  } else {
-    f = Math.min(1, Math.max(0, opts.fraction));
-  }
   const R = opts.diameterUm / 2;
   // Solve in units of the original radius: cubing the dimensional radius can overflow/underflow.
   const coreScale = Math.cbrt(1 - f);
@@ -186,5 +187,7 @@ function molarMass(profile: Profile): number | null {
 /** f · |x| · z · F / (3.6 M), in mAh per gram of target (F in C/mol, M in g/mol). */
 function capacity(profile: Profile, region: Region, f: number): number | null {
   const m = molarMass(profile);
-  return m === null ? null : (f * Math.abs(region.x) * profile.charge * FARADAY) / (3.6 * m);
+  // Match the zero-transfer tolerance used by regionReaction; LP roundoff is not a reaction charge.
+  const uptake = Math.abs(region.x) < 1e-6 ? 0 : Math.abs(region.x);
+  return m === null ? null : (f * uptake * profile.charge * FARADAY) / (3.6 * m);
 }

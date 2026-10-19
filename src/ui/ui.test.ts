@@ -4,7 +4,7 @@ import { demoEntrySet } from "./demo";
 import { profileToCsv, profileToJson } from "./export";
 import { formulaTspans, renderProfileSvg } from "./plot";
 import { idLinkHtml, phaseLinkHtml } from "./html";
-import { filmCellHtml, formatChange, formatLengthNm } from "./film";
+import { filmCellHtml, filmTooltipHtml, formatChange, formatLengthNm } from "./film";
 import { renderVolumeChartSvg, type RegionFilms } from "./volumeChart";
 import { displayCoreRatio } from "./particle3d";
 import { filmForRegion } from "../core/film";
@@ -196,5 +196,39 @@ describe("volume change display", () => {
     expect(svg).toContain('aria-label="a &quot;chart&quot;"');
     expect((svg.match(/data-region="/g) ?? []).length).toBe(profile.regions.length);
     expect((svg.match(/ selected"/g) ?? []).length).toBe(1);
+  });
+});
+
+describe("charge-mode film display", () => {
+  // Synthetic volumes only: exercise the real profile-to-film-to-HTML path.
+  const p = computeProfile({
+    entries: demoEntrySet().entries.map((e) => ({ ...e, volumePerAtom: 15 })),
+    formula: "Li6PS5Cl",
+    ion: "Li",
+  });
+  const region = p.regions.at(-1)!;
+
+  it("shows the derived fraction and full charge in the table and tooltip", () => {
+    const film = filmForRegion(p, region, { diameterUm: 1, fraction: 0, chargeMAhG: 50 });
+    for (const html of [filmCellHtml(film), filmTooltipHtml(film)]) {
+      expect(html).toContain("分解率 6.26 %");
+      expect(html).toContain("798.9 mAh/g");
+    }
+  });
+
+  it("marks excess charge as capped in both views", () => {
+    const film = filmForRegion(p, region, { diameterUm: 1, fraction: 0, chargeMAhG: 1000 });
+    for (const html of [filmCellHtml(film), filmTooltipHtml(film)]) {
+      expect(html).toContain("全分解");
+      expect(html).toContain("電荷が全分解に必要な 798.9 mAh/g を超えています");
+    }
+  });
+
+  it("explains an indeterminate charge-free decomposition in both views", () => {
+    for (const html of [
+      filmCellHtml({ kind: "chargeless" }),
+      filmTooltipHtml({ kind: "chargeless" }),
+    ])
+      expect(html).toContain("電荷量からは決まりません");
   });
 });

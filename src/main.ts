@@ -328,7 +328,11 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
   if (!candidates.length) {
     renderVolumeChart(null);
     $("filmLegend").innerHTML = "";
-    $("filmNote").textContent = t("film.noRegion");
+    const failures = all.filter((c) => c.film.kind !== "none");
+    $("filmNote").textContent =
+      failures.length && failures.every((c) => c.film.kind === "chargeless")
+        ? t("film.chargeless")
+        : t("film.noRegion");
     return;
   }
   // Keep the selection; otherwise start next to the target (smallest |x|, reduction first).
