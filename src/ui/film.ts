@@ -65,13 +65,25 @@ export function filmChangeHtml(film: Film): string {
   })}`;
 }
 
+/** Charge mode: the decomposed fraction derived from the charge (HTML); "" otherwise. */
+export function filmFractionHtml(film: Film): string {
+  if (!film.fromCharge) return "";
+  const full = film.fullChargeMAhG === null ? "?" : formatNumber(film.fullChargeMAhG, 1);
+  return film.capped
+    ? t("film.capped", { full })
+    : t("film.fromCharge", { f: formatNumber(film.fraction * 100, 2), full });
+}
+
 /** Table cell for one region (HTML). */
 export function filmCellHtml(film: FilmResult): string {
   if (film.kind === "none") return `<span class="muted">${t("film.none")}</span>`;
+  if (film.kind === "chargeless") return `<span class="muted">${t("film.chargeless")}</span>`;
   if (film.kind === "unavailable")
     return `<span class="muted">${escapeHtml(t("film.unavailable", { phases: film.missing.join(", ") }))}</span>`;
-  const q =
-    film.capacityMAhG === null
+  // In charge mode the capacity is the input itself; show the derived fraction instead.
+  const q = film.fromCharge
+    ? `<br>${filmFractionHtml(film)}`
+    : film.capacityMAhG === null
       ? ""
       : `<br>${t("film.capacity", { q: formatNumber(film.capacityMAhG, 1) })}`;
   const vol = film.phases.length ? `<br><span class="muted">vol%: ${volList(film)}</span>` : "";
@@ -82,6 +94,7 @@ export function filmCellHtml(film: FilmResult): string {
 /** Tooltip line for one region (HTML). */
 export function filmTooltipHtml(film: FilmResult): string {
   if (film.kind === "none") return "";
+  if (film.kind === "chargeless") return `<div>${t("film.chargeless")}</div>`;
   if (film.kind === "unavailable")
     return `<div>${escapeHtml(t("film.unavailable", { phases: film.missing.join(", ") }))}</div>`;
   const head =
@@ -91,5 +104,7 @@ export function filmTooltipHtml(film: FilmResult): string {
   return `<div>${head} <span class="muted">(${t("film.volumeChange", {
     v: formatChange(film.volumeChange),
     p: formatChange(film.particleVolumeChange),
-  })})</span></div>${film.gases.length ? `<div>${filmGasHtml(film)}</div>` : ""}`;
+  })})</span></div>${film.fromCharge ? `<div>${filmFractionHtml(film)}</div>` : ""}${
+    film.gases.length ? `<div>${filmGasHtml(film)}</div>` : ""
+  }`;
 }

@@ -490,6 +490,15 @@ figure.interactive:focus-visible {
   gap: 8px 16px;
   margin-top: 8px;
 }
+.film-options [hidden] {
+  display: none;
+}
+.film-options .film-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  flex-basis: 100%;
+}
 .film-options .film-gas {
   flex-basis: 100%;
 }

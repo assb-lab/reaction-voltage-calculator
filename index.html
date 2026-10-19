@@ -248,9 +248,28 @@
               <span data-i18n="opt.filmDiameter">粒子径</span>
               <input id="filmDiameter" type="number" value="1" min="0" step="any" /> µm
             </label>
-            <label class="inline">
+            <div
+              class="film-mode"
+              role="radiogroup"
+              aria-label="分解量の指定"
+              data-i18n-attr="aria-label:opt.filmMode"
+            >
+              <label class="check">
+                <input type="radio" name="filmMode" value="fraction" checked />
+                <span data-i18n="opt.filmModeFraction">分解率で指定</span>
+              </label>
+              <label class="check">
+                <input type="radio" name="filmMode" value="charge" />
+                <span data-i18n="opt.filmModeCharge">反応電荷量で指定</span>
+              </label>
+            </div>
+            <label id="filmFractionField" class="inline">
               <span data-i18n="opt.filmFraction">分解率 (粒子体積の)</span>
               <input id="filmFraction" type="number" value="1" min="0" max="100" step="any" /> %
+            </label>
+            <label id="filmChargeField" class="inline" hidden>
+              <span data-i18n="opt.filmCharge">反応電荷量 (対象相 1 g あたり)</span>
+              <input id="filmCharge" type="number" value="10" min="0" step="any" /> mAh/g
             </label>
             <p class="hint" data-i18n="opt.filmHint">
               球状粒子が表面から分解し、生成物が未反応のコアを覆う緻密な混合層になると仮定します。

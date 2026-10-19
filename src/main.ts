@@ -23,7 +23,13 @@ import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
 import { filmForRegion, type FilmOptions } from "./core/film";
-import { filmCellHtml, filmGasHtml, formatChange, formatLengthNm } from "./ui/film";
+import {
+  filmCellHtml,
+  filmFractionHtml,
+  filmGasHtml,
+  formatChange,
+  formatLengthNm,
+} from "./ui/film";
 import {
   CORE_COLOR,
   displayCoreRatio,
@@ -52,6 +58,8 @@ const filmToggle = $<HTMLInputElement>("film");
 const filmOptionsBox = $<HTMLDivElement>("filmOptions");
 const filmDiameter = $<HTMLInputElement>("filmDiameter");
 const filmFraction = $<HTMLInputElement>("filmFraction");
+const filmCharge = $<HTMLInputElement>("filmCharge");
+const filmModeInputs = [...document.querySelectorAll<HTMLInputElement>('input[name="filmMode"]')];
 const filmGas = $<HTMLTextAreaElement>("filmGas");
 const result = $<HTMLElement>("result");
 const errorBox = $<HTMLParagraphElement>("error");
@@ -98,6 +106,9 @@ function restore(): void {
       filmToggle.checked = !!f.film;
       filmDiameter.value = f.filmDiameter ?? filmDiameter.value;
       filmFraction.value = f.filmFraction ?? filmFraction.value;
+      filmCharge.value = f.filmCharge ?? filmCharge.value;
+      for (const r of filmModeInputs) r.checked = r.value === (f.filmMode ?? "fraction");
+      showFilmMode();
       filmGas.value = f.filmGas ?? "";
       filmOptionsBox.hidden = !filmToggle.checked;
     }
@@ -117,6 +128,8 @@ function persist(): void {
       film: filmToggle.checked,
       filmDiameter: filmDiameter.value,
       filmFraction: filmFraction.value,
+      filmCharge: filmCharge.value,
+      filmMode: chargeMode() ? "charge" : "fraction",
       filmGas: filmGas.value,
     }),
   );
@@ -261,10 +274,26 @@ function render(p: Profile): void {
 function filmOptions(): FilmOptions | null {
   if (!filmToggle.checked) return null;
   const diameterUm = filmDiameter.valueAsNumber;
+  if (!Number.isFinite(diameterUm) || !(diameterUm > 0)) return null;
+  const gasPhases = parseExcludeList(filmGas.value);
+  if (chargeMode()) {
+    const chargeMAhG = filmCharge.valueAsNumber;
+    if (!Number.isFinite(chargeMAhG) || chargeMAhG < 0) return null;
+    return { diameterUm, fraction: 0, chargeMAhG, gasPhases };
+  }
   const percent = filmFraction.valueAsNumber;
-  if (!Number.isFinite(diameterUm) || !(diameterUm > 0) || !(percent >= 0 && percent <= 100))
-    return null;
-  return { diameterUm, fraction: percent / 100, gasPhases: parseExcludeList(filmGas.value) };
+  if (!(percent >= 0 && percent <= 100)) return null;
+  return { diameterUm, fraction: percent / 100, gasPhases };
+}
+
+/** Film amount given as reacted charge (mAh/g) instead of a decomposed fraction. */
+function chargeMode(): boolean {
+  return filmModeInputs.some((r) => r.checked && r.value === "charge");
+}
+
+function showFilmMode(): void {
+  $("filmFractionField").hidden = chargeMode();
+  $("filmChargeField").hidden = !chargeMode();
 }
 
 // 3D cutaway of the coated particle for one voltage region.
@@ -299,7 +328,11 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
   if (!candidates.length) {
     renderVolumeChart(null);
     $("filmLegend").innerHTML = "";
-    $("filmNote").textContent = t("film.noRegion");
+    const failures = all.filter((c) => c.film.kind !== "none");
+    $("filmNote").textContent =
+      failures.length && failures.every((c) => c.film.kind === "chargeless")
+        ? t("film.chargeless")
+        : t("film.noRegion");
     return;
   }
   // Keep the selection; otherwise start next to the target (smallest |x|, reduction first).
@@ -372,7 +405,7 @@ function drawFilm(): void {
   $("filmNote").innerHTML = !solid
     ? t("film.noteGasOnly", {
         d: formatNumber(opts.diameterUm),
-        f: formatNumber(opts.fraction * 100),
+        f: formatNumber(film.fraction * 100, 2),
         core: film.coreDiameterUm.toFixed(3),
       })
     : film.fullyDecomposed
@@ -384,7 +417,7 @@ function drawFilm(): void {
       : [
           t("film.note", {
             d: formatNumber(opts.diameterUm),
-            f: formatNumber(opts.fraction * 100),
+            f: formatNumber(film.fraction * 100, 2),
             t: formatLengthNm(film.thicknessNm),
             core: film.coreDiameterUm.toFixed(3),
             out: film.outerDiameterUm.toFixed(3),
@@ -392,6 +425,9 @@ function drawFilm(): void {
           }),
           exaggerated ? t("film.exaggerated") : "",
         ].join(" ");
+  if (film.fromCharge)
+    $("filmNote").innerHTML +=
+      ` ${t("film.noteCharge", { q: formatNumber(opts.chargeMAhG ?? 0, 1) })}${filmFractionHtml(film)}`;
   filmCanvas.setAttribute(
     "aria-label",
     t("film.aria", { formula: p.formula, t: formatLengthNm(film.thicknessNm) }),
@@ -534,6 +570,7 @@ demoButton.addEventListener("click", () => {
 });
 
 filmToggle.addEventListener("change", () => (filmOptionsBox.hidden = !filmToggle.checked));
+for (const r of filmModeInputs) r.addEventListener("change", showFilmMode);
 for (const el of [
   formulaInput,
   ionSelect,
@@ -543,7 +580,9 @@ for (const el of [
   filmToggle,
   filmDiameter,
   filmFraction,
+  filmCharge,
   filmGas,
+  ...filmModeInputs,
 ]) {
   el.addEventListener("change", () => {
     persist();
