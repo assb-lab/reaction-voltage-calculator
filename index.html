@@ -114,10 +114,47 @@
           <div class="actions">
             <button id="fetch" type="submit" class="primary">MP から取得して計算</button>
             <button id="loadJson" type="button">JSON を読み込む</button>
-            <input id="file" type="file" accept=".json,application/json" hidden />
+            <input id="file" type="file" accept=".json,application/json" multiple hidden />
             <button id="demo" type="button">デモデータ</button>
           </div>
           <p id="dataStatus" class="status" role="status"></p>
+
+          <details id="cliHelp" class="cli-help">
+            <summary>コマンドで取得 (公開サイトではこちら)</summary>
+            <p>
+              Materials Project API はブラウザからの直接通信 (CORS) を materialsproject.org
+              にしか許可していないため、公開サイトからは「MP
+              から取得」できません。端末で次のコマンドを実行し、保存された JSON を「JSON
+              を読み込む」で選んでください (複数ファイルをまとめて選択できます)。
+            </p>
+            <div class="shell-tabs" role="radiogroup" aria-label="シェル">
+              <label class="check"
+                ><input type="radio" name="shell" value="bash" checked /> macOS / Linux</label
+              >
+              <label class="check"
+                ><input type="radio" name="shell" value="powershell" /> Windows (PowerShell)</label
+              >
+            </div>
+            <ol class="cli-steps">
+              <li>
+                API key を環境変数に設定
+                <pre><code id="cmdEnv"></code></pre>
+              </li>
+              <li>
+                データを取得 (組成・作動イオン・thermo type に合わせて自動で更新されます)
+                <pre><code id="cmdFetch"></code></pre>
+                <button id="copyCmd" type="button">コマンドをコピー</button>
+              </li>
+              <li>保存された <code id="cmdFile"></code> を「JSON を読み込む」で選択</li>
+            </ol>
+            <p class="hint">
+              1 ファイルは最大 1000 件です。件数が足りない場合は読み込み時に警告が出るので、URL の
+              <code>_page=1</code> を 2, 3… に変えて取得し、すべてのファイルを一緒に選んでください。
+              <code>vp dev</code> /
+              <code>vp preview</code> でローカル起動した場合は、開発サーバのプロキシ経由で「MP
+              から取得」がそのまま使えます。
+            </p>
+          </details>
         </fieldset>
 
         <fieldset>

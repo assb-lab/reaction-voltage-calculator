@@ -1,7 +1,16 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 import { computeProfile } from "../core/profile";
-import { parseEntrySet, serializeEntrySet } from "./io";
-import { fetchThermoEntries, subChemsys, type ThermoDoc } from "./mp";
+import { parseEntryFiles, parseEntrySet, serializeEntrySet } from "./io";
+import {
+  curlCommand,
+  fetchThermoEntries,
+  MP_DEV_PROXY,
+  MpHttpError,
+  MpNetworkError,
+  subChemsys,
+  thermoUrl,
+  type ThermoDoc,
+} from "./mp";
 
 const docs: ThermoDoc[] = [
   {
@@ -225,5 +234,78 @@ describe("review regressions", () => {
     await expect(
       fetchThermoEntries({ apiKey: "k", elements: ["Li", "S"], thermoType: "R2SCAN", fetchFn }),
     ).rejects.toThrow(/API/);
+  });
+});
+
+describe("browser access to the MP API", () => {
+  it("turns blocked requests (CORS) into MpNetworkError", async () => {
+    const fetchFn = vi.fn(async () => {
+      throw new TypeError("Failed to fetch");
+    });
+    await expect(
+      fetchThermoEntries({ apiKey: "k", elements: ["Li", "S"], thermoType: "R2SCAN", fetchFn }),
+    ).rejects.toBeInstanceOf(MpNetworkError);
+  });
+
+  it("uses the given base URL and keeps HTTP status codes", async () => {
+    const fetchFn = vi.fn(async () => jsonResponse({}, 404));
+    const err = await fetchThermoEntries({
+      apiKey: "k",
+      baseUrl: MP_DEV_PROXY,
+      elements: ["Li"],
+      thermoType: "R2SCAN",
+      fetchFn,
+    }).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(MpHttpError);
+    expect((err as MpHttpError).status).toBe(404);
+    expect(
+      (fetchFn.mock.calls[0] as unknown as [string])[0].startsWith("/mp-api/materials/thermo/?"),
+    ).toBe(true);
+  });
+
+  it("builds terminal commands that read the key from the environment", () => {
+    const bash = curlCommand(["S", "Li"], "GGA_GGA+U_R2SCAN", "bash");
+    expect(bash).toContain('-H "X-API-KEY: $MP_API_KEY"');
+    expect(bash).toContain("-o mp_Li-S_GGA_GGA+U_R2SCAN_p1.json");
+    const url = new URL(bash.match(/"(https:[^"]+)"/)![1]);
+    expect(url.origin + url.pathname).toBe("https://api.materialsproject.org/materials/thermo/");
+    expect(url.searchParams.get("thermo_types")).toBe("GGA_GGA+U_R2SCAN");
+    expect(url.searchParams.get("chemsys")).toBe("Li,S,Li-S");
+    expect(thermoUrl(["Li"], "R2SCAN", 3)).toContain("_page=3");
+    expect(curlCommand(["Li"], "R2SCAN", "powershell")).toMatch(/^curl\.exe .*\$env:MP_API_KEY/);
+  });
+});
+
+describe("raw MP API responses", () => {
+  const page = (data: ThermoDoc[], total?: number) =>
+    JSON.stringify({ data, meta: total === undefined ? {} : { total_doc: total } });
+
+  it("reads a downloaded thermo response", () => {
+    const set = parseEntrySet(page(docs, docs.length));
+    expect(set.entries.map((e) => e.id)).toEqual(["mp-1", "mp-2", "mp-3"]);
+    expect(set.elements).toEqual(["Li", "S"]);
+    expect(set.thermoType).toBe("R2SCAN");
+  });
+
+  it("merges pages and warns when pages are missing", () => {
+    const one = parseEntryFiles([{ name: "p1.json", text: page(docs.slice(0, 2), 4) }]);
+    expect(one.warnings[0]).toMatch(/4 件中 2 件/);
+    const both = parseEntryFiles([
+      { name: "p1.json", text: page(docs.slice(0, 2), 4) },
+      { name: "p2.json", text: page(docs.slice(1), 4) },
+    ]);
+    expect(both.warnings).toEqual([]);
+    expect(both.set.entries.map((e) => e.id)).toEqual(["mp-1", "mp-2", "mp-3"]);
+  });
+
+  it("rejects mixed thermo types and names the bad file", () => {
+    const other = { ...docs[0], material_id: "mp-9", thermo_type: "GGA_GGA+U" };
+    expect(() =>
+      parseEntryFiles([
+        { name: "a.json", text: page(docs) },
+        { name: "b.json", text: page([other]) },
+      ]),
+    ).toThrow(/混在/);
+    expect(() => parseEntryFiles([{ name: "bad.json", text: "{" }])).toThrow(/bad\.json/);
   });
 });
