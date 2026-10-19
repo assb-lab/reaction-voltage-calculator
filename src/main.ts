@@ -6,6 +6,7 @@ import { fetchThermoEntries, type ThermoType } from "./data/mp";
 import { demoEntrySet } from "./ui/demo";
 import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
+import { escapeHtml, formulaHtml } from "./ui/html";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -119,13 +120,6 @@ function fmtV(v: number): string {
   return v === Infinity ? "∞" : `${v.toFixed(3)}`;
 }
 
-function formulaHtml(name: string): string {
-  return name
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/([A-Za-z)\]])(\d+(?:\.\d+)?)/g, "$1<sub>$2</sub>");
-}
-
 function render(p: Profile): void {
   result.hidden = false;
   const w = p.window;
@@ -152,7 +146,7 @@ function render(p: Profile): void {
       const phases = r.phases
         .map(
           (ph) =>
-            `<span title="${ph.entry.id}">${formatNumber(ph.amount)} ${formulaHtml(ph.entry.name)}</span>`,
+            `<span title="${escapeHtml(ph.entry.id)}">${formatNumber(ph.amount)} ${formulaHtml(ph.entry.name)}</span>`,
         )
         .join(" + ");
       return `<tr class="${side}${atZero ? " zero" : ""}">
@@ -224,6 +218,8 @@ fileInput.addEventListener("change", async () => {
     fileInput.value = "";
   }
 });
+
+$("loadJson").addEventListener("click", () => fileInput.click());
 
 demoButton.addEventListener("click", () => {
   formulaInput.value = "Li6PS5Cl";

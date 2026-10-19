@@ -40,3 +40,16 @@ describe("exports", () => {
     expect(j.window.low).toBeCloseTo(profile.window!.low, 12);
   });
 });
+
+describe("HTML escaping", () => {
+  it("keeps imported IDs inside their quoted attribute", async () => {
+    const { escapeHtml } = await import("./html");
+    expect(escapeHtml('"><img src=x onerror="alert(1)">')).toBe(
+      "&quot;&gt;&lt;img src=x onerror=&quot;alert(1)&quot;&gt;",
+    );
+  });
+  it("escapes markup while preserving formula subscripts", async () => {
+    const { formulaHtml } = await import("./html");
+    expect(formulaHtml('Li2S <img src="x">')).toBe("Li<sub>2</sub>S &lt;img src=&quot;x&quot;&gt;");
+  });
+});
