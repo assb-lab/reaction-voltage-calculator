@@ -128,7 +128,7 @@ export function mountParticle(canvas: HTMLCanvasElement, initial: ParticleModel)
         let shade: number;
         if (!(front[0] > 0 && front[1] > 0 && front[2] > 0)) {
           // Outer surface of the film.
-          rgb = model.phases.length ? filmColor(front) : coreRgb;
+          rgb = model.phases.length && model.coreRatio < 1 ? filmColor(front) : coreRgb;
           shade = Math.max(0, u * LIGHT[0] + v * LIGHT[1] + zf * LIGHT[2]);
         } else {
           // Inside the removed octant: find where the ray leaves it through a cut plane.
@@ -228,6 +228,7 @@ export function displayCoreRatio(
   minFilm = 0.04,
 ): { coreRatio: number; exaggerated: boolean } {
   const ratio = outerDiameter > 0 ? coreDiameter / outerDiameter : 0;
+  if (ratio >= 1) return { coreRatio: 1, exaggerated: false };
   return ratio > 1 - minFilm
     ? { coreRatio: 1 - minFilm, exaggerated: true }
     : { coreRatio: ratio, exaggerated: false };

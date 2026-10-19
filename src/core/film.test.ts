@@ -79,6 +79,44 @@ describe("filmForRegion", () => {
     });
   });
 
+  it.each([-15, 0, NaN, Infinity, "15"])("treats invalid product volume %s as unavailable", (v) => {
+    const p = computeProfile({
+      entries: entries.map((e) => (e.name === "Li2S" ? { ...e, volumePerAtom: v as number } : e)),
+      formula: "S",
+      ion: "Li",
+    });
+    expect(filmForRegion(p, p.regions.at(-1)!, { diameterUm: 2, fraction: 0.5 })).toEqual({
+      kind: "unavailable",
+      missing: ["Li2S"],
+    });
+  });
+
+  it("does not compute a film from a negative target volume", () => {
+    const p = computeProfile({
+      entries: entries.map((e) => (e.name === "S" ? { ...e, volumePerAtom: -25 } : e)),
+      formula: "S",
+      ion: "Li",
+    });
+    expect(filmForRegion(p, p.regions.at(-1)!, { diameterUm: 2, fraction: 0.5 })).toEqual({
+      kind: "unavailable",
+      missing: ["S"],
+    });
+  });
+
+  it.each([1e-200, 1e200])("scales linearly with diameter %s without cubing it", (d) => {
+    const film = filmForRegion(profile, lithiated, { diameterUm: d, fraction: 0.5 });
+    if (film.kind !== "film") throw new Error(film.kind);
+    expect(film.outerDiameterUm / d).toBeCloseTo(Math.cbrt(1.4), 12);
+    expect(film.thicknessNm / (d * 500)).toBeCloseTo(Math.cbrt(1.4) - Math.cbrt(0.5), 12);
+    expect(film.diameterChange).toBeCloseTo(Math.cbrt(1.4) - 1, 12);
+  });
+
+  it("retains a positive shell thickness when the two radii round to the same number", () => {
+    const film = filmForRegion(profile, lithiated, { diameterUm: 2, fraction: 1e-18 });
+    if (film.kind !== "film") throw new Error(film.kind);
+    expect(film.thicknessNm / 1e-18).toBeCloseTo(600, 9);
+  });
+
   it("splits a mixed film by volume, not by atoms", () => {
     const mixed = computeProfile({
       entries: [

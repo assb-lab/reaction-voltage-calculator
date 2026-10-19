@@ -145,6 +145,7 @@ describe("film display", () => {
     expect(displayCoreRatio(0.997, 0.999)).toEqual({ coreRatio: 0.96, exaggerated: true });
     expect(displayCoreRatio(0.888, 1.065).exaggerated).toBe(false);
     expect(displayCoreRatio(0, 1.2)).toEqual({ coreRatio: 0, exaggerated: false });
+    expect(displayCoreRatio(1, 1)).toEqual({ coreRatio: 1, exaggerated: false });
   });
 
   it("marks regions without volume data and escapes phase names", () => {

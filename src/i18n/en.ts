@@ -123,7 +123,7 @@ export const en: Record<MessageKey, string> = {
   "film.drag": "Drag (or use the arrow keys) to rotate",
   "film.column": "Film (thickness / volume change / vol% / capacity)",
   "film.none": "—",
-  "film.unavailable": "Not available (no volume data: {phases})",
+  "film.unavailable": "Not available (no valid volume data: {phases})",
   "film.capacity": "{q} mAh/g",
   "film.gas": "Gas released: {list}",
   "film.noSolid": "No film (all products are gases)",

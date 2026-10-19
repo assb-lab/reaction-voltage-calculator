@@ -6,6 +6,10 @@ import type { Profile, Region } from "./profile";
 /** Faraday constant (C/mol). */
 const FARADAY = 96485.33212;
 
+/** Imported optional volumes must be positive, finite numbers before using them in geometry. */
+const validVolume = (v: unknown): v is number =>
+  typeof v === "number" && Number.isFinite(v) && v > 0;
+
 export interface FilmOptions {
   /** Particle diameter (µm). */
   diameterUm: number;
@@ -92,8 +96,8 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
   const solids = region.phases.filter((p) => !isGas(p.entry));
   const gases = region.phases.filter((p) => isGas(p.entry));
   const missing = [
-    ...(target && target.volumePerAtom ? [] : [target?.name ?? profile.formula]),
-    ...solids.filter((p) => !p.entry.volumePerAtom).map((p) => p.entry.name),
+    ...(target && validVolume(target.volumePerAtom) ? [] : [target?.name ?? profile.formula]),
+    ...solids.filter((p) => !validVolume(p.entry.volumePerAtom)).map((p) => p.entry.name),
   ];
   if (missing.length) return { kind: "unavailable", missing: [...new Set(missing)] };
 
@@ -104,18 +108,24 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
 
   const f = Math.min(1, Math.max(0, opts.fraction));
   const R = opts.diameterUm / 2;
-  const r = R * Math.cbrt(1 - f);
-  const rOut = Math.cbrt(r ** 3 + f * R ** 3 * volumeRatio);
+  // Solve in units of the original radius: cubing the dimensional radius can overflow/underflow.
+  const coreScale = Math.cbrt(1 - f);
+  const outerScale = Math.cbrt(1 - f + f * volumeRatio);
+  // Rationalize the difference of cube roots so a very thin shell does not round to zero.
+  const shellScale =
+    f > 0 && volumeRatio > 0
+      ? (f * volumeRatio) / (outerScale ** 2 + outerScale * coreScale + coreScale ** 2)
+      : 0;
 
   return {
     kind: "film",
-    thicknessNm: (rOut - r) * 1000,
-    coreDiameterUm: 2 * r,
-    outerDiameterUm: 2 * rOut,
+    thicknessNm: R * shellScale * 1000,
+    coreDiameterUm: opts.diameterUm * coreScale,
+    outerDiameterUm: opts.diameterUm * outerScale,
     volumeRatio,
     volumeChange: volumeRatio - 1,
     particleVolumeChange: f * (volumeRatio - 1),
-    diameterChange: rOut / R - 1,
+    diameterChange: outerScale - 1,
     fullyDecomposed: f >= 1,
     phases: solids.map((p, i) => ({
       entry: p.entry,
@@ -144,7 +154,7 @@ function molarMass(profile: Profile): number | null {
   return m;
 }
 
-/** f · |x| · z · F / M, in mAh per gram of target. */
+/** f · |x| · z · F / (3.6 M), in mAh per gram of target (F in C/mol, M in g/mol). */
 function capacity(profile: Profile, region: Region, f: number): number | null {
   const m = molarMass(profile);
   return m === null ? null : (f * Math.abs(region.x) * profile.charge * FARADAY) / (3.6 * m);

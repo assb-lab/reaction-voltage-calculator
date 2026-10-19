@@ -121,7 +121,7 @@ export const ja = {
   "film.drag": "ドラッグ (または矢印キー) で回転",
   "film.column": "被膜 (厚み / 体積変化 / vol% / 容量)",
   "film.none": "—",
-  "film.unavailable": "計算不可 (体積データなし: {phases})",
+  "film.unavailable": "計算不可 (有効な体積データなし: {phases})",
   "film.capacity": "{q} mAh/g",
   "film.gas": "放出ガス: {list}",
   "film.noSolid": "被膜なし (生成物はすべてガス)",

@@ -260,9 +260,10 @@ function render(p: Profile): void {
 /** Film options from the form; null when the mode is off or the inputs are invalid. */
 function filmOptions(): FilmOptions | null {
   if (!filmToggle.checked) return null;
-  const diameterUm = Number(filmDiameter.value);
-  const percent = Number(filmFraction.value);
-  if (!(diameterUm > 0) || !(percent >= 0 && percent <= 100)) return null;
+  const diameterUm = filmDiameter.valueAsNumber;
+  const percent = filmFraction.valueAsNumber;
+  if (!Number.isFinite(diameterUm) || !(diameterUm > 0) || !(percent >= 0 && percent <= 100))
+    return null;
   return { diameterUm, fraction: percent / 100, gasPhases: parseExcludeList(filmGas.value) };
 }
 
