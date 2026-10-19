@@ -15,6 +15,7 @@ import {
 import { demoEntrySet } from "./ui/demo";
 import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
+import { mountChart, voltageRange, type Chart } from "./ui/chart";
 import { escapeHtml, formulaHtml } from "./ui/html";
 import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
@@ -41,6 +42,7 @@ const FORM_STORAGE = "rvc.form";
 
 let data: EntrySet | null = null;
 let profile: Profile | null = null;
+let chart: Chart | null = null;
 
 function storageGet(key: string): string | null {
   try {
@@ -144,7 +146,12 @@ function render(p: Profile): void {
     <div><span>使用エントリ</span><strong>${p.nEntries}</strong></div>
     ${p.stabilized ? `<p class="note">対象相を hull 上に置いて計算しています。</p>` : ""}
     ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。</p>` : ""}`;
-  $("figure").innerHTML = renderProfileSvg(p);
+  chart?.destroy();
+  chart = mountChart($("figure"), p, (view) => {
+    const fmt = (v: number) => String(Number(v.toFixed(3)));
+    if (document.activeElement !== vMinInput) vMinInput.value = fmt(view.vMin);
+    if (document.activeElement !== vMaxInput) vMaxInput.value = fmt(view.vMax);
+  });
 
   const rows = p.regions
     .map((r) => {
@@ -310,9 +317,26 @@ for (const el of [formulaInput, ionSelect, stabilize, delta]) {
 }
 saveKey.addEventListener("change", persist);
 
+// Voltage range inputs and reset for the interactive figure.
+const vMinInput = $<HTMLInputElement>("vMin");
+const vMaxInput = $<HTMLInputElement>("vMax");
+for (const input of [vMinInput, vMaxInput]) {
+  input.addEventListener("change", () => {
+    if (!chart) return;
+    const range = voltageRange(Number(vMinInput.value), Number(vMaxInput.value));
+    if (range) chart.setView({ ...chart.view(), vMin: range[0], vMax: range[1] });
+    else {
+      const v = chart.view();
+      vMinInput.value = String(Number(v.vMin.toFixed(3)));
+      vMaxInput.value = String(Number(v.vMax.toFixed(3)));
+    }
+  });
+}
+$("resetView").addEventListener("click", () => chart?.reset());
+
 const stem = () => (profile ? `${profile.formula}_${profile.ion}` : "profile");
 $("dlSvg").addEventListener("click", () => {
-  if (profile) download(`${stem()}.svg`, renderProfileSvg(profile), "image/svg+xml");
+  if (profile) download(`${stem()}.svg`, renderProfileSvg(profile, chart?.view()), "image/svg+xml");
 });
 $("dlCsv").addEventListener("click", () => {
   if (profile) download(`${stem()}.csv`, profileToCsv(profile), "text/csv");
