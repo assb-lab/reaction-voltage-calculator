@@ -175,7 +175,23 @@
 
       <section id="result" class="card" hidden>
         <div id="summary" class="summary"></div>
-        <figure id="figure" aria-describedby="legend"></figure>
+        <figure
+          id="figure"
+          aria-describedby="legend figureHelp"
+          aria-label="電位プロファイルと相平衡の図 (拡大・移動可能)"
+        ></figure>
+        <div class="view-controls">
+          <label class="inline">
+            電位範囲
+            <input id="vMin" type="number" step="0.1" aria-label="電位の下限 (V)" /> –
+            <input id="vMax" type="number" step="0.1" aria-label="電位の上限 (V)" /> V
+          </label>
+          <button id="resetView" type="button">表示をリセット</button>
+          <p id="figureHelp" class="hint">
+            ホイール: 電位を拡大縮小 / Shift+ホイール・x 軸上のホイール: x を拡大縮小 / ドラッグ:
+            移動 / ピンチ: 拡大縮小 / ダブルクリック: リセット / キーボード: + − 矢印 0
+          </p>
+        </div>
         <ul id="legend" class="legend">
           <li><span class="swatch ox"></span>酸化側 (x &lt; 0, イオン脱離)</li>
           <li><span class="swatch red"></span>還元側 (x &gt; 0, イオン挿入)</li>

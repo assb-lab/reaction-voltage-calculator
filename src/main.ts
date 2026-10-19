@@ -15,6 +15,7 @@ import {
 import { demoEntrySet } from "./ui/demo";
 import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
+import { mountChart, voltageRange, type Chart } from "./ui/chart";
 import { escapeHtml, formulaHtml } from "./ui/html";
 import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
@@ -41,6 +42,7 @@ const FORM_STORAGE = "rvc.form";
 
 let data: EntrySet | null = null;
 let profile: Profile | null = null;
+let chart: Chart | null = null;
 
 function storageGet(key: string): string | null {
   try {
@@ -149,7 +151,12 @@ function render(p: Profile): void {
     ${p.stabilized ? `<p class="note">${formulaHtml(p.formula)} を hull 上${Number(delta.value) > 0 ? `から ${formatNumber(Number(delta.value))} meV/atom 下` : ""}に補正して評価しています。上の E<sub>hull</sub> は補正前の値です。このウィンドウは補正した対象相の評価です。</p>` : ""}
     ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。「対象相を hull 上に置く」を有効にすると対象相を含むプロファイルを評価できます。</p>` : ""}
     ${!p.targetEntry ? `<p class="note">${formulaHtml(p.formula)} の該当エントリがありません。仮想相は作らず、分解生成物の平衡のみを表示しています。</p>` : ""}`;
-  $("figure").innerHTML = renderProfileSvg(p);
+  chart?.destroy();
+  chart = mountChart($("figure"), p, (view) => {
+    const fmt = (v: number) => String(Number(v.toFixed(3)));
+    if (document.activeElement !== vMinInput) vMinInput.value = fmt(view.vMin);
+    if (document.activeElement !== vMaxInput) vMaxInput.value = fmt(view.vMax);
+  });
 
   const rows = p.regions
     .map((r) => {
@@ -316,9 +323,26 @@ for (const el of [formulaInput, ionSelect, stabilize, delta]) {
 }
 saveKey.addEventListener("change", persist);
 
+// Voltage range inputs and reset for the interactive figure.
+const vMinInput = $<HTMLInputElement>("vMin");
+const vMaxInput = $<HTMLInputElement>("vMax");
+for (const input of [vMinInput, vMaxInput]) {
+  input.addEventListener("change", () => {
+    if (!chart) return;
+    const range = voltageRange(vMinInput.valueAsNumber, vMaxInput.valueAsNumber);
+    if (range) chart.setView({ ...chart.view(), vMin: range[0], vMax: range[1] });
+    else {
+      const v = chart.view();
+      vMinInput.value = String(Number(v.vMin.toFixed(3)));
+      vMaxInput.value = String(Number(v.vMax.toFixed(3)));
+    }
+  });
+}
+$("resetView").addEventListener("click", () => chart?.reset());
+
 const stem = () => (profile ? `${profile.formula}_${profile.ion}` : "profile");
 $("dlSvg").addEventListener("click", () => {
-  if (profile) download(`${stem()}.svg`, renderProfileSvg(profile), "image/svg+xml");
+  if (profile) download(`${stem()}.svg`, renderProfileSvg(profile, chart?.view()), "image/svg+xml");
 });
 $("dlCsv").addEventListener("click", () => {
   if (profile) download(`${stem()}.csv`, profileToCsv(profile), "text/csv");
