@@ -33,6 +33,14 @@ export type FilmResult =
       outerDiameterUm: number;
       /** Product volume / decomposed target volume. */
       volumeRatio: number;
+      /** Relative volume change of the decomposed part: volumeRatio − 1. */
+      volumeChange: number;
+      /** Relative volume change of the whole particle: f · (volumeRatio − 1). */
+      particleVolumeChange: number;
+      /** Relative change of the particle (outer) diameter. */
+      diameterChange: number;
+      /** No core left (f = 100 %): the particle is entirely products, not a film. */
+      fullyDecomposed: boolean;
       phases: FilmPhase[];
       /** Charge for the decomposed fraction per gram of target (mAh/g); null if a mass is unknown. */
       capacityMAhG: number | null;
@@ -72,6 +80,10 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
     coreDiameterUm: 2 * r,
     outerDiameterUm: 2 * rOut,
     volumeRatio,
+    volumeChange: volumeRatio - 1,
+    particleVolumeChange: f * (volumeRatio - 1),
+    diameterChange: rOut / R - 1,
+    fullyDecomposed: f >= 1,
     phases: region.phases.map((p, i) => ({
       entry: p.entry,
       volFraction: volumes[i] / productVolume,

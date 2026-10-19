@@ -23,7 +23,7 @@ import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
 import { filmForRegion, type FilmOptions } from "./core/film";
-import { filmCellHtml, formatLengthNm } from "./ui/film";
+import { filmCellHtml, formatChange, formatLengthNm } from "./ui/film";
 import {
   CORE_COLOR,
   displayCoreRatio,
@@ -31,6 +31,7 @@ import {
   PHASE_COLORS,
   type ParticleView,
 } from "./ui/particle3d";
+import { renderVolumeChartSvg, type RegionFilms } from "./ui/volumeChart";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -268,6 +269,7 @@ const filmRegion = $<HTMLSelectElement>("filmRegion");
 const filmCanvas = $<HTMLCanvasElement>("filmCanvas");
 let particle: ParticleView | null = null;
 let filmContext: { p: Profile; opts: FilmOptions } | null = null;
+const volumeChart = $<HTMLDivElement>("volumeChart");
 
 function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
   // Keep the selected region across re-renders of the same system (options, language).
@@ -277,9 +279,8 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
   filmPanel.hidden = !opts;
   if (!opts) return;
   const previous = sameSystem && filmRegion.value !== "" ? Number(filmRegion.value) : -1;
-  const candidates = p.regions
-    .map((r, i) => ({ r, i, film: filmForRegion(p, r, opts) }))
-    .filter((c) => c.film.kind === "film");
+  const all = p.regions.map((r, i) => ({ r, i, film: filmForRegion(p, r, opts) }));
+  const candidates = all.filter((c) => c.film.kind === "film");
   filmRegion.innerHTML = candidates
     .map(
       (c) =>
@@ -290,7 +291,9 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
     .join("");
   filmRegion.disabled = !candidates.length;
   filmCanvas.hidden = !candidates.length;
+  regionFilms = all.map((c) => ({ region: c.i, film: c.film }));
   if (!candidates.length) {
+    renderVolumeChart(null);
     $("filmLegend").innerHTML = "";
     $("filmNote").textContent = t("film.noRegion");
     return;
@@ -303,9 +306,30 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
   drawFilm();
 }
 
+let regionFilms: RegionFilms = [];
+
+function renderVolumeChart(selected: number | null): void {
+  if (!filmContext) return;
+  volumeChart.innerHTML = renderVolumeChartSvg(
+    filmContext.p,
+    regionFilms,
+    selected,
+    t("film.chartAria"),
+  );
+}
+
+volumeChart.addEventListener("click", (ev) => {
+  const level = (ev.target as Element).closest<SVGGElement>("[data-region]");
+  const option = level && filmRegion.querySelector(`option[value="${level.dataset.region}"]`);
+  if (!option) return;
+  filmRegion.value = level.dataset.region!;
+  drawFilm();
+});
+
 function drawFilm(): void {
   if (!filmContext) return;
   const { p, opts } = filmContext;
+  renderVolumeChart(Number(filmRegion.value));
   const region = p.regions[Number(filmRegion.value)];
   const film = region && filmForRegion(p, region, opts);
   if (!film || film.kind !== "film") return;
@@ -330,16 +354,28 @@ function drawFilm(): void {
         `<li>${swatch(ph.color)}<span>${formulaHtml(ph.name)} ${formatNumber(ph.volFraction * 100, 1)} vol%</span></li>`,
     ),
   ].join("");
-  $("filmNote").innerHTML = [
-    t("film.note", {
-      d: formatNumber(opts.diameterUm),
-      f: formatNumber(opts.fraction * 100),
-      t: formatLengthNm(film.thicknessNm),
-      core: formatNumber(film.coreDiameterUm),
-      out: formatNumber(film.outerDiameterUm),
-    }),
-    exaggerated ? t("film.exaggerated") : "",
-  ].join(" ");
+  const change = {
+    pct: formatChange(film.diameterChange),
+    v: formatChange(film.volumeChange),
+    p: formatChange(film.particleVolumeChange),
+  };
+  $("filmNote").innerHTML = film.fullyDecomposed
+    ? t("film.noteFull", {
+        d: formatNumber(opts.diameterUm),
+        out: film.outerDiameterUm.toFixed(3),
+        pct: change.pct,
+      })
+    : [
+        t("film.note", {
+          d: formatNumber(opts.diameterUm),
+          f: formatNumber(opts.fraction * 100),
+          t: formatLengthNm(film.thicknessNm),
+          core: film.coreDiameterUm.toFixed(3),
+          out: film.outerDiameterUm.toFixed(3),
+          ...change,
+        }),
+        exaggerated ? t("film.exaggerated") : "",
+      ].join(" ");
   filmCanvas.setAttribute(
     "aria-label",
     t("film.aria", { formula: p.formula, t: formatLengthNm(film.thicknessNm) }),

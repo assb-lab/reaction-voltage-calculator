@@ -121,17 +121,26 @@ export const en: Record<MessageKey, string> = {
   "film.title": "Film model",
   "film.region": "Voltage region",
   "film.drag": "Drag (or use the arrow keys) to rotate",
-  "film.column": "Film (thickness / vol% / capacity)",
+  "film.column": "Film (thickness / volume change / vol% / capacity)",
   "film.none": "—",
   "film.unavailable": "Not available (no volume data: {phases})",
   "film.capacity": "{q} mAh/g",
+  "film.full": "Fully decomposed: diameter {d0} → {d1} µm ({pct})",
+  "film.diameter": "Outer diameter {d} µm ({pct})",
+  "film.volumeChange": "Volume change: decomposed part {v} / whole particle {p}",
+  "film.noteFull":
+    "The whole {d} µm particle decomposes; the product particle is {out} µm in diameter ({pct}). There is no film: the whole particle is products.",
+  "film.chartTitle": "Volume change",
+  "film.chartAria": "Volume change of the decomposed part for each voltage region",
+  "film.chartHint":
+    "Volume change of the decomposed part (V_products / V_target − 1) for each voltage region; the whole particle changes by this times the decomposed fraction. Click a line to show that region in the 3D model.",
   "film.tooltip": "Film {t}",
   "film.invalid": "Film: enter a particle diameter (> 0 µm) and a decomposed fraction (0–100 %).",
   "film.noRegion":
     "No voltage region has a film to compute (no decomposition products with volume data).",
   "film.core": "Unreacted {formula}",
   "film.note":
-    "Particle diameter {d} µm, {f} % decomposed: the film is {t} thick (core {core} µm, outer diameter {out} µm).",
+    "Particle diameter {d} µm, {f} % decomposed: the film is {t} thick (core {core} µm, outer diameter {out} µm, {pct}). Volume change: {v} for the decomposed part, {p} for the whole particle.",
   "film.exaggerated": "The film is drawn thicker than scale because it is very thin.",
   "film.aria": "Cutaway model of a {formula} particle with a {t} film",
 

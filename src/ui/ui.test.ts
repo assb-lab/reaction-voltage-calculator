@@ -4,7 +4,8 @@ import { demoEntrySet } from "./demo";
 import { profileToCsv, profileToJson } from "./export";
 import { formulaTspans, renderProfileSvg } from "./plot";
 import { idLinkHtml, phaseLinkHtml } from "./html";
-import { filmCellHtml, formatLengthNm } from "./film";
+import { filmCellHtml, formatChange, formatLengthNm } from "./film";
+import { renderVolumeChartSvg, type RegionFilms } from "./volumeChart";
 import { displayCoreRatio } from "./particle3d";
 import { filmForRegion } from "../core/film";
 
@@ -155,5 +156,39 @@ describe("film display", () => {
     expect(filmForRegion(profile, region, { diameterUm: 1, fraction: 0.1 }).kind).toBe(
       "unavailable",
     );
+  });
+});
+
+describe("volume change display", () => {
+  it("formats signed changes", () => {
+    expect(formatChange(0.174)).toBe("+17.4 %");
+    expect(formatChange(-0.2871)).toBe("−28.7 %");
+    expect(formatChange(0.0001)).toBe("±0 %");
+  });
+
+  it("charts one clickable level per region with a film, escaping labels", () => {
+    const films: RegionFilms = profile.regions.map((r, i) => ({
+      region: i,
+      film:
+        r.phases.length === 1 && r.phases[0].entry === profile.targetEntry
+          ? { kind: "none" }
+          : {
+              kind: "film",
+              thicknessNm: 10,
+              coreDiameterUm: 0.9,
+              outerDiameterUm: 1,
+              volumeRatio: 1 + i / 10,
+              volumeChange: i / 10,
+              particleVolumeChange: i / 100,
+              diameterChange: 0,
+              fullyDecomposed: false,
+              phases: [],
+              capacityMAhG: null,
+            },
+    }));
+    const svg = renderVolumeChartSvg(profile, films, 2, 'a "chart"');
+    expect(svg).toContain('aria-label="a &quot;chart&quot;"');
+    expect((svg.match(/data-region="/g) ?? []).length).toBe(profile.regions.length);
+    expect((svg.match(/ selected"/g) ?? []).length).toBe(1);
   });
 });

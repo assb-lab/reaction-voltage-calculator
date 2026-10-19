@@ -541,3 +541,50 @@ figure.interactive:focus-visible {
 #regions td.film {
   min-width: 12em;
 }
+
+.volume-chart svg {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  font-size: 11px;
+}
+.volume-svg text {
+  fill: var(--fg);
+}
+.volume-svg .grid {
+  stroke: var(--grid);
+}
+.volume-svg .grid.zero {
+  stroke: var(--muted);
+}
+.volume-svg .axis {
+  fill: none;
+  stroke: var(--fg);
+}
+.volume-svg .connector {
+  stroke: var(--muted);
+  stroke-dasharray: 2 3;
+}
+.volume-svg .level {
+  cursor: pointer;
+}
+.volume-svg .level line {
+  stroke-width: 2.5;
+}
+.volume-svg .level .hit {
+  stroke: transparent;
+  stroke-width: 14;
+}
+.volume-svg .ox {
+  stroke: var(--ox);
+}
+.volume-svg .red {
+  stroke: var(--red);
+}
+.volume-svg .neutral {
+  stroke: var(--fg);
+}
+.volume-svg .level .selected {
+  stroke-width: 5;
+}

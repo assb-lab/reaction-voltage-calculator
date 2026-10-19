@@ -119,17 +119,26 @@ export const ja = {
   "film.title": "被膜モデル",
   "film.region": "電位区間",
   "film.drag": "ドラッグ (または矢印キー) で回転",
-  "film.column": "被膜 (厚み / vol% / 容量)",
+  "film.column": "被膜 (厚み / 体積変化 / vol% / 容量)",
   "film.none": "—",
   "film.unavailable": "計算不可 (体積データなし: {phases})",
   "film.capacity": "{q} mAh/g",
+  "film.full": "全分解: 粒子径 {d0} → {d1} µm ({pct})",
+  "film.diameter": "外径 {d} µm ({pct})",
+  "film.volumeChange": "体積変化: 分解部 {v} / 粒子全体 {p}",
+  "film.noteFull":
+    "粒子径 {d} µm の粒子がすべて分解し、生成物の粒子の直径は {out} µm ({pct}) になります。被膜ではなく粒子全体が生成物です。",
+  "film.chartTitle": "体積変化",
+  "film.chartAria": "電位区間ごとの、分解した部分の体積変化のグラフ",
+  "film.chartHint":
+    "分解した部分の体積変化 (V_生成物 / V_対象相 − 1) を電位区間ごとに示します。粒子全体の変化はこれに分解率を掛けた値です。線をクリックすると、その区間を 3D モデルに表示します。",
   "film.tooltip": "被膜 {t}",
   "film.invalid": "被膜: 粒子径 (> 0 µm) と分解率 (0–100 %) を正しく入力してください。",
   "film.noRegion":
     "被膜を計算できる電位区間がありません (体積データのある分解生成物がありません)。",
   "film.core": "未反応の {formula}",
   "film.note":
-    "粒子径 {d} µm、分解率 {f} % で、被膜の厚みは {t} (コア径 {core} µm、外径 {out} µm)。",
+    "粒子径 {d} µm、分解率 {f} % で、被膜の厚みは {t} (コア径 {core} µm、外径 {out} µm、{pct})。体積変化は分解部 {v}、粒子全体 {p}。",
   "film.exaggerated": "被膜が薄いため、図では厚みを誇張しています。",
   "film.aria": "{formula} 粒子の断面モデル。被膜の厚み {t}",
 

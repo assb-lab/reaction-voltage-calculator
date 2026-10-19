@@ -38,6 +38,11 @@ describe("filmForRegion", () => {
     if (film.kind !== "film") throw new Error(film.kind);
     expect(lithiated.x).toBeCloseTo(2, 9);
     expect(film.volumeRatio).toBeCloseTo(1.8, 12);
+    expect(film.volumeChange).toBeCloseTo(0.8, 12);
+    // whole particle: 0.5 · 0.8 = +40 % volume, diameter × 1.4^(1/3)
+    expect(film.particleVolumeChange).toBeCloseTo(0.4, 12);
+    expect(film.diameterChange).toBeCloseTo(Math.cbrt(1.4) - 1, 12);
+    expect(film.fullyDecomposed).toBe(false);
     // r = (1 - 0.5)^(1/3), R_out = (r^3 + 0.5 * 1.8)^(1/3) = 1.4^(1/3) (µm, R = 1)
     const r = Math.cbrt(0.5);
     expect(film.coreDiameterUm).toBeCloseTo(2 * r, 12);
@@ -52,6 +57,9 @@ describe("filmForRegion", () => {
     const full = filmForRegion(profile, lithiated, { diameterUm: 2, fraction: 1 });
     if (full.kind !== "film") throw new Error(full.kind);
     expect(full.coreDiameterUm).toBe(0);
+    expect(full.fullyDecomposed).toBe(true);
+    expect(full.outerDiameterUm).toBeCloseTo(2 * Math.cbrt(1.8), 12);
+    expect(full.particleVolumeChange).toBeCloseTo(0.8, 12);
     expect(full.thicknessNm).toBeCloseTo(Math.cbrt(1.8) * 1000, 9);
     const none = filmForRegion(profile, lithiated, { diameterUm: 2, fraction: 0 });
     if (none.kind !== "film") throw new Error(none.kind);
