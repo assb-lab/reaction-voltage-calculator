@@ -1,4 +1,5 @@
 import "./style.css";
+import { excludeEntries, parseExcludeList, type Entry, type ExcludeResult } from "./core/entries";
 import { formatNumber, parseFormula } from "./core/formula";
 import { computeProfile, regionReaction, type Profile } from "./core/profile";
 import { parseEntryFiles, serializeEntrySet, type EntrySet } from "./data/io";
@@ -34,6 +35,7 @@ const demoButton = $<HTMLButtonElement>("demo");
 const dataStatus = $<HTMLParagraphElement>("dataStatus");
 const stabilize = $<HTMLInputElement>("stabilize");
 const delta = $<HTMLInputElement>("delta");
+const excludeInput = $<HTMLTextAreaElement>("exclude");
 const result = $<HTMLElement>("result");
 const errorBox = $<HTMLParagraphElement>("error");
 
@@ -43,6 +45,7 @@ const FORM_STORAGE = "rvc.form";
 let data: EntrySet | null = null;
 let profile: Profile | null = null;
 let chart: Chart | null = null;
+let exclusion: ExcludeResult | null = null;
 
 function storageGet(key: string): string | null {
   try {
@@ -72,6 +75,7 @@ function restore(): void {
       formulaInput.value = f.formula ?? formulaInput.value;
       ionSelect.value = f.ion ?? ionSelect.value;
       thermoSelect.value = f.thermo ?? thermoSelect.value;
+      excludeInput.value = f.exclude ?? "";
     }
   } catch {
     /* ignore */
@@ -85,6 +89,7 @@ function persist(): void {
       formula: formulaInput.value,
       ion: ionSelect.value,
       thermo: thermoSelect.value,
+      exclude: excludeInput.value,
     }),
   );
   storageSet(KEY_STORAGE, saveKey.checked && apiKeyInput.value ? apiKeyInput.value : null);
@@ -116,8 +121,19 @@ function recompute(): void {
         `読み込んだデータに ${missing.join(", ")} が含まれていません。MP から再取得してください。`,
       );
     }
+    exclusion = excludeEntries(data.entries, parseExcludeList(excludeInput.value));
+    const lostRefs = need.filter(
+      (el) =>
+        exclusion!.excluded.some((e) => isElemental(e, el)) &&
+        !exclusion!.entries.some((e) => isElemental(e, el)),
+    );
+    if (lostRefs.length) {
+      throw new Error(
+        `除外により ${lostRefs.join(", ")} の単体エントリがなくなりました。単体は生成エネルギーの基準なので除外できません。除外する相を見直してください。`,
+      );
+    }
     profile = computeProfile({
-      entries: data.entries,
+      entries: exclusion.entries,
       formula: formulaInput.value.trim(),
       ion: ionSelect.value,
       stabilize: {
@@ -131,6 +147,23 @@ function recompute(): void {
     result.hidden = true;
     showError((e as Error).message);
   }
+}
+
+function isElemental(e: Entry, el: string): boolean {
+  const els = Object.keys(e.composition);
+  return els.length === 1 && els[0] === el;
+}
+
+function excludeNote(): string {
+  if (!exclusion || (!exclusion.excluded.length && !exclusion.unmatched.length)) return "";
+  const ids = exclusion.excluded.map((e) => `${e.name} (${e.id})`).join(", ");
+  const removed = exclusion.excluded.length
+    ? `${exclusion.excluded.length} エントリを除外しています: ${escapeHtml(ids)}。`
+    : "";
+  const unmatched = exclusion.unmatched.length
+    ? `一致するエントリがない項目: ${escapeHtml(exclusion.unmatched.join(", "))}。`
+    : "";
+  return `<p class="note">${removed}${unmatched}</p>`;
 }
 
 function fmtV(v: number): string {
@@ -150,6 +183,7 @@ function render(p: Profile): void {
     <div><span>使用エントリ</span><strong>${p.nEntries}</strong></div>
     ${p.stabilized ? `<p class="note">${formulaHtml(p.formula)} を hull 上${Number(delta.value) > 0 ? `から ${formatNumber(Number(delta.value))} meV/atom 下` : ""}に補正して評価しています。上の E<sub>hull</sub> は補正前の値です。このウィンドウは補正した対象相の評価です。</p>` : ""}
     ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。「対象相を hull 上に置く」を有効にすると対象相を含むプロファイルを評価できます。</p>` : ""}
+    ${excludeNote()}
     ${!p.targetEntry ? `<p class="note">${formulaHtml(p.formula)} の該当エントリがありません。仮想相は作らず、分解生成物の平衡のみを表示しています。</p>` : ""}`;
   chart?.destroy();
   chart = mountChart($("figure"), p, (view) => {
@@ -315,7 +349,7 @@ demoButton.addEventListener("click", () => {
   recompute();
 });
 
-for (const el of [formulaInput, ionSelect, stabilize, delta]) {
+for (const el of [formulaInput, ionSelect, stabilize, delta, excludeInput]) {
   el.addEventListener("change", () => {
     persist();
     recompute();

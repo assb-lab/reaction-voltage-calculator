@@ -78,3 +78,61 @@ export function prepareEntries(entries: Entry[], elements: string[]): PreparedSe
   });
   return { elements: [...elements].sort(), refs, entries: prepared };
 }
+
+export interface ExcludeResult {
+  /** Entries left after exclusion. */
+  entries: Entry[];
+  /** Entries removed. */
+  excluded: Entry[];
+  /** Items that matched no entry (typos, or phases absent from the data). */
+  unmatched: string[];
+}
+
+/** Split a comma (or newline / 、) separated exclusion list into trimmed, de-duplicated items. */
+export function parseExcludeList(text: string): string[] {
+  return [
+    ...new Set(
+      text
+        .split(/[,，、\n]/)
+        .map((s) => s.trim())
+        .filter(Boolean),
+    ),
+  ];
+}
+
+function sameComposition(a: Composition, b: Composition): boolean {
+  const na = numAtoms(a);
+  const nb = numAtoms(b);
+  const els = new Set([...Object.keys(a), ...Object.keys(b)]);
+  return [...els].every((el) => Math.abs((a[el] ?? 0) / na - (b[el] ?? 0) / nb) < 1e-9);
+}
+
+/**
+ * Remove entries named in `items`. An item equal to an entry id (case-insensitive) removes that entry;
+ * otherwise it is read as a formula and removes every entry with the same composition ratio
+ * (all polymorphs).
+ */
+export function excludeEntries(entries: Entry[], items: string[]): ExcludeResult {
+  const matchers = items.map((item) => {
+    let comp: Composition | null = null;
+    try {
+      comp = parseFormula(item);
+    } catch {
+      // Not a formula: only matches ids.
+    }
+    const id = item.toLowerCase();
+    return (e: Entry) =>
+      e.id.toLowerCase() === id || (comp !== null && sameComposition(comp, e.composition));
+  });
+  const hits = items.map(() => false);
+  const kept: Entry[] = [];
+  const excluded: Entry[] = [];
+  for (const e of entries) {
+    let drop = false;
+    matchers.forEach((m, i) => {
+      if (m(e)) drop = hits[i] = true;
+    });
+    (drop ? excluded : kept).push(e);
+  }
+  return { entries: kept, excluded, unmatched: items.filter((_, i) => !hits[i]) };
+}

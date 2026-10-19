@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import type { Entry } from "./entries";
+import { excludeEntries, parseExcludeList, type Entry } from "./entries";
 import { formatFormula, parseFormula, reduceComposition } from "./formula";
 import { computeProfile, regionReaction } from "./profile";
 import { solveLp } from "./simplex";
@@ -191,4 +191,49 @@ it("finds oxidation transitions beyond the former 50 eV scan limit", () => {
   expect(p.regions[0].ionAmount).toBe(0);
   expect(p.plateaus).toHaveLength(1);
   expect(p.plateaus[0].voltage).toBeCloseTo(75.75, 8);
+});
+
+describe("excludeEntries", () => {
+  const e = (id: string, name: string, composition: Record<string, number>): Entry => ({
+    id,
+    name,
+    composition,
+    energyPerAtom: 0,
+  });
+  const entries = [
+    e("mp-1", "Li2S", { Li: 8, S: 4 }),
+    e("mp-2", "Li2S", { Li: 2, S: 1 }),
+    e("mp-3", "LiS4", { Li: 1, S: 4 }),
+    e("mp-4", "S", { S: 32 }),
+  ];
+
+  it("parses comma separated lists", () => {
+    expect(parseExcludeList(" Li2S, mp-3 ,,LiS4、mp-3\n")).toEqual(["Li2S", "mp-3", "LiS4"]);
+    expect(parseExcludeList("  ")).toEqual([]);
+  });
+  it("removes all polymorphs of a formula, by composition ratio", () => {
+    const r = excludeEntries(entries, ["Li4S2"]);
+    expect(r.excluded.map((x) => x.id)).toEqual(["mp-1", "mp-2"]);
+    expect(r.entries.map((x) => x.id)).toEqual(["mp-3", "mp-4"]);
+    expect(r.unmatched).toEqual([]);
+  });
+  it("removes a single entry by id (case-insensitive) and reports unmatched items", () => {
+    const r = excludeEntries(entries, ["MP-2", "Li3P7", "foo"]);
+    expect(r.excluded.map((x) => x.id)).toEqual(["mp-2"]);
+    expect(r.unmatched).toEqual(["Li3P7", "foo"]);
+  });
+  it("changes the profile when a product phase is excluded", () => {
+    const sys = [
+      e("Li", "Li", { Li: 1 }),
+      e("S", "S", { S: 1 }),
+      { ...e("Li2S", "Li2S", { Li: 2, S: 1 }), energyPerAtom: -1.5 },
+      { ...e("LiS4", "LiS4", { Li: 1, S: 4 }), energyPerAtom: -0.6 },
+    ];
+    const names = (es: Entry[]) =>
+      computeProfile({ entries: es, formula: "S", ion: "Li" }).regions.flatMap((r) =>
+        r.phases.map((p) => p.entry.name),
+      );
+    expect(names(sys)).toContain("LiS4");
+    expect(names(excludeEntries(sys, ["LiS4"]).entries)).not.toContain("LiS4");
+  });
 });
