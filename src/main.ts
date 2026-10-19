@@ -8,6 +8,7 @@ import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
 import { escapeHtml, formulaHtml } from "./ui/html";
 import { stabilityWindowText } from "./ui/summary";
+import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -253,4 +254,52 @@ $("dlEntries").addEventListener("click", () => {
     );
 });
 
+// Onboarding guide: shown on the first visit, reopened from the header.
+const onboarding = $<HTMLElement>("onboarding");
+const helpToggle = $<HTMLButtonElement>("helpToggle");
+const browserStorage = (() => {
+  try {
+    return localStorage;
+  } catch {
+    return null;
+  }
+})();
+
+function setOnboarding(open: boolean): void {
+  onboarding.hidden = !open;
+  helpToggle.setAttribute("aria-expanded", String(open));
+  if (!open) markOnboarded(browserStorage);
+}
+
+helpToggle.addEventListener("click", () => {
+  const open = !!onboarding.hidden;
+  setOnboarding(open);
+  if (open) onboarding.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+for (const id of ["onbClose", "onbDone"]) {
+  $(id).addEventListener("click", () => {
+    setOnboarding(false);
+    helpToggle.focus();
+  });
+}
+$("onbKey").addEventListener("click", () => {
+  apiKeyInput.scrollIntoView({ behavior: "smooth", block: "center" });
+  apiKeyInput.focus({ preventScroll: true });
+});
+$("onbDemo").addEventListener("click", () => {
+  setOnboarding(false);
+  demoButton.click();
+  result.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+onboarding.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") {
+    setOnboarding(false);
+    helpToggle.focus();
+  }
+});
+
+if (shouldShowOnboarding(browserStorage)) {
+  onboarding.hidden = false;
+  helpToggle.setAttribute("aria-expanded", "true");
+}
 restore();
