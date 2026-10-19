@@ -11,10 +11,9 @@ export type Hit =
 
 const PLATEAU_TOL = 5; // SVG px
 
-/** Region whose voltage interval contains v (top region is open-ended). */
+/** Region whose voltage interval contains v, or -1 outside the computed profile. */
 export function regionAt(profile: Profile, v: number): number {
-  const i = profile.regions.findIndex((r) => v >= r.vMin && v < r.vMax);
-  return i >= 0 ? i : v < 0 ? profile.regions.length - 1 : 0;
+  return profile.regions.findIndex((r) => v >= r.vMin && v < r.vMax);
 }
 
 /** Hit-test an SVG point against the figure for a view. */
@@ -23,6 +22,8 @@ export function hitTest(profile: Profile, view: View, px: number, py: number): H
   if (py < L.top || py > L.bottom) return null;
   const s = scales(view);
   const v = s.vAt(py);
+  const region = regionAt(profile, v);
+  if (region < 0) return null;
   if (px >= L.profileL && px <= L.profileR) {
     const x = s.xAt(px);
     const tolX = (PLATEAU_TOL / (L.profileR - L.profileL)) * (view.xMax - view.xMin);
@@ -33,10 +34,9 @@ export function hitTest(profile: Profile, view: View, px: number, py: number): H
         x <= Math.max(p.xStart, p.xEnd) + tolX,
     );
     if (plateau >= 0) return { kind: "plateau", plateau };
-    return { kind: "region", region: regionAt(profile, v), voltage: v };
+    return { kind: "region", region, voltage: v };
   }
   if (px >= L.phaseL && px <= L.phaseR) {
-    const region = regionAt(profile, v);
     const fr = atomicFractions(profile.regions[region]);
     let t = (px - L.phaseL) / (L.phaseR - L.phaseL);
     let phase = 0;

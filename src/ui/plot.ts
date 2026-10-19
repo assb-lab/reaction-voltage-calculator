@@ -272,7 +272,7 @@ export function renderProfileSvg(
   if (hr) {
     parts.push(`<g clip-path="url(#${id}-clip-all)" pointer-events="none">`);
     parts.push(
-      `<line class="hl-seg" x1="${X(hr.x)}" x2="${X(hr.x)}" y1="${Y(hr.vMax)}" y2="${Y(hr.vMin)}"/>`,
+      `<line class="hl-seg" clip-path="url(#${id}-clip-profile)" x1="${X(hr.x)}" x2="${X(hr.x)}" y1="${Y(hr.vMax)}" y2="${Y(hr.vMin)}"/>`,
     );
     const yTop = Y(hr.vMax);
     parts.push(

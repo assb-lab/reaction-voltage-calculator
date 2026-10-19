@@ -39,6 +39,14 @@ describe("hitTest", () => {
     expect(hitTest(profile, view, 5, s.Y(1))).toBeNull();
     expect(hitTest(profile, view, s.X(0), LAYOUT.bottom + 10)).toBeNull();
   });
+
+  it("does not invent equilibria below the metal reference in a panned view", () => {
+    const panned = { ...view, vMin: -2, vMax: 2 };
+    const y = scales(panned).Y(-1);
+    expect(regionAt(profile, -1)).toBe(-1);
+    expect(hitTest(profile, panned, LAYOUT.profileL + 20, y)).toBeNull();
+    expect(hitTest(profile, panned, LAYOUT.phaseL + 20, y)).toBeNull();
+  });
 });
 
 describe("tooltipHtml", () => {
@@ -76,6 +84,7 @@ describe("highlight rendering", () => {
     });
     expect((svg.match(/class="hl"/g) ?? []).length).toBe(2);
     expect(svg).toContain('class="hl-seg"');
+    expect(svg).toContain('class="hl-seg" clip-path="url(#rvc-clip-profile)"');
     expect(svg).not.toContain("<title>");
   });
 });

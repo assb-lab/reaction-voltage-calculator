@@ -130,6 +130,7 @@ export function mountChart(
     return { x: p.x, y: p.y };
   };
   const update = (next: View) => {
+    setHit(null);
     view = next;
     onChange?.(view);
     redraw();
@@ -165,13 +166,14 @@ export function mountChart(
   let tap: { x: number; y: number } | null = null;
 
   const onPointerDown = (ev: PointerEvent) => {
+    if (ev.pointerType !== "touch" && ev.button !== 0) return;
     const p = toSvg(ev.clientX, ev.clientY);
     if (!p) return;
+    setHit(null);
     pointers.set(ev.pointerId, p);
     tap =
       ev.pointerType === "touch" && pointers.size === 1 ? { x: ev.clientX, y: ev.clientY } : null;
     if (ev.pointerType !== "touch" && ev.button === 0) {
-      setHit(null);
       drag = { ...p, view, profile: inProfileX(p.x) };
       container.setPointerCapture(ev.pointerId);
       container.classList.add("dragging");
@@ -219,6 +221,11 @@ export function mountChart(
       container.classList.remove("dragging");
     }
   };
+  const onPointerCancel = (ev: PointerEvent) => {
+    tap = null;
+    setHit(null);
+    onPointerUp(ev);
+  };
   const onLeave = (ev: PointerEvent) => {
     if (ev.pointerType !== "touch" && !drag) setHit(null);
   };
@@ -228,16 +235,44 @@ export function mountChart(
   const onBlur = () => setHit(null);
   const onDblClick = () => update(initial);
 
-  /** Keyboard: step the highlighted region and anchor the tooltip on its phase band. */
-  const stepRegion = (delta: number) => {
-    const n = profile.regions.length;
-    const cur = hit ? hitRegion(profile, hit) : delta > 0 ? -1 : n;
-    const region = Math.min(Math.max(cur + delta, 0), n - 1);
+  const visibleRegions = () =>
+    profile.regions
+      .map((r, i) => ({ r, i }))
+      .filter(({ r }) => r.vMax > view.vMin && r.vMin < view.vMax)
+      .map(({ i }) => i);
+
+  /** Keyboard selection only visits bands that are actually visible. */
+  const selectRegion = (region: number, phase?: number) => {
     const r = profile.regions[region];
     const s = scales(view);
     const vis = (v: number) => Math.min(Math.max(v, view.vMin), view.vMax);
     const v = (vis(r.vMin) + vis(r.vMax)) / 2;
-    setHit({ kind: "region", region, voltage: v }, toClient(LAYOUT.phaseR, s.Y(v)));
+    setHit(
+      phase === undefined
+        ? { kind: "region", region, voltage: v }
+        : { kind: "cell", region, phase, voltage: v },
+      toClient(LAYOUT.phaseR, s.Y(v)),
+    );
+  };
+  const stepRegion = (delta: number) => {
+    const visible = visibleRegions();
+    if (!visible.length) return setHit(null);
+    const cur = hit ? visible.indexOf(hitRegion(profile, hit)) : -1;
+    const from = cur >= 0 ? cur : delta > 0 ? -1 : visible.length;
+    selectRegion(visible[Math.min(Math.max(from + delta, 0), visible.length - 1)]);
+  };
+  const stepPhase = (delta: number) => {
+    const visible = visibleRegions();
+    if (!visible.length) return setHit(null);
+    const curRegion = hit ? hitRegion(profile, hit) : -1;
+    const region = visible.includes(curRegion)
+      ? curRegion
+      : delta > 0
+        ? visible[0]
+        : visible.at(-1)!;
+    const n = profile.regions[region].phases.length;
+    const cur = hit?.kind === "cell" && hit.region === region ? hit.phase : delta > 0 ? -1 : n;
+    selectRegion(region, Math.min(Math.max(cur + delta, 0), n - 1));
   };
   const onKey = (ev: KeyboardEvent) => {
     const mid = (view.vMin + view.vMax) / 2;
@@ -253,6 +288,14 @@ export function mountChart(
       ArrowRight: () => panView(view, 0, xStep),
       "0": () => initial,
     };
+    if (
+      ev.key === "}" ||
+      ev.key === "{" ||
+      (ev.shiftKey && ["[", "]", "PageUp", "PageDown"].includes(ev.key))
+    ) {
+      ev.preventDefault();
+      return stepPhase(["}", "]", "PageDown"].includes(ev.key) ? 1 : -1);
+    }
     if (ev.key === "]" || ev.key === "PageDown") {
       ev.preventDefault();
       return stepRegion(1);
@@ -272,12 +315,14 @@ export function mountChart(
   container.addEventListener("pointerdown", onPointerDown);
   container.addEventListener("pointermove", onPointerMove);
   container.addEventListener("pointerup", onPointerUp);
-  container.addEventListener("pointercancel", onPointerUp);
+  container.addEventListener("pointercancel", onPointerCancel);
   container.addEventListener("dblclick", onDblClick);
   container.addEventListener("keydown", onKey);
   container.addEventListener("pointerleave", onLeave);
   container.addEventListener("blur", onBlur);
   document.addEventListener("pointerdown", onOutside);
+  document.addEventListener("scroll", onBlur, true);
+  window.addEventListener("resize", onBlur);
   container.classList.add("interactive");
   container.tabIndex = 0;
   draw();
@@ -293,12 +338,14 @@ export function mountChart(
       container.removeEventListener("pointerdown", onPointerDown);
       container.removeEventListener("pointermove", onPointerMove);
       container.removeEventListener("pointerup", onPointerUp);
-      container.removeEventListener("pointercancel", onPointerUp);
+      container.removeEventListener("pointercancel", onPointerCancel);
       container.removeEventListener("dblclick", onDblClick);
       container.removeEventListener("keydown", onKey);
       container.removeEventListener("pointerleave", onLeave);
       container.removeEventListener("blur", onBlur);
       document.removeEventListener("pointerdown", onOutside);
+      document.removeEventListener("scroll", onBlur, true);
+      window.removeEventListener("resize", onBlur);
       container.classList.remove("interactive", "dragging");
       tip.remove();
     },
