@@ -188,6 +188,14 @@ export function renderProfileSvg(
       `<line class="grid" x1="${L.profileL}" x2="${L.profileR}" y1="${Y(v)}" y2="${Y(v)}"/>`,
     );
 
+  if (profile.stabilized) {
+    const source =
+      profile.eAboveHull === null
+        ? "仮想相"
+        : `元の E_hull: ${formatNumber(profile.eAboveHull * 1000, 1)} meV/atom`;
+    parts.push(`<text class="muted" x="60" y="13">対象相を hull 補正 (${source})</text>`);
+  }
+
   // Stability window band across both panels.
   if (window?.targetIsPhase && window.high > window.low + 1e-9) {
     const y1 = Y(window.high);
