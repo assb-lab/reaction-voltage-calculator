@@ -8,7 +8,18 @@
   </head>
   <body>
     <header class="page-header">
-      <h1>Reaction Voltage Calculator</h1>
+      <div class="title-row">
+        <h1>Reaction Voltage Calculator</h1>
+        <button
+          id="helpToggle"
+          type="button"
+          class="link-button"
+          aria-controls="onboarding"
+          aria-expanded="false"
+        >
+          使い方
+        </button>
+      </div>
       <p class="lede">
         Materials Project
         の計算エネルギーから、指定組成を作動イオンの開放系に置いたときの相平衡と反応電位
@@ -17,6 +28,47 @@
     </header>
 
     <main>
+      <section id="onboarding" class="card onboarding" aria-labelledby="onboardingTitle" hidden>
+        <div class="onboarding-head">
+          <h2 id="onboardingTitle">はじめに</h2>
+          <button id="onbClose" type="button" class="icon-button" aria-label="使い方を閉じる">
+            ×
+          </button>
+        </div>
+        <ol class="steps">
+          <li>
+            <strong>Materials Project の API key を用意</strong>
+            <p>
+              <a href="https://materialsproject.org/" target="_blank" rel="noopener noreferrer"
+                >materialsproject.org</a
+              >
+              にログインし、アカウントメニューの API key をコピーします。key は MP API
+              への問い合わせにだけ使われます。
+            </p>
+            <button id="onbKey" type="button">API key 欄へ移動</button>
+          </li>
+          <li>
+            <strong>組成を入れて計算</strong>
+            <p>
+              組成 (例: Li6PS5Cl) と作動イオンを選び、「MP
+              から取得して計算」を押します。取得済みの元素の範囲なら、組成を変えるだけで再計算されます。
+            </p>
+          </li>
+          <li>
+            <strong>図を読む</strong>
+            <p>
+              横軸 x は対象 1 式量あたりのイオン取込量 (x &lt; 0 が酸化、x &gt; 0
+              が還元)。灰色の帯が対象相の安定性ウィンドウ、右側は各電位で安定な相の組み合わせです。
+            </p>
+          </li>
+        </ol>
+        <div class="actions">
+          <button id="onbDemo" type="button" class="primary">デモデータで試す</button>
+          <button id="onbDone" type="button">閉じる</button>
+        </div>
+        <p class="hint">デモデータは架空のエネルギーです。「使い方」からいつでも再表示できます。</p>
+      </section>
+
       <form id="form" class="card" autocomplete="off">
         <div class="grid">
           <label>
@@ -82,7 +134,13 @@
 
       <section id="result" class="card" hidden>
         <div id="summary" class="summary"></div>
-        <figure id="figure"></figure>
+        <figure id="figure" aria-describedby="legend"></figure>
+        <ul id="legend" class="legend">
+          <li><span class="swatch ox"></span>酸化側 (x &lt; 0, イオン脱離)</li>
+          <li><span class="swatch red"></span>還元側 (x &gt; 0, イオン挿入)</li>
+          <li><span class="swatch window"></span>安定性ウィンドウ</li>
+          <li>x: 対象 1 式量あたりの作動イオン取込量 / 水平線: 二相共存の電位</li>
+        </ul>
         <div class="actions">
           <button id="dlSvg" type="button">SVG</button>
           <button id="dlCsv" type="button">CSV</button>
