@@ -113,6 +113,45 @@ export const en: Record<MessageKey, string> = {
   "err.lostRefs":
     "The exclusion removed every elemental entry of {elements}. Elements are the reference for formation energies and cannot be excluded; check the phases to exclude.",
 
+  "opt.film": "Compute the film thickness (decomposition products form on the particle surface)",
+  "opt.filmDiameter": "Particle diameter",
+  "opt.filmFraction": "Decomposed fraction (of particle volume)",
+  "opt.filmHint":
+    "Assumes a spherical particle that decomposes from the surface, its products forming a dense mixed layer around the unreacted core. Product volumes come from MP volumes per atom, so the volume change is included.",
+  "film.title": "Film model",
+  "film.region": "Voltage region",
+  "film.drag": "Drag (or use the arrow keys) to rotate",
+  "film.column": "Film (thickness / volume change / vol% / capacity)",
+  "film.none": "—",
+  "film.unavailable": "Not available (no valid volume data: {phases})",
+  "film.capacity": "{q} mAh/g",
+  "film.gas": "Gas released: {list}",
+  "film.noSolid": "No film (all products are gases)",
+  "film.noteGasOnly":
+    "All products are released as gas, so no film forms. With a {d} µm particle and {f} % decomposed, only the {core} µm core remains.",
+  "opt.filmGas": "Phases released as gas (comma or newline separated)",
+  "opt.filmGasPlaceholder": "e.g. CO2, SO2, PCl3",
+  "opt.filmGasHint":
+    "Elemental gases such as O₂ and Cl₂ (H, N, O, F, Cl, noble gases) always leave the film and are reported as released gas. Add gaseous or liquid compounds such as CO₂ here by formula or material id.",
+  "film.full": "Fully decomposed: diameter {d0} → {d1} µm ({pct})",
+  "film.diameter": "Outer diameter {d} µm ({pct})",
+  "film.volumeChange": "Volume change: decomposed part {v} / whole particle {p}",
+  "film.noteFull":
+    "The whole {d} µm particle decomposes; the product particle is {out} µm in diameter ({pct}). There is no film: the whole particle is products.",
+  "film.chartTitle": "Volume change",
+  "film.chartAria": "Volume change of the decomposed part for each voltage region",
+  "film.chartHint":
+    "Volume change of the decomposed part (V_products / V_target − 1) for each voltage region; the whole particle changes by this times the decomposed fraction. Click a line to show that region in the 3D model.",
+  "film.tooltip": "Film {t}",
+  "film.invalid": "Film: enter a particle diameter (> 0 µm) and a decomposed fraction (0–100 %).",
+  "film.noRegion":
+    "No voltage region has a film to compute (no decomposition products with volume data).",
+  "film.core": "Unreacted {formula}",
+  "film.note":
+    "Particle diameter {d} µm, {f} % decomposed: the film is {t} thick (core {core} µm, outer diameter {out} µm, {pct}). Volume change: {v} for the decomposed part, {p} for the whole particle.",
+  "film.exaggerated": "The film is drawn thicker than scale because it is very thin.",
+  "film.aria": "Cutaway model of a {formula} particle with a {t} film",
+
   // Tooltip and figure
   "link.openMp": "Open {id} on Materials Project",
   "tip.plateau": "Plateau {v} V",

@@ -482,3 +482,112 @@ figure.interactive:focus-visible {
   margin-top: 4px;
   color: var(--muted);
 }
+
+/* Film thickness mode */
+.film-options:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+.film-options .film-gas {
+  flex-basis: 100%;
+}
+.film-options .hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+.film-panel {
+  margin: 16px 0;
+}
+.film-panel h2 {
+  margin-bottom: 8px;
+}
+.film-panel select {
+  max-width: 100%;
+}
+.film-view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-top: 12px;
+}
+#filmCanvas {
+  width: min(320px, 100%);
+  aspect-ratio: 1;
+  cursor: grab;
+  border-radius: 8px;
+}
+#filmCanvas:active {
+  cursor: grabbing;
+}
+#filmCanvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.film-info {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.swatch-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex: none;
+}
+.film-legend {
+  flex-direction: column;
+  align-items: flex-start;
+}
+#regions td.film {
+  min-width: 12em;
+}
+
+.volume-chart svg {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  font-size: 11px;
+}
+.volume-svg text {
+  fill: var(--fg);
+}
+.volume-svg .grid {
+  stroke: var(--grid);
+}
+.volume-svg .grid.zero {
+  stroke: var(--muted);
+}
+.volume-svg .axis {
+  fill: none;
+  stroke: var(--fg);
+}
+.volume-svg .connector {
+  stroke: var(--muted);
+  stroke-dasharray: 2 3;
+}
+.volume-svg .level {
+  cursor: pointer;
+}
+.volume-svg .level line {
+  stroke-width: 2.5;
+}
+.volume-svg .level .hit {
+  stroke: transparent;
+  stroke-width: 14;
+}
+.volume-svg .ox {
+  stroke: var(--ox);
+}
+.volume-svg .red {
+  stroke: var(--red);
+}
+.volume-svg .neutral {
+  stroke: var(--fg);
+}
+.volume-svg .level .selected {
+  stroke-width: 5;
+}

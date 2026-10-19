@@ -4,6 +4,10 @@ import { demoEntrySet } from "./demo";
 import { profileToCsv, profileToJson } from "./export";
 import { formulaTspans, renderProfileSvg } from "./plot";
 import { idLinkHtml, phaseLinkHtml } from "./html";
+import { filmCellHtml, formatChange, formatLengthNm } from "./film";
+import { renderVolumeChartSvg, type RegionFilms } from "./volumeChart";
+import { displayCoreRatio } from "./particle3d";
+import { filmForRegion } from "../core/film";
 
 const profile = computeProfile({ entries: demoEntrySet().entries, formula: "Li6PS5Cl", ion: "Li" });
 
@@ -130,5 +134,63 @@ describe("phase links", () => {
       '<a href="https://materialsproject.org/materials/mp-149" target="_blank" rel="noopener noreferrer">mp-149</a>',
     );
     expect(idLinkHtml("virtual")).toBe("virtual");
+  });
+});
+
+describe("film display", () => {
+  it("formats lengths and keeps thin films visible in the 3D model", () => {
+    expect(formatLengthNm(1.1934)).toBe("1.19 nm");
+    expect(formatLengthNm(88.25)).toBe("88.3 nm");
+    expect(formatLengthNm(1534)).toBe("1.53 µm");
+    expect(displayCoreRatio(0.997, 0.999)).toEqual({ coreRatio: 0.96, exaggerated: true });
+    expect(displayCoreRatio(0.888, 1.065).exaggerated).toBe(false);
+    expect(displayCoreRatio(0, 1.2)).toEqual({ coreRatio: 0, exaggerated: false });
+    expect(displayCoreRatio(1, 1)).toEqual({ coreRatio: 1, exaggerated: false });
+  });
+
+  it("marks regions without volume data and escapes phase names", () => {
+    const cell = filmCellHtml({ kind: "unavailable", missing: ["<b>"] });
+    expect(cell).toContain("&lt;b&gt;");
+    expect(cell).not.toContain("<b>");
+    // The demo data has no volumes: every decomposed region is "not available".
+    const region = profile.regions.at(-1)!;
+    expect(filmForRegion(profile, region, { diameterUm: 1, fraction: 0.1 }).kind).toBe(
+      "unavailable",
+    );
+  });
+});
+
+describe("volume change display", () => {
+  it("formats signed changes", () => {
+    expect(formatChange(0.174)).toBe("+17.4 %");
+    expect(formatChange(-0.2871)).toBe("−28.7 %");
+    expect(formatChange(0.0001)).toBe("±0 %");
+  });
+
+  it("charts one clickable level per region with a film, escaping labels", () => {
+    const films: RegionFilms = profile.regions.map((r, i) => ({
+      region: i,
+      film:
+        r.phases.length === 1 && r.phases[0].entry === profile.targetEntry
+          ? { kind: "none" }
+          : {
+              kind: "film",
+              thicknessNm: 10,
+              coreDiameterUm: 0.9,
+              outerDiameterUm: 1,
+              volumeRatio: 1 + i / 10,
+              volumeChange: i / 10,
+              particleVolumeChange: i / 100,
+              diameterChange: 0,
+              fullyDecomposed: false,
+              phases: [],
+              gases: [],
+              capacityMAhG: null,
+            },
+    }));
+    const svg = renderVolumeChartSvg(profile, films, 2, 'a "chart"');
+    expect(svg).toContain('aria-label="a &quot;chart&quot;"');
+    expect((svg.match(/data-region="/g) ?? []).length).toBe(profile.regions.length);
+    expect((svg.match(/ selected"/g) ?? []).length).toBe(1);
   });
 });

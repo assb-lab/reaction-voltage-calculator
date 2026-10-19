@@ -111,6 +111,45 @@ export const ja = {
   "err.lostRefs":
     "除外により {elements} の単体エントリがなくなりました。単体は生成エネルギーの基準なので除外できません。除外する相を見直してください。",
 
+  "opt.film": "被膜厚みを計算 (分解生成物が粒子表面に形成されると仮定)",
+  "opt.filmDiameter": "粒子径",
+  "opt.filmFraction": "分解率 (粒子体積の)",
+  "opt.filmHint":
+    "球状粒子が表面から分解し、生成物が未反応のコアを覆う緻密な混合層になると仮定します。生成物の体積は MP の体積/原子から求め、体積変化を含めます。",
+  "film.title": "被膜モデル",
+  "film.region": "電位区間",
+  "film.drag": "ドラッグ (または矢印キー) で回転",
+  "film.column": "被膜 (厚み / 体積変化 / vol% / 容量)",
+  "film.none": "—",
+  "film.unavailable": "計算不可 (有効な体積データなし: {phases})",
+  "film.capacity": "{q} mAh/g",
+  "film.gas": "放出ガス: {list}",
+  "film.noSolid": "被膜なし (生成物はすべてガス)",
+  "film.noteGasOnly":
+    "生成物はすべてガスとして放出されるため、被膜はできません。粒子径 {d} µm、分解率 {f} % で、粒子は直径 {core} µm のコアだけになります。",
+  "opt.filmGas": "ガスとして放出する相 (カンマ・改行区切り)",
+  "opt.filmGasPlaceholder": "例: CO2, SO2, PCl3",
+  "opt.filmGasHint":
+    "O₂・Cl₂ などの気体の単体 (H, N, O, F, Cl, 貴ガス) は常にガスとして被膜から除き、放出量を表示します。CO₂ などの化合物のガスや液体の生成物は、化学式または material id でここに追加してください。",
+  "film.full": "全分解: 粒子径 {d0} → {d1} µm ({pct})",
+  "film.diameter": "外径 {d} µm ({pct})",
+  "film.volumeChange": "体積変化: 分解部 {v} / 粒子全体 {p}",
+  "film.noteFull":
+    "粒子径 {d} µm の粒子がすべて分解し、生成物の粒子の直径は {out} µm ({pct}) になります。被膜ではなく粒子全体が生成物です。",
+  "film.chartTitle": "体積変化",
+  "film.chartAria": "電位区間ごとの、分解した部分の体積変化のグラフ",
+  "film.chartHint":
+    "分解した部分の体積変化 (V_生成物 / V_対象相 − 1) を電位区間ごとに示します。粒子全体の変化はこれに分解率を掛けた値です。線をクリックすると、その区間を 3D モデルに表示します。",
+  "film.tooltip": "被膜 {t}",
+  "film.invalid": "被膜: 粒子径 (> 0 µm) と分解率 (0–100 %) を正しく入力してください。",
+  "film.noRegion":
+    "被膜を計算できる電位区間がありません (体積データのある分解生成物がありません)。",
+  "film.core": "未反応の {formula}",
+  "film.note":
+    "粒子径 {d} µm、分解率 {f} % で、被膜の厚みは {t} (コア径 {core} µm、外径 {out} µm、{pct})。体積変化は分解部 {v}、粒子全体 {p}。",
+  "film.exaggerated": "被膜が薄いため、図では厚みを誇張しています。",
+  "film.aria": "{formula} 粒子の断面モデル。被膜の厚み {t}",
+
   // Tooltip and figure
   "link.openMp": "Materials Project で {id} を開く",
   "tip.plateau": "プラトー {v} V",

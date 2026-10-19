@@ -22,6 +22,16 @@ import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
+import { filmForRegion, type FilmOptions } from "./core/film";
+import { filmCellHtml, filmGasHtml, formatChange, formatLengthNm } from "./ui/film";
+import {
+  CORE_COLOR,
+  displayCoreRatio,
+  mountParticle,
+  PHASE_COLORS,
+  type ParticleView,
+} from "./ui/particle3d";
+import { renderVolumeChartSvg, type RegionFilms } from "./ui/volumeChart";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -38,6 +48,11 @@ const dataStatus = $<HTMLParagraphElement>("dataStatus");
 const stabilize = $<HTMLInputElement>("stabilize");
 const delta = $<HTMLInputElement>("delta");
 const excludeInput = $<HTMLTextAreaElement>("exclude");
+const filmToggle = $<HTMLInputElement>("film");
+const filmOptionsBox = $<HTMLDivElement>("filmOptions");
+const filmDiameter = $<HTMLInputElement>("filmDiameter");
+const filmFraction = $<HTMLInputElement>("filmFraction");
+const filmGas = $<HTMLTextAreaElement>("filmGas");
 const result = $<HTMLElement>("result");
 const errorBox = $<HTMLParagraphElement>("error");
 
@@ -80,6 +95,11 @@ function restore(): void {
       ionSelect.value = f.ion ?? ionSelect.value;
       thermoSelect.value = f.thermo ?? thermoSelect.value;
       excludeInput.value = f.exclude ?? "";
+      filmToggle.checked = !!f.film;
+      filmDiameter.value = f.filmDiameter ?? filmDiameter.value;
+      filmFraction.value = f.filmFraction ?? filmFraction.value;
+      filmGas.value = f.filmGas ?? "";
+      filmOptionsBox.hidden = !filmToggle.checked;
     }
   } catch {
     /* ignore */
@@ -94,6 +114,10 @@ function persist(): void {
       ion: ionSelect.value,
       thermo: thermoSelect.value,
       exclude: excludeInput.value,
+      film: filmToggle.checked,
+      filmDiameter: filmDiameter.value,
+      filmFraction: filmFraction.value,
+      filmGas: filmGas.value,
     }),
   );
   storageSet(KEY_STORAGE, saveKey.checked && apiKeyInput.value ? apiKeyInput.value : null);
@@ -179,6 +203,7 @@ function fmtV(v: number): string {
 
 function render(p: Profile): void {
   result.hidden = false;
+  const film = filmOptions();
   const w = p.window;
   const windowText = stabilityWindowText(p);
   const hull =
@@ -193,13 +218,19 @@ function render(p: Profile): void {
     ${p.stabilized ? `<p class="note">${Number(delta.value) > 0 ? t("note.stabilizedBelow", { formula: formulaHtml(p.formula), delta: formatNumber(Number(delta.value)) }) : t("note.stabilizedOn", { formula: formulaHtml(p.formula) })}</p>` : ""}
     ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">${t("note.notOnHull")}</p>` : ""}
     ${excludeNote()}
-    ${!p.targetEntry ? `<p class="note">${t("note.noTarget", { formula: formulaHtml(p.formula) })}</p>` : ""}`;
+    ${!p.targetEntry ? `<p class="note">${t("note.noTarget", { formula: formulaHtml(p.formula) })}</p>` : ""}
+    ${filmToggle.checked && !film ? `<p class="note">${t("film.invalid")}</p>` : ""}`;
   chart?.destroy();
-  chart = mountChart($("figure"), p, (view) => {
-    const fmt = (v: number) => String(Number(v.toFixed(3)));
-    if (document.activeElement !== vMinInput) vMinInput.value = fmt(view.vMin);
-    if (document.activeElement !== vMaxInput) vMaxInput.value = fmt(view.vMax);
-  });
+  chart = mountChart(
+    $("figure"),
+    p,
+    (view) => {
+      const fmt = (v: number) => String(Number(v.toFixed(3)));
+      if (document.activeElement !== vMinInput) vMinInput.value = fmt(view.vMin);
+      if (document.activeElement !== vMaxInput) vMaxInput.value = fmt(view.vMax);
+    },
+    { film },
+  );
 
   const rows = p.regions
     .map((r) => {
@@ -213,6 +244,7 @@ function render(p: Profile): void {
         <td>${formatNumber(r.x)}</td>
         <td>${phases}</td>
         <td class="rxn">${formulaHtml(regionReaction(p, r))}</td>
+        ${film ? `<td class="film">${filmCellHtml(filmForRegion(p, r, film))}</td>` : ""}
       </tr>`;
     })
     .join("");
@@ -221,8 +253,152 @@ function render(p: Profile): void {
     {
       formula: formulaHtml(p.formula),
     },
-  )}</th><th>${t("table.reaction")}</th></tr></thead><tbody>${rows}</tbody>`;
+  )}</th><th>${t("table.reaction")}</th>${film ? `<th>${t("film.column")}</th>` : ""}</tr></thead><tbody>${rows}</tbody>`;
+  renderFilmPanel(p, film);
 }
+
+/** Film options from the form; null when the mode is off or the inputs are invalid. */
+function filmOptions(): FilmOptions | null {
+  if (!filmToggle.checked) return null;
+  const diameterUm = filmDiameter.valueAsNumber;
+  const percent = filmFraction.valueAsNumber;
+  if (!Number.isFinite(diameterUm) || !(diameterUm > 0) || !(percent >= 0 && percent <= 100))
+    return null;
+  return { diameterUm, fraction: percent / 100, gasPhases: parseExcludeList(filmGas.value) };
+}
+
+// 3D cutaway of the coated particle for one voltage region.
+const filmPanel = $<HTMLElement>("filmPanel");
+const filmRegion = $<HTMLSelectElement>("filmRegion");
+const filmCanvas = $<HTMLCanvasElement>("filmCanvas");
+let particle: ParticleView | null = null;
+let filmContext: { p: Profile; opts: FilmOptions } | null = null;
+const volumeChart = $<HTMLDivElement>("volumeChart");
+
+function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
+  // Keep the selected region across re-renders of the same system (options, language).
+  const sameSystem =
+    filmContext?.p.formula === p.formula && filmContext.p.regions.length === p.regions.length;
+  filmContext = opts ? { p, opts } : null;
+  filmPanel.hidden = !opts;
+  if (!opts) return;
+  const previous = sameSystem && filmRegion.value !== "" ? Number(filmRegion.value) : -1;
+  const all = p.regions.map((r, i) => ({ r, i, film: filmForRegion(p, r, opts) }));
+  const candidates = all.filter((c) => c.film.kind === "film");
+  filmRegion.innerHTML = candidates
+    .map(
+      (c) =>
+        `<option value="${c.i}">${fmtV(c.r.vMin)} – ${fmtV(c.r.vMax)} V: ${escapeHtml(
+          c.r.phases.map((ph) => ph.entry.name).join(" + "),
+        )}</option>`,
+    )
+    .join("");
+  filmRegion.disabled = !candidates.length;
+  filmCanvas.hidden = !candidates.length;
+  regionFilms = all.map((c) => ({ region: c.i, film: c.film }));
+  if (!candidates.length) {
+    renderVolumeChart(null);
+    $("filmLegend").innerHTML = "";
+    $("filmNote").textContent = t("film.noRegion");
+    return;
+  }
+  // Keep the selection; otherwise start next to the target (smallest |x|, reduction first).
+  const keep = candidates.find((c) => c.i === previous);
+  const start =
+    keep ?? [...candidates].sort((a, b) => Math.abs(a.r.x) - Math.abs(b.r.x) || b.r.x - a.r.x)[0];
+  filmRegion.value = String(start.i);
+  drawFilm();
+}
+
+let regionFilms: RegionFilms = [];
+
+function renderVolumeChart(selected: number | null): void {
+  if (!filmContext) return;
+  volumeChart.innerHTML = renderVolumeChartSvg(
+    filmContext.p,
+    regionFilms,
+    selected,
+    t("film.chartAria"),
+  );
+}
+
+volumeChart.addEventListener("click", (ev) => {
+  const level = (ev.target as Element).closest<SVGGElement>("[data-region]");
+  const option = level && filmRegion.querySelector(`option[value="${level.dataset.region}"]`);
+  if (!option) return;
+  filmRegion.value = level.dataset.region!;
+  drawFilm();
+});
+
+function drawFilm(): void {
+  if (!filmContext) return;
+  const { p, opts } = filmContext;
+  renderVolumeChart(Number(filmRegion.value));
+  const region = p.regions[Number(filmRegion.value)];
+  const film = region && filmForRegion(p, region, opts);
+  if (!film || film.kind !== "film") return;
+  // Without solid products there is no film: draw the bare core (or nothing if it is all gone).
+  const solid = film.phases.length > 0;
+  const { coreRatio, exaggerated } = solid
+    ? displayCoreRatio(film.coreDiameterUm, film.outerDiameterUm)
+    : { coreRatio: 1, exaggerated: false };
+  filmCanvas.hidden = !solid && film.fullyDecomposed;
+  const phases = film.phases.map((ph, i) => ({
+    name: ph.entry.name,
+    color: PHASE_COLORS[i % PHASE_COLORS.length],
+    volFraction: ph.volFraction,
+  }));
+  const model = { coreRatio, phases };
+  if (particle) particle.update(model);
+  else particle = mountParticle(filmCanvas, model);
+  const swatch = (color: string) => `<span class="swatch-box" style="background:${color}"></span>`;
+  $("filmLegend").innerHTML = [
+    ...(film.coreDiameterUm > 0
+      ? [
+          `<li>${swatch(CORE_COLOR)}<span>${t("film.core", { formula: formulaHtml(p.formula) })}</span></li>`,
+        ]
+      : []),
+    ...phases.map(
+      (ph) =>
+        `<li>${swatch(ph.color)}<span>${formulaHtml(ph.name)} ${formatNumber(ph.volFraction * 100, 1)} vol%</span></li>`,
+    ),
+    ...(film.gases.length ? [`<li><span>${filmGasHtml(film)}</span></li>`] : []),
+  ].join("");
+  const change = {
+    pct: formatChange(film.diameterChange),
+    v: formatChange(film.volumeChange),
+    p: formatChange(film.particleVolumeChange),
+  };
+  $("filmNote").innerHTML = !solid
+    ? t("film.noteGasOnly", {
+        d: formatNumber(opts.diameterUm),
+        f: formatNumber(opts.fraction * 100),
+        core: film.coreDiameterUm.toFixed(3),
+      })
+    : film.fullyDecomposed
+      ? t("film.noteFull", {
+          d: formatNumber(opts.diameterUm),
+          out: film.outerDiameterUm.toFixed(3),
+          pct: change.pct,
+        })
+      : [
+          t("film.note", {
+            d: formatNumber(opts.diameterUm),
+            f: formatNumber(opts.fraction * 100),
+            t: formatLengthNm(film.thicknessNm),
+            core: film.coreDiameterUm.toFixed(3),
+            out: film.outerDiameterUm.toFixed(3),
+            ...change,
+          }),
+          exaggerated ? t("film.exaggerated") : "",
+        ].join(" ");
+  filmCanvas.setAttribute(
+    "aria-label",
+    t("film.aria", { formula: p.formula, t: formatLengthNm(film.thicknessNm) }),
+  );
+}
+
+filmRegion.addEventListener("change", drawFilm);
 
 async function fetchFromMp(): Promise<void> {
   showError(null);
@@ -357,7 +533,18 @@ demoButton.addEventListener("click", () => {
   recompute();
 });
 
-for (const el of [formulaInput, ionSelect, stabilize, delta, excludeInput]) {
+filmToggle.addEventListener("change", () => (filmOptionsBox.hidden = !filmToggle.checked));
+for (const el of [
+  formulaInput,
+  ionSelect,
+  stabilize,
+  delta,
+  excludeInput,
+  filmToggle,
+  filmDiameter,
+  filmFraction,
+  filmGas,
+]) {
   el.addEventListener("change", () => {
     persist();
     recompute();
