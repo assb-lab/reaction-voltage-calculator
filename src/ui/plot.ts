@@ -229,7 +229,6 @@ export function renderProfileSvg(
   parts.push(
     `<line class="grid" stroke-dasharray="3 3" x1="${X(0)}" x2="${X(0)}" y1="${L.top}" y2="${L.bottom}"/>`,
   );
-  parts.push(`<text x="${X(0) + 4}" y="${L.top + 16}">${formulaTspans(profile.formula)}</text>`);
   parts.push(`</g>`);
   const xs = regions.map((r) => r.x);
   if (xs.some((x) => x < -1e-9))

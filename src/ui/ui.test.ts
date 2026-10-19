@@ -23,6 +23,13 @@ describe("renderProfileSvg", () => {
     const cells = profile.regions.reduce((n, r) => n + r.phases.length, 0);
     expect((svg.match(/class="box/g) ?? []).length).toBe(cells);
   });
+  it("names the target only on the x axis and in its phase cell, not above the profile", () => {
+    const svg = renderProfileSvg(profile);
+    const label = formulaTspans(profile.formula);
+    expect(svg).toContain(`uptake per ${label}`);
+    // x-axis label + the Li6PS5Cl cell of the stability window
+    expect(svg.split(label).length - 1).toBe(2);
+  });
   it("subscripts numbers in formulas and escapes markup", () => {
     expect(formulaTspans("Li2S")).toContain(">2</tspan>");
     expect(formulaTspans("<x>")).toBe("&lt;x&gt;");

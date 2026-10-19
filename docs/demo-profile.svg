@@ -52,7 +52,6 @@
 <line class="red" stroke-width="2.5" stroke-linecap="square" x1="369.59183673469386" y1="326.52000000000004" x2="395.73979591836735" y2="326.52000000000004"/>
 <line class="red" stroke-width="2.5" stroke-linecap="square" x1="395.73979591836735" y1="342.04" x2="448.0357142857143" y2="342.04"/>
 <line class="grid" stroke-dasharray="3 3" x1="238.85204081632654" x2="238.85204081632654" y1="20" y2="408"/>
-<text x="242.85204081632654" y="36">Li<tspan class="sub" dy="3">6</tspan><tspan dy="-3">​</tspan>PS<tspan class="sub" dy="3">5</tspan><tspan dy="-3">​</tspan>Cl</text>
 </g>
 <text class="muted" x="68" y="399">← Oxidation</text>
 <text class="muted" x="462" y="399" text-anchor="end">Reduction →</text>
