@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { computeProfile } from "../core/profile";
+import { atomicFractions, computeProfile } from "../core/profile";
 import { demoEntrySet } from "./demo";
 import { profileToCsv, profileToJson } from "./export";
 import { formulaTspans, renderProfileSvg } from "./plot";
@@ -19,7 +19,8 @@ describe("renderProfileSvg", () => {
     const svg = renderProfileSvg(profile);
     expect(svg.startsWith("<svg")).toBe(true);
     expect(svg).toContain('class="window"');
-    expect((svg.match(/class="box/g) ?? []).length).toBe(profile.regions.length);
+    const cells = profile.regions.reduce((n, r) => n + r.phases.length, 0);
+    expect((svg.match(/class="box/g) ?? []).length).toBe(cells);
   });
   it("subscripts numbers in formulas and escapes markup", () => {
     expect(formulaTspans("Li2S")).toContain(">2</tspan>");
@@ -81,5 +82,29 @@ describe("target stability reporting", () => {
     const { stabilityWindowText } = await import("./summary");
     const p = computeProfile({ entries: demoEntrySet().entries, formula: "Li5PS5Cl", ion: "Li" });
     expect(stabilityWindowText(p)).toBe("評価不可 (該当エントリなし)");
+  });
+});
+
+describe("phase equilibria grid", () => {
+  it("splits each band into cells sized by atomic fraction", () => {
+    // Li6PS5Cl + 8 Li -> 5 Li2S + Li3P + LiCl: 15 + 4 + 2 = 21 atoms.
+    const last = profile.regions.at(-1)!;
+    const fr = atomicFractions(last);
+    expect(fr.reduce((a, b) => a + b, 0)).toBeCloseTo(1, 12);
+    const byName = Object.fromEntries(last.phases.map((p, i) => [p.entry.name, fr[i]]));
+    expect(byName).toEqual({
+      Li2S: expect.closeTo(15 / 21, 12),
+      Li3P: expect.closeTo(4 / 21, 12),
+      LiCl: expect.closeTo(2 / 21, 12),
+    });
+    const svg = renderProfileSvg(profile);
+    const widths = [
+      ...svg.matchAll(
+        /<title>(Li2S|Li3P|LiCl): [^<]*0–0\.68 V<\/title>\n<rect class="box red" x="[^"]+" y="[^"]+" width="([^"]+)"/g,
+      ),
+    ].map((m) => [m[1], Number(m[2])] as const);
+    expect(widths).toHaveLength(3);
+    const total = widths.reduce((s, [, w]) => s + w, 0);
+    for (const [name, w] of widths) expect(w / total).toBeCloseTo(byName[name], 9);
   });
 });
