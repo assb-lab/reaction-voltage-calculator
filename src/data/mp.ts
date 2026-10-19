@@ -1,6 +1,7 @@
 import { prepareEntries, type Entry } from "../core/entries";
 import { hullEnergy } from "../core/profile";
 import { t } from "../i18n";
+import { normalizeMpId } from "../core/mpid";
 
 export const MP_API_BASE = "https://api.materialsproject.org";
 /** Same-origin path proxied to MP_API_BASE by `vp dev` / `vp preview` (see vite.config.ts). */
@@ -68,7 +69,7 @@ export function docToEntry(
 ): Entry {
   const atoms = Object.values(doc.composition).reduce((a, b) => a + b, 0);
   return {
-    id: String(doc.material_id),
+    id: normalizeMpId(String(doc.material_id)),
     name: doc.formula_pretty,
     composition: doc.composition,
     energyPerAtom: basis === "formation" ? doc.formation_energy_per_atom! : doc.energy_per_atom,

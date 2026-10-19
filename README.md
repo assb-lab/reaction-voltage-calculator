@@ -135,6 +135,13 @@ API key がなくても **「デモデータ」** で画面の動きを試せま
 
 各電位区間について、電位範囲・取込量 Δx・平衡相とその量 (対象 1 式量あたり)・対象相からの反応式を示します。
 例: `Li6PS5Cl + 8 Li → 5 Li2S + Li3P + LiCl` は、その電位以下で対象相がこの組み合わせまで還元されることを意味します。
+相名は Materials Project の該当ページ (`https://materialsproject.org/materials/<id>`) へのリンクです。サマリの E_hull の横には対象相の material id を表示します。
+
+### Material id
+
+MP API は material id を AlphaID 形式 (例: `mp-aaaceqmj`) で返します。これは整数を英小文字の 26 進 (a = 0) で書いたものです。
+本アプリは emmet-core の `AlphaID(...).string` と同様に、MP のサイトで使われている従来表記 (`mp-995393`) に変換して表示・リンク・除外の照合に使います。
+保存済みの JSON も読み込み時に変換されます。除外欄にはどちらの表記を入れても一致します。
 
 ## 入力とオプション
 
@@ -372,6 +379,7 @@ CI の pnpm は公開から 1 日未満のパッケージを拒否します (`mi
 │   │   ├── formula.ts         化学式のパース・整形
 │   │   ├── simplex.ts         2 段階シンプレックス法
 │   │   ├── entries.ts         エントリと生成エネルギー
+│   │   ├── mpid.ts            MP の material id (AlphaID の変換・リンク)
 │   │   └── profile.ts         grand potential・プラトー探索・安定性ウィンドウ
 │   ├── data/
 │   │   ├── mp.ts              Materials Project API クライアント

@@ -1,5 +1,6 @@
 import { numAtoms, parseFormula, reduceComposition, type Composition } from "./formula";
 import { t } from "../i18n";
+import { normalizeMpId } from "./mpid";
 
 /** One computed phase: composition (any multiple) and corrected total energy per atom. */
 export interface Entry {
@@ -121,9 +122,10 @@ export function excludeEntries(entries: Entry[], items: string[]): ExcludeResult
     } catch {
       // Not a formula: only matches ids.
     }
-    const id = item.toLowerCase();
+    const id = normalizeMpId(item).toLowerCase();
     return (e: Entry) =>
-      e.id.toLowerCase() === id || (comp !== null && sameComposition(comp, e.composition));
+      normalizeMpId(e.id).toLowerCase() === id ||
+      (comp !== null && sameComposition(comp, e.composition));
   });
   const hits = items.map(() => false);
   const kept: Entry[] = [];
