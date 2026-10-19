@@ -1,4 +1,4 @@
-import { numAtoms, reduceComposition, type Composition } from "./formula";
+import { numAtoms, parseFormula, reduceComposition, type Composition } from "./formula";
 
 /** One computed phase: composition (any multiple) and corrected total energy per atom. */
 export interface Entry {
@@ -20,7 +20,7 @@ export interface PreparedEntry {
   fraction: Composition;
   /** Formation energy per atom relative to the elemental references (eV/atom). */
   formationPerAtom: number;
-  /** Atoms per reduced formula unit. */
+  /** Atoms per displayed formula (or reduced composition for non-formula labels). */
   atomsPerFormula: number;
 }
 
@@ -55,11 +55,25 @@ export function prepareEntries(entries: Entry[], elements: string[]): PreparedSe
       refE += (n / total) * refs[el];
     }
     const { reduced } = reduceComposition(entry.composition);
+    let atomsPerFormula = numAtoms(reduced);
+    try {
+      const displayed = parseFormula(entry.name);
+      const displayedAtoms = numAtoms(displayed);
+      const keys = new Set([...Object.keys(displayed), ...Object.keys(fraction)]);
+      if (
+        [...keys].every(
+          (el) => Math.abs((displayed[el] ?? 0) / displayedAtoms - (fraction[el] ?? 0)) < 1e-9,
+        )
+      )
+        atomsPerFormula = displayedAtoms;
+    } catch {
+      // Non-formula phase labels retain reduced-composition units.
+    }
     return {
       entry,
       fraction,
       formationPerAtom: entry.energyPerAtom - refE,
-      atomsPerFormula: numAtoms(reduced),
+      atomsPerFormula,
     };
   });
   return { elements: [...elements].sort(), refs, entries: prepared };
