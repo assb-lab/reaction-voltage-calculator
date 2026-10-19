@@ -5,20 +5,34 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reaction Voltage Calculator</title>
+    <script>
+      // Apply the saved theme before the first paint (see src/ui/theme.ts).
+      try {
+        const t = localStorage.getItem("rvc.theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
   </head>
   <body>
     <header class="page-header">
       <div class="title-row">
         <h1>Reaction Voltage Calculator</h1>
-        <button
-          id="helpToggle"
-          type="button"
-          class="link-button"
-          aria-controls="onboarding"
-          aria-expanded="false"
-        >
-          使い方
-        </button>
+        <div class="header-tools">
+          <select id="theme" aria-label="テーマ">
+            <option value="auto">テーマ: 自動</option>
+            <option value="light">テーマ: ライト</option>
+            <option value="dark">テーマ: ダーク</option>
+          </select>
+          <button
+            id="helpToggle"
+            type="button"
+            class="link-button"
+            aria-controls="onboarding"
+            aria-expanded="false"
+          >
+            使い方
+          </button>
+        </div>
       </div>
       <p class="lede">
         Materials Project
