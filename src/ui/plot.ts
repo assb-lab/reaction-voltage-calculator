@@ -1,5 +1,5 @@
 import { formatNumber } from "../core/formula";
-import type { Profile } from "../core/profile";
+import { atomicFractions, type Profile } from "../core/profile";
 
 const W = 780;
 const H = 460;
@@ -22,6 +22,13 @@ export function formulaTspans(name: string): string {
       i % 2 ? `<tspan class="sub" dy="3">${part}</tspan><tspan dy="-3">​</tspan>` : esc(part),
     )
     .join("");
+}
+
+/** Approximate rendered width (px) of a formula label at 11px, subscripts included. */
+export function labelWidth(name: string): number {
+  let w = 0;
+  for (const c of name) w += /\d|\./.test(c) ? 5 : /[A-Z]/.test(c) ? 7.5 : 6;
+  return w;
 }
 
 function niceStep(range: number, target: number): number {
@@ -84,6 +91,7 @@ export function renderProfileSvg(profile: Profile): string {
     .profile-svg .box.ox { fill: var(--ox-bg, #fbe3e3); }
     .profile-svg .box.red { fill: var(--red-bg, #dde7f7); }
     .profile-svg .box.target { fill: var(--window, #bbb); fill-opacity: 0.6; }
+    .profile-svg .cell-label { font-size: 11px; }
   </style>`);
 
   if (profile.stabilized) {
@@ -160,7 +168,8 @@ export function renderProfileSvg(profile: Profile): string {
       `<text class="muted" x="${PROFILE_W - 6}" y="${plotB - 8}" text-anchor="end">Reduction →</text>`,
     );
 
-  // Phase equilibria boxes.
+  // Phase equilibria: each voltage band is split into one cell per phase, with widths (and
+  // therefore areas within the band) proportional to the atomic fraction of that phase.
   parts.push(
     `<text x="${(phaseL + phaseR) / 2}" y="${H - 12}" text-anchor="middle">Phase equilibria</text>`,
   );
@@ -171,29 +180,25 @@ export function renderProfileSvg(profile: Profile): string {
     if (h <= 0) return;
     const side =
       Math.abs(r.x) < 1e-9 ? (window?.targetIsPhase ? "target" : "") : r.x < 0 ? "ox" : "red";
-    const names = r.phases.map((p) => p.entry.name);
-    const title = `${formatNumber(r.vMin, 3)}–${r.vMax === Infinity ? "∞" : formatNumber(r.vMax, 3)} V: ${names.join(", ")}`;
-    parts.push(`<g><title>${esc(title)}</title>`);
-    parts.push(
-      `<rect class="box ${side}" x="${phaseL}" y="${yTop}" width="${phaseR - phaseL}" height="${h}"/>`,
-    );
-    const lineH = 14;
-    if (h >= lineH) {
-      // Lay names out in columns that fit the box height.
-      const rows = Math.max(1, Math.floor((h - 2) / lineH));
-      const cols = Math.ceil(names.length / rows);
-      const colW = (phaseR - phaseL) / cols;
-      const used = Math.min(rows, names.length);
-      const y0 = yTop + h / 2 - ((used - 1) * lineH) / 2 + 4;
-      names.forEach((n, i) => {
-        const col = Math.floor(i / rows);
-        const row = i % rows;
+    const range = `${formatNumber(r.vMin, 3)}–${r.vMax === Infinity ? "∞" : formatNumber(r.vMax, 3)} V`;
+    const fractions = atomicFractions(r);
+    let x0 = phaseL;
+    r.phases.forEach((ph, i) => {
+      const w = (phaseR - phaseL) * fractions[i];
+      const pct = formatNumber(fractions[i] * 100, 1);
+      parts.push(
+        `<g class="cell"><title>${esc(`${ph.entry.name}: ${pct} at.% (${formatNumber(ph.amount)} per ${profile.formula}), ${range}`)}</title>`,
+      );
+      parts.push(`<rect class="box ${side}" x="${x0}" y="${yTop}" width="${w}" height="${h}"/>`);
+      // Label only when it fits; narrow cells rely on the tooltip.
+      if (h >= 13 && w >= labelWidth(ph.entry.name) + 4) {
         parts.push(
-          `<text x="${phaseL + colW * (col + 0.5)}" y="${y0 + row * lineH}" text-anchor="middle">${formulaTspans(n)}</text>`,
+          `<text class="cell-label" x="${x0 + w / 2}" y="${yTop + h / 2 + 4}" text-anchor="middle">${formulaTspans(ph.entry.name)}</text>`,
         );
-      });
-    }
-    parts.push(`</g>`);
+      }
+      parts.push(`</g>`);
+      x0 += w;
+    });
   });
   parts.push(`</svg>`);
   return parts.join("\n");

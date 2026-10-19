@@ -30,6 +30,8 @@ export interface PhaseAmount {
   entry: Entry;
   /** Units of the phase's displayed formula per formula unit of the target. */
   amount: number;
+  /** Atoms of this phase per formula unit of the target (its share gives the atomic fraction). */
+  atoms: number;
 }
 
 /** A μ window in which one phase assemblage is in equilibrium (a vertical segment of the profile). */
@@ -160,7 +162,7 @@ function makeGrandSolver(set: PreparedSet, target: Composition, ion: string) {
       energy += x[i] * cols[i].formationPerAtom;
       ionAmount += x[i] * (cols[i].fraction[ion] ?? 0);
       if (x[i] > 1e-9)
-        phases.push({ entry: cols[i].entry, amount: x[i] / cols[i].atomsPerFormula });
+        phases.push({ entry: cols[i].entry, amount: x[i] / cols[i].atomsPerFormula, atoms: x[i] });
     }
     return { mu, energy, ionAmount, value, phases };
   };
@@ -301,6 +303,12 @@ export function computeProfile(input: ProfileInput): Profile {
     stabilized,
     nEntries: set.entries.length,
   };
+}
+
+/** Atomic fraction of each phase in a region's equilibrium assemblage (same order as `phases`). */
+export function atomicFractions(region: Region): number[] {
+  const total = region.phases.reduce((s, p) => s + p.atoms, 0);
+  return region.phases.map((p) => (total > 0 ? p.atoms / total : 0));
 }
 
 /** "Li6PS5Cl + 8 Li → 5 Li2S + Li3P + LiCl" style equation for a region. */
