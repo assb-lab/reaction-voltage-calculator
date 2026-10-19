@@ -118,7 +118,11 @@ function recompute(): void {
       entries: data.entries,
       formula: formulaInput.value.trim(),
       ion: ionSelect.value,
-      stabilize: { enabled: stabilize.checked, delta: (Number(delta.value) || 0) / 1000 },
+      stabilize: {
+        enabled: stabilize.checked,
+        delta: (Number(delta.value) || 0) / 1000,
+        allowVirtual: false,
+      },
     });
     render(profile);
   } catch (e) {
@@ -138,12 +142,13 @@ function render(p: Profile): void {
   const hull =
     p.eAboveHull === null ? "該当エントリなし" : `${formatNumber(p.eAboveHull * 1000, 1)} meV/atom`;
   $("summary").innerHTML = `
-    <div><span>安定性ウィンドウ</span><strong>${windowText}</strong></div>
+    <div><span>安定性ウィンドウ${p.stabilized ? " (hull 補正)" : ""}</span><strong>${windowText}</strong></div>
     <div><span>E<sub>hull</sub> (${formulaHtml(p.formula)})</span><strong>${hull}</strong></div>
     <div><span>平衡領域 / プラトー</span><strong>${p.regions.length} / ${p.plateaus.length}</strong></div>
     <div><span>使用エントリ</span><strong>${p.nEntries}</strong></div>
-    ${p.stabilized ? `<p class="note">対象相を hull 上に置いて計算しています。</p>` : ""}
-    ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。</p>` : ""}`;
+    ${p.stabilized ? `<p class="note">${formulaHtml(p.formula)} を hull 上${Number(delta.value) > 0 ? `から ${formatNumber(Number(delta.value))} meV/atom 下` : ""}に補正して評価しています。上の E<sub>hull</sub> は補正前の値です。このウィンドウは補正した対象相の評価です。</p>` : ""}
+    ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。「対象相を hull 上に置く」を有効にすると対象相を含むプロファイルを評価できます。</p>` : ""}
+    ${!p.targetEntry ? `<p class="note">${formulaHtml(p.formula)} の該当エントリがありません。仮想相は作らず、分解生成物の平衡のみを表示しています。</p>` : ""}`;
   $("figure").innerHTML = renderProfileSvg(p);
 
   const rows = p.regions

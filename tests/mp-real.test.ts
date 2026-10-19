@@ -2,6 +2,8 @@ import { describe, expect, it } from "vite-plus/test";
 import { prepareEntries } from "../src/core/entries";
 import { computeProfile, hullEnergy, regionReaction } from "../src/core/profile";
 import { parseEntryFiles, parseEntrySet } from "../src/data/io";
+import { renderProfileSvg } from "../src/ui/plot";
+import { profileToJson } from "../src/ui/export";
 // Materials Project thermo docs (GGA_GGA+U_R2SCAN, database 2026-09-28, CC BY 4.0); see tests/mp/README.md.
 import raw from "./mp/thermo_Cl-Li-P-S_GGA_GGA+U_R2SCAN.json?raw";
 
@@ -40,6 +42,48 @@ describe("real MP data: Cl-Li-P-S, GGA_GGA+U_R2SCAN", () => {
     expect(s.window?.targetIsPhase).toBe(true);
     expect(s.window?.low).toBeCloseTo(1.717, 3);
     expect(s.window?.high).toBeCloseTo(2.14, 3);
+  });
+
+  it("includes the actual MP target in the plot and export when evaluating the target phase", () => {
+    const p = computeProfile({
+      entries: set.entries,
+      formula: "Li6PS5Cl",
+      ion: "Li",
+      stabilize: { enabled: true, delta: 0, allowVirtual: false },
+    });
+    const target = p.regions.find(
+      (r) => r.phases.length === 1 && r.phases[0].entry.name === "Li6PS5Cl",
+    );
+    expect(target?.x).toBeCloseTo(0, 9);
+    expect(target?.phases[0].entry.id).toBe("mp-aaacebzk");
+    expect(target?.phases[0].amount).toBeCloseTo(1, 9);
+    expect(p.eAboveHull).toBeCloseTo(0.0829463, 6);
+    const svg = renderProfileSvg(p);
+    expect(svg).toContain("対象相を hull 補正 (元の E_hull: 82.9 meV/atom)");
+    // A phase label in the right-hand equilibrium panel, beyond the x=0 reference label.
+    expect(svg).toMatch(
+      /text-anchor="middle">Li<tspan[^>]*>6<\/tspan>.*PS<tspan[^>]*>5<\/tspan>.*Cl<\/text>/,
+    );
+    const exported = JSON.parse(profileToJson(p));
+    expect(exported.stabilized).toBe(true);
+    expect(
+      exported.regions.some((r: { phases: { id: string }[] }) =>
+        r.phases.some((e) => e.id === "mp-aaacebzk"),
+      ),
+    ).toBe(true);
+  });
+
+  it("does not fabricate a target entry when the requested composition is absent", () => {
+    const p = computeProfile({
+      entries: set.entries,
+      formula: "Li5PS5Cl",
+      ion: "Li",
+      stabilize: { enabled: true, delta: 0, allowVirtual: false },
+    });
+    expect(p.targetEntry).toBeNull();
+    expect(p.eAboveHull).toBeNull();
+    expect(p.stabilized).toBe(false);
+    expect(p.regions.flatMap((r) => r.phases).every((ph) => ph.entry.id !== "virtual")).toBe(true);
   });
 
   it("gives identical energies and profiles when raw data spans multiple pages", () => {
