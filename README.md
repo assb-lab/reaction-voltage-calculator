@@ -1,56 +1,322 @@
 # reaction-voltage-calculator
 
-Materials Project の計算結果 (thermo entries) から、指定組成を作動イオン (Li, Na, Mg …) の開放系に置いたときの
-相平衡と反応電位プロファイル、電気化学的安定性ウィンドウを計算する静的 Web アプリです。
-計算はすべてブラウザ内で行われ、ビルド成果物は HTML/JS/CSS のみです。
+Materials Project (MP) の DFT 計算エネルギーから、指定した組成を作動イオン (Li, Na, Mg …) の開放系に置いたときの
+
+- **相平衡** (電位ごとにどの相の組み合わせが熱力学的に安定か)
+- **反応電位プロファイル** (酸化・還元で起こる分解反応と、その電位)
+- **電気化学的安定性ウィンドウ** (対象相が分解しない電位範囲)
+
+を計算する静的 Web アプリです。計算はすべてブラウザ内で行い、ビルド成果物は HTML / JS / CSS だけです。
+サーバは不要です。
+
+![Li6PS5Cl の電位プロファイルと相平衡の例 (架空のデモデータ)](docs/demo-profile.svg)
+
+> 上の図はアプリ内の「デモデータ」(**架空のエネルギー**) で描いた例です。MP の実際の値ではありません。
+
+---
+
+## 目次
+
+- [できること](#できること)
+- [使い方](#使い方)
+- [図と表の読み方](#図と表の読み方)
+- [入力とオプション](#入力とオプション)
+- [エントリ JSON の形式](#エントリ-json-の形式)
+- [計算方法](#計算方法)
+- [制限事項と注意](#制限事項と注意)
+- [開発](#開発)
+- [ディレクトリ構成](#ディレクトリ構成)
+- [参考文献](#参考文献)
+
+## できること
+
+| 機能              | 内容                                                                              |
+| ----------------- | --------------------------------------------------------------------------------- |
+| MP からデータ取得 | 組成と作動イオンから chemsys の全サブ系の thermo データをブラウザから直接取得     |
+| 電位プロファイル  | 作動イオン取込量 (x) に対する平衡電位の階段状プロファイル                         |
+| 相平衡パネル      | 電位区間ごとの平衡相の組み合わせ (論文図と同じ形式)                               |
+| 安定性ウィンドウ  | 対象相そのものが平衡相として存在する電位範囲                                      |
+| 準安定相の評価    | E_hull > 0 の相を hull 上 (または hull − δ) に置いて評価                          |
+| エクスポート      | 図 (SVG)、領域ごとの表 (CSV)、結果 (JSON)、取得エントリ (JSON)                    |
+| オフライン計算    | 保存したエントリ JSON や pymatgen の `ComputedEntry.as_dict()` を読み込んで再計算 |
+| 多価イオン        | Li, Na, K, Mg, Ca, Zn, Al (電位は価数 z で割って換算)                             |
 
 ## 使い方
 
-1. 組成 (例: `Li6PS5Cl`)、作動イオン、thermo type を選ぶ
-2. Materials Project の API key を入れて「MP から取得して計算」
-   (key は MP API への `X-API-KEY` ヘッダにのみ使用。「このブラウザに保存」を選んだ場合のみ localStorage に保存)
-3. 電位プロファイル (左) と電位ごとの平衡相 (右)、反応表が表示されます。SVG / CSV / JSON でダウンロード可能
-4. 取得したエントリは「エントリ JSON」で保存し、「JSON を読み込む」でオフライン再計算できます。
-   pymatgen の `ComputedEntry.as_dict()` のリストも読み込めます
+### 1. Materials Project の API key を用意する
 
-準安定相 (E_hull > 0) は「対象相を hull 上に置く」で hull − δ に安定化して評価できます。
+1. [materialsproject.org](https://materialsproject.org/) にログイン
+2. ダッシュボード (右上のアカウントメニュー → API key) から key をコピー
+
+API key は `https://api.materialsproject.org` への `X-API-KEY` ヘッダとしてのみ送信されます。
+「このブラウザに保存」にチェックしたときだけ、そのブラウザの localStorage に保存されます。
+
+### 2. 計算する
+
+1. **組成** に対象の化学式を入力 (例: `Li6PS5Cl`, `Li3PS4`, `Na3SbS4`, `Li7La3Zr2O12`)
+2. **作動イオン** と **thermo type** を選択
+3. API key を入れて **「MP から取得して計算」**
+4. サマリ、図、反応表が表示されます
+
+一度取得したデータの元素の範囲内であれば、組成や作動イオン、オプションを変えると自動で再計算されます
+(例: Li-P-S-Cl を取得した後に `Li3PS4` や `LiCl` へ切り替え)。元素が増える場合は再取得が必要です。
+
+### 3. 保存・再利用する
+
+- **エントリ JSON** で取得データを保存すると、次回は **「JSON を読み込む」** で API key なしに再計算できます
+- **SVG / CSV / 結果 JSON** で図と数値を保存できます
+
+API key がなくても **「デモデータ」** で画面の動きを試せます (架空の値です)。
+
+## 図と表の読み方
+
+### 左: 電位プロファイル
+
+- **横軸 x**: 対象組成 1 式量あたりの作動イオンの取込量。`x = 0` が入力した組成そのもの
+  - `x < 0` (赤): イオンが抜ける側 = **酸化**
+  - `x > 0` (青): イオンが入る側 = **還元**
+- **縦軸**: 作動イオン金属基準の電位 (V vs. Li/Li⁺ など)
+- **水平線 (プラトー)**: 二つの相平衡が共存する電位。この電位で x が変化する (反応が進む)
+- **垂直線**: 一つの相平衡が安定な電位区間。x は変わらない
+- 左端は作動イオンをすべて抜いた組成、右端は 0 V (イオン金属) と平衡する組成
+
+### 右: 相平衡
+
+左図と電位軸を共有し、各電位区間で平衡となる相を並べています。灰色の帯が対象相の **安定性ウィンドウ** です。
+区間が細くて名前が入らない場合は、マウスを乗せると表示されます (表にもすべて載っています)。
+
+### サマリ
+
+| 項目                        | 意味                                                                 |
+| --------------------------- | -------------------------------------------------------------------- |
+| 安定性ウィンドウ            | `還元限界 – 酸化限界` (V)。上限が ∞ のときは酸化しない               |
+| 「なし (分解生成物が安定)」 | 対象相が hull 上にない (準安定) ため、x = 0 でも分解生成物の方が安定 |
+| 「なし (… V で分解)」       | x = 0 がプラトーの途中にあり、その電位で分解する                     |
+| E_hull                      | 対象組成の最安定エントリの convex hull からのエネルギー (meV/atom)   |
+
+### 反応表
+
+各電位区間について、電位範囲・取込量 Δx・平衡相とその量 (対象 1 式量あたり)・対象相からの反応式を示します。
+例: `Li6PS5Cl + 8 Li → 5 Li2S + Li3P + LiCl` は、その電位以下で対象相がこの組み合わせまで還元されることを意味します。
+
+## 入力とオプション
+
+### Thermo type
+
+MP は計算手法ごとにエネルギーを提供しています。
+
+| 値                 | 内容                                                                       |
+| ------------------ | -------------------------------------------------------------------------- |
+| `GGA_GGA+U_R2SCAN` | GGA/GGA+U と r²SCAN を混合した MP の既定のスキーム (MP サイトの表示と同じ) |
+| `GGA_GGA+U`        | GGA/GGA+U と MP2020 補正 (従来の MP の値)                                  |
+| `R2SCAN`           | r²SCAN のみ。収録物質は少ないが手法が統一されている                        |
+
+同じ系でも thermo type によって安定相や電位が変わることがあります。比較する場合は揃えてください。
+
+### 対象相を hull 上に置く
+
+実験的に合成できる相でも、DFT では hull から少し上 (準安定) に出ることがあります
+(例: アルジロダイト型 Li6PS5Cl)。そのままでは安定性ウィンドウが「なし」になるため、
+このオプションで対象相のエネルギーを **hull のエネルギー − δ** に置き換えて評価できます。
+
+- δ = 0: hull 上 (境界上なのでウィンドウはほぼ 0 幅になります)
+- δ > 0: hull より δ meV/atom 安定にする。ウィンドウの幅は δ に依存するため、値は結果と一緒に報告してください
+- MP に該当組成のエントリがない場合は、その組成の仮想エントリを作ります
+
+## エントリ JSON の形式
+
+「エントリ JSON」で保存される形式です。手で作ったデータも同じ形式で読み込めます。
+
+```json
+{
+  "version": 1,
+  "source": "Materials Project",
+  "thermoType": "GGA_GGA+U_R2SCAN",
+  "elements": ["Cl", "Li", "P", "S"],
+  "fetchedAt": "2026-10-19T00:00:00.000Z",
+  "entries": [
+    {
+      "id": "mp-0000",
+      "name": "Li2S",
+      "composition": { "Li": 8, "S": 4 },
+      "energyPerAtom": -4.123,
+      "thermoType": "GGA_GGA+U_R2SCAN",
+      "eAboveHull": 0,
+      "volumePerAtom": 15.5
+    }
+  ]
+}
+```
+
+| フィールド                                  | 必須 | 内容                                                          |
+| ------------------------------------------- | ---- | ------------------------------------------------------------- |
+| `composition`                               | ✓    | 元素 → 原子数 (単位胞でも組成式でも可)                        |
+| `energyPerAtom`                             | ✓    | **補正込み**の全エネルギー (eV/atom)。MP の `energy_per_atom` |
+| `id`, `name`                                |      | 表示用。`name` を省略すると組成から生成                       |
+| `thermoType`, `eAboveHull`, `volumePerAtom` |      | 参考情報 (計算には使いません)                                 |
+
+各元素について単体のエントリが少なくとも 1 つ必要です (生成エネルギーの基準に使います)。
+
+ほかに次の形式も読み込めます。
+
+- `entries` の中身だけの配列
+- pymatgen の `ComputedEntry` / `ComputedStructureEntry` の `as_dict()` のリスト。エネルギーは `energy + correction` を使います
+
+```python
+import json
+from mp_api.client import MPRester
+
+with MPRester() as mpr:
+    entries = mpr.get_entries_in_chemsys(["Li", "P", "S", "Cl"])
+json.dump([e.as_dict() for e in entries], open("entries.json", "w"))
+```
 
 ## 計算方法
 
-作動イオン A の化学ポテンシャル μ を固定した grand potential
-Φ(μ) = min Σ nᵢ (E_f,i − μ N_A,i) (A 以外の元素量は対象組成に固定) を線形計画で解き、
-Φ(μ) の折れ点 (= 二相共存の電位プラトー) をパラメトリック LP の二分探索で厳密に列挙します。
-電位は V = −(μ − μ_A,metal)/z。pymatgen の `PhaseDiagram.get_element_profile` と同じ結果になることを
-`tests/pymatgen.test.ts` で照合しています。
+[Ong et al. (2008)](#参考文献) の grand potential 相図と、[Zhu, He & Mo (2015)](#参考文献) の電気化学的安定性の評価を、
+ブラウザで厳密に解けるように線形計画 (LP) で定式化しています。
+
+1. **生成エネルギー**: 各エントリの全エネルギーから、各元素の最安定単体のエネルギーを引いて
+   生成エネルギー E_f,i (eV/atom) を求めます
+2. **grand potential の最小化**: 作動イオン A の化学ポテンシャル μ (A 金属基準) を固定し、
+   A 以外の元素量を対象組成に固定したうえで
+
+   $$\Phi(\mu) = \min_{n \ge 0} \sum_i n_i \left(E_{f,i} - \mu\, x_{A,i}\right)$$
+
+   を解きます (n_i: 相 i の原子数、x_A,i: 相 i 中の A の原子分率)。これは制約数 = 元素数の小さな LP で、
+   2 段階シンプレックス法 (Bland 則) で解いています
+
+3. **プラトーの列挙**: Φ(μ) は μ について区分線形の凹関数で、その折れ点が二相共存 = 電位プラトーです。
+   両端 (A をすべて抜いた状態と μ = 0) から始めて、二つの解の接線の交点で LP を解き直す二分探索
+   (Eisner–Severance 法) で、すべての折れ点を数値探索ではなく厳密に求めます
+4. **電位**: V = −μ / z (z: 作動イオンの価数)
+5. **安定性ウィンドウ**: x = 0 の平衡領域が対象相そのものであれば、その区間の [V_min, V_max]
+
+結果は pymatgen の `PhaseDiagram.get_element_profile` と同じ量です。`tests/pymatgen.test.ts` で、
+pymatgen で生成した 2〜5 元系の参照データ (78 ケース) と、x・μ・平衡相・元素収支・E_hull を
+1e-6 の精度で照合しています。
+
+## 制限事項と注意
+
+- **0 K の DFT エネルギー** に基づく熱力学的な評価です。エントロピー (温度)、速度論、界面、
+  準安定な中間相の生成は考慮しません。実際の分解電位や反応生成物は異なることがあります
+- 結果は **MP のエネルギーと補正スキーム** に依存します。thermo type やデータベースの更新で値が変わります
+- MP に収録されていない相は考慮されません (生成物候補にも入りません)
+- 同じ組成の多形は最安定のものだけが平衡に現れます
+- 作動イオン以外の元素 (例: S, Cl) は閉じた系として扱います。気体 (O₂, Cl₂ など) の放出は
+  その元素の単体エントリとして表現されます
+- 体積変化・容量は現在計算していません
 
 ## 開発
 
-[Vite+](https://viteplus.dev/) (`vp`) を使います。
+### 必要なもの
+
+- [Vite+](https://viteplus.dev/) (`vp`): Node.js とパッケージマネージャ (pnpm) を管理します
+- Python 3.14 と [uv](https://docs.astral.sh/uv/): pymatgen 参照データを作り直すときだけ
+
+### コマンド
+
+依存関係のインストール:
 
 ```bash
 vp install
 ```
 
+開発サーバ (http://localhost:5173):
+
 ```bash
 vp dev
 ```
 
+フォーマット・lint・型チェック:
+
 ```bash
-vp check && vp test && vp build
+vp check
 ```
 
-`vp build` の `dist/` は相対パスで構成されるので、任意の静的ホスティング (サブパス可) に置けます。
+テスト:
 
-### pymatgen 参照 fixture
+```bash
+vp test
+```
 
-`tests/fixtures/*.json` は pymatgen で生成した参照データです (Python 3.14 + uv)。
+本番ビルド (`dist/` に出力):
+
+```bash
+vp build
+```
+
+CI (GitHub Actions) は push / PR ごとに `vp check`、`vp test`、`vp build` を実行します。
+
+### デプロイ
+
+`vp build` で作られる `dist/` は相対パス (`base: "./"`) で構成されているので、
+GitHub Pages、S3、社内 Web サーバなど任意の静的ホスティングのサブパスにそのまま置けます。
+`dist/index.html` をローカルで直接開く場合は、ES モジュールの制約により簡易 HTTP サーバ経由で開いてください:
+
+```bash
+vp preview
+```
+
+### pymatgen 参照データ
+
+`tests/fixtures/*.json` は pymatgen で生成した参照データです。計算コアを変更したら必ず `vp test` で照合してください。
+
+合成系 (乱数エネルギー) の参照データを作り直す:
 
 ```bash
 uv run reaction-voltage-calculator --out tests/fixtures
 ```
 
-Materials Project の実データから fixture を作る場合 (要 `MP_API_KEY`):
+MP の実データから参照データを作る (要 `MP_API_KEY`):
 
 ```bash
 uv run --extra mp reaction-voltage-calculator --mp Li6PS5Cl --out tests/fixtures
 ```
+
+### 依存関係のポリシー
+
+CI の pnpm は公開から 1 日未満のパッケージを拒否します (`minimumReleaseAge`)。
+新しすぎるバージョンがロックファイルに入って CI が失敗する場合は、`pnpm-workspace.yaml` の
+`overrides` で一つ前のバージョンに固定してください。
+
+## ディレクトリ構成
+
+```
+.
+├── index.html                 画面の HTML
+├── src/
+│   ├── main.ts                画面の配線 (入力・取得・描画・ダウンロード)
+│   ├── style.css              スタイル (ライト / ダーク)
+│   ├── core/                  計算コア (DOM 非依存)
+│   │   ├── formula.ts         化学式のパース・整形
+│   │   ├── simplex.ts         2 段階シンプレックス法
+│   │   ├── entries.ts         エントリと生成エネルギー
+│   │   └── profile.ts         grand potential・プラトー探索・安定性ウィンドウ
+│   ├── data/
+│   │   ├── mp.ts              Materials Project API クライアント
+│   │   └── io.ts              エントリ JSON の読み書き (pymatgen 形式を含む)
+│   ├── ui/
+│   │   ├── plot.ts            SVG 図
+│   │   ├── summary.ts         サマリ文言
+│   │   ├── export.ts          CSV / JSON 出力
+│   │   ├── html.ts            HTML エスケープ
+│   │   └── demo.ts            架空のデモデータ
+│   └── reaction_voltage_calculator/   pymatgen 参照データ生成 (Python)
+├── tests/
+│   ├── pymatgen.test.ts       pymatgen との照合テスト
+│   └── fixtures/              参照データ
+├── docs/                      README 用の図
+├── vite.config.ts             Vite+ 設定 (build / fmt / lint / test)
+└── pyproject.toml             Python (uv) 設定
+```
+
+## 参考文献
+
+- S. P. Ong, L. Wang, B. Kang, G. Ceder, "Li–Fe–P–O₂ Phase Diagram from First Principles Calculations",
+  _Chem. Mater._ **20**, 1798 (2008).
+- Y. Zhu, X. He, Y. Mo, "Origin of Outstanding Stability in the Lithium Solid Electrolyte Materials:
+  Insights from Thermodynamic Analyses Based on First-Principles Calculations",
+  _ACS Appl. Mater. Interfaces_ **7**, 23685 (2015).
+- A. Jain et al., "Commentary: The Materials Project", _APL Mater._ **1**, 011002 (2013).
+- S. P. Ong et al., "Python Materials Genomics (pymatgen)", _Comput. Mater. Sci._ **68**, 314 (2013).

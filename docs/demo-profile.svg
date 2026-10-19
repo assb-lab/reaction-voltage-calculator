@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 460" class="profile-svg" role="img" aria-label="Li6PS5Cl の Li 電位プロファイルと相平衡">
+<rect width="100%" height="100%" fill="#fff"/>
+<style>
+    .profile-svg { font-family: system-ui, sans-serif; font-size: 12px; }
+    .profile-svg .axis { stroke: var(--fg, #222); stroke-width: 1; fill: none; }
+    .profile-svg .grid { stroke: var(--grid, #ddd); stroke-width: 1; }
+    .profile-svg text { fill: var(--fg, #222); }
+    .profile-svg .muted { fill: var(--muted, #666); }
+    .profile-svg .sub { font-size: 0.75em; }
+    .profile-svg .ox { stroke: var(--ox, #d62728); }
+    .profile-svg .red { stroke: var(--red, #1f5fbf); }
+    .profile-svg .neutral { stroke: var(--fg, #222); }
+    .profile-svg .window { fill: var(--window, #bbb); fill-opacity: 0.45; }
+    .profile-svg .box { fill: var(--box, #f3f3f3); stroke: var(--fg, #222); stroke-width: 1; }
+    .profile-svg .box.ox { fill: var(--ox-bg, #fbe3e3); }
+    .profile-svg .box.red { fill: var(--red-bg, #dde7f7); }
+    .profile-svg .box.target { fill: var(--window, #bbb); fill-opacity: 0.6; }
+  </style>
+<rect class="window" x="60" y="190.71999999999997" width="708" height="66.54199999999997"/>
+<line class="grid" x1="60" x2="470" y1="408" y2="408"/>
+<text x="54" y="412" text-anchor="end">0</text>
+<line class="grid" x1="60" x2="470" y1="359.5" y2="359.5"/>
+<text x="54" y="363.5" text-anchor="end">0.5</text>
+<line class="grid" x1="60" x2="470" y1="311" y2="311"/>
+<text x="54" y="315" text-anchor="end">1</text>
+<line class="grid" x1="60" x2="470" y1="262.5" y2="262.5"/>
+<text x="54" y="266.5" text-anchor="end">1.5</text>
+<line class="grid" x1="60" x2="470" y1="214" y2="214"/>
+<text x="54" y="218" text-anchor="end">2</text>
+<line class="grid" x1="60" x2="470" y1="165.5" y2="165.5"/>
+<text x="54" y="169.5" text-anchor="end">2.5</text>
+<line class="grid" x1="60" x2="470" y1="117" y2="117"/>
+<text x="54" y="121" text-anchor="end">3</text>
+<line class="grid" x1="60" x2="470" y1="68.5" y2="68.5"/>
+<text x="54" y="72.5" text-anchor="end">3.5</text>
+<line class="grid" x1="60" x2="470" y1="20" y2="20"/>
+<text x="54" y="24" text-anchor="end">4</text>
+<line class="axis" x1="81.96428571428571" x2="81.96428571428571" y1="408" y2="413"/>
+<text x="81.96428571428571" y="426" text-anchor="middle">-6</text>
+<line class="axis" x1="134.26020408163265" x2="134.26020408163265" y1="408" y2="413"/>
+<text x="134.26020408163265" y="426" text-anchor="middle">-4</text>
+<line class="axis" x1="186.55612244897958" x2="186.55612244897958" y1="408" y2="413"/>
+<text x="186.55612244897958" y="426" text-anchor="middle">-2</text>
+<line class="axis" x1="238.85204081632654" x2="238.85204081632654" y1="408" y2="413"/>
+<text x="238.85204081632654" y="426" text-anchor="middle">0</text>
+<line class="axis" x1="291.1479591836735" x2="291.1479591836735" y1="408" y2="413"/>
+<text x="291.1479591836735" y="426" text-anchor="middle">2</text>
+<line class="axis" x1="343.4438775510204" x2="343.4438775510204" y1="408" y2="413"/>
+<text x="343.4438775510204" y="426" text-anchor="middle">4</text>
+<line class="axis" x1="395.73979591836735" x2="395.73979591836735" y1="408" y2="413"/>
+<text x="395.73979591836735" y="426" text-anchor="middle">6</text>
+<line class="axis" x1="448.0357142857143" x2="448.0357142857143" y1="408" y2="413"/>
+<text x="448.0357142857143" y="426" text-anchor="middle">8</text>
+<rect class="axis" x="60" y="20" width="410" height="388"/>
+<text x="16" y="214" text-anchor="middle" transform="rotate(-90 16 214)">Voltage (V) vs Li/Li+</text>
+<text x="265" y="448" text-anchor="middle">Li uptake per Li<tspan class="sub" dy="3">6</tspan><tspan dy="-3">​</tspan>PS<tspan class="sub" dy="3">5</tspan><tspan dy="-3">​</tspan>Cl</text>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="81.96428571428571" y1="20" x2="81.96428571428571" y2="93.71999999999994"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="108.11224489795919" y1="93.71999999999994" x2="108.11224489795919" y2="116.35333333333337"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="186.55612244897958" y1="116.35333333333337" x2="186.55612244897958" y2="184.89999999999992"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="212.70408163265307" y1="184.89999999999992" x2="212.70408163265307" y2="190.71999999999997"/>
+<line class="neutral" stroke-width="2.5" stroke-linecap="square" x1="238.8520408163265" y1="190.71999999999997" x2="238.8520408163265" y2="257.26199999999994"/>
+<line class="red" stroke-width="2.5" stroke-linecap="square" x1="369.59183673469386" y1="257.26199999999994" x2="369.59183673469386" y2="326.52000000000004"/>
+<line class="red" stroke-width="2.5" stroke-linecap="square" x1="395.73979591836735" y1="326.52000000000004" x2="395.73979591836735" y2="342.04"/>
+<line class="red" stroke-width="2.5" stroke-linecap="square" x1="448.0357142857143" y1="342.04" x2="448.0357142857143" y2="408"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="81.96428571428571" y1="93.71999999999994" x2="108.11224489795919" y2="93.71999999999994"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="108.11224489795919" y1="116.35333333333337" x2="186.55612244897958" y2="116.35333333333337"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="186.55612244897958" y1="184.89999999999992" x2="212.70408163265307" y2="184.89999999999992"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="212.70408163265307" y1="190.71999999999997" x2="238.8520408163265" y2="190.71999999999997"/>
+<line class="ox" stroke-width="2.5" stroke-linecap="square" x1="238.8520408163265" y1="257.26199999999994" x2="238.85204081632654" y2="257.26199999999994"/>
+<line class="red" stroke-width="2.5" stroke-linecap="square" x1="238.85204081632654" y1="257.26199999999994" x2="369.59183673469386" y2="257.26199999999994"/>
+<line class="red" stroke-width="2.5" stroke-linecap="square" x1="369.59183673469386" y1="326.52000000000004" x2="395.73979591836735" y2="326.52000000000004"/>
+<line class="red" stroke-width="2.5" stroke-linecap="square" x1="395.73979591836735" y1="342.04" x2="448.0357142857143" y2="342.04"/>
+<line class="grid" stroke-dasharray="3 3" x1="238.85204081632654" x2="238.85204081632654" y1="20" y2="408"/>
+<text x="242.85204081632654" y="34">Li<tspan class="sub" dy="3">6</tspan><tspan dy="-3">​</tspan>PS<tspan class="sub" dy="3">5</tspan><tspan dy="-3">​</tspan>Cl</text>
+<text class="muted" x="66" y="400">← Oxidation</text>
+<text class="muted" x="464" y="400" text-anchor="end">Reduction →</text>
+<text x="628" y="448" text-anchor="middle">Phase equilibria</text>
+<g><title>3.24–∞ V: P2S5, PCl3, S</title>
+<rect class="box ox" x="488" y="20" width="280" height="73.71999999999994"/>
+<text x="628" y="46.85999999999997" text-anchor="middle">P<tspan class="sub" dy="3">2</tspan><tspan dy="-3">​</tspan>S<tspan class="sub" dy="3">5</tspan><tspan dy="-3">​</tspan></text>
+<text x="628" y="60.85999999999997" text-anchor="middle">PCl<tspan class="sub" dy="3">3</tspan><tspan dy="-3">​</tspan></text>
+<text x="628" y="74.85999999999997" text-anchor="middle">S</text>
+</g>
+<g><title>3.007–3.24 V: LiCl, P2S5, S</title>
+<rect class="box ox" x="488" y="93.71999999999994" width="280" height="22.633333333333425"/>
+<text x="534.6666666666666" y="109.03666666666666" text-anchor="middle">LiCl</text>
+<text x="628" y="109.03666666666666" text-anchor="middle">P<tspan class="sub" dy="3">2</tspan><tspan dy="-3">​</tspan>S<tspan class="sub" dy="3">5</tspan><tspan dy="-3">​</tspan></text>
+<text x="721.3333333333333" y="109.03666666666666" text-anchor="middle">S</text>
+</g>
+<g><title>2.3–3.007 V: Li3PS4, LiCl, S</title>
+<rect class="box ox" x="488" y="116.35333333333337" width="280" height="68.54666666666655"/>
+<text x="628" y="140.62666666666664" text-anchor="middle">Li<tspan class="sub" dy="3">3</tspan><tspan dy="-3">​</tspan>PS<tspan class="sub" dy="3">4</tspan><tspan dy="-3">​</tspan></text>
+<text x="628" y="154.62666666666664" text-anchor="middle">LiCl</text>
+<text x="628" y="168.62666666666664" text-anchor="middle">S</text>
+</g>
+<g><title>2.24–2.3 V: Li3PS4, LiCl, LiS</title>
+<rect class="box ox" x="488" y="184.89999999999992" width="280" height="5.82000000000005"/>
+</g>
+<g><title>1.554–2.24 V: Li6PS5Cl</title>
+<rect class="box target" x="488" y="190.71999999999997" width="280" height="66.54199999999997"/>
+<text x="628" y="227.99099999999996" text-anchor="middle">Li<tspan class="sub" dy="3">6</tspan><tspan dy="-3">​</tspan>PS<tspan class="sub" dy="3">5</tspan><tspan dy="-3">​</tspan>Cl</text>
+</g>
+<g><title>0.84–1.554 V: Li2S, LiCl, P</title>
+<rect class="box red" x="488" y="257.26199999999994" width="280" height="69.2580000000001"/>
+<text x="628" y="281.89099999999996" text-anchor="middle">Li<tspan class="sub" dy="3">2</tspan><tspan dy="-3">​</tspan>S</text>
+<text x="628" y="295.89099999999996" text-anchor="middle">LiCl</text>
+<text x="628" y="309.89099999999996" text-anchor="middle">P</text>
+</g>
+<g><title>0.68–0.84 V: Li2S, LiCl, LiP</title>
+<rect class="box red" x="488" y="326.52000000000004" width="280" height="15.519999999999982"/>
+<text x="534.6666666666666" y="338.28000000000003" text-anchor="middle">Li<tspan class="sub" dy="3">2</tspan><tspan dy="-3">​</tspan>S</text>
+<text x="628" y="338.28000000000003" text-anchor="middle">LiCl</text>
+<text x="721.3333333333333" y="338.28000000000003" text-anchor="middle">LiP</text>
+</g>
+<g><title>0–0.68 V: Li2S, Li3P, LiCl</title>
+<rect class="box red" x="488" y="342.04" width="280" height="65.95999999999998"/>
+<text x="628" y="365.02" text-anchor="middle">Li<tspan class="sub" dy="3">2</tspan><tspan dy="-3">​</tspan>S</text>
+<text x="628" y="379.02" text-anchor="middle">Li<tspan class="sub" dy="3">3</tspan><tspan dy="-3">​</tspan>P</text>
+<text x="628" y="393.02" text-anchor="middle">LiCl</text>
+</g>
+</svg>
