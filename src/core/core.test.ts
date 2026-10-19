@@ -92,8 +92,8 @@ describe("computeProfile", () => {
       stabilize: { enabled: true, delta: 0.01 },
     });
     // LiS at -1.135 eV/atom: S + Li -> LiS at 2.27 V, LiS + Li -> Li2S at 2.23 V.
-    expect(s.window?.high).toBeCloseTo(2.27, 9);
-    expect(s.window?.low).toBeCloseTo(2.23, 9);
+    expect(s.window?.high).toBeCloseTo(2.27, 6);
+    expect(s.window?.low).toBeCloseTo(2.23, 6);
     expect(s.window?.targetIsPhase).toBe(true);
   });
 
@@ -154,7 +154,7 @@ describe("review regressions", () => {
       stabilize: { enabled: true, delta: 0 },
     });
     expect(p.window?.high).toBe(Infinity);
-    expect(p.plateaus[0].voltage).toBeCloseTo(2.4, 9);
+    expect(p.plateaus[0].voltage).toBeCloseTo(2.4, 6);
   });
 
   it("places even a stable target delta below the existing hull", () => {
@@ -164,8 +164,8 @@ describe("review regressions", () => {
       ion: "Li",
       stabilize: { enabled: true, delta: 0.01 },
     });
-    expect(p.window?.high).toBeCloseTo(2.42, 9);
-    expect(p.window?.low).toBeCloseTo(2.08, 9);
+    expect(p.window?.high).toBeCloseTo(2.42, 6);
+    expect(p.window?.low).toBeCloseTo(2.08, 6);
   });
 
   it("balances molecular elemental phase formulas in reactions", () => {

@@ -138,10 +138,15 @@ MP は計算手法ごとにエネルギーを提供しています。
 実験的に合成できる相でも、DFT では hull から少し上 (準安定) に出ることがあります
 (例: アルジロダイト型 Li6PS5Cl)。そのままでは安定性ウィンドウが「なし」になるため、
 このオプションで対象相のエネルギーを **hull のエネルギー − δ** に置き換えて評価できます。
+**画面では既定で有効**です。MP の Li6PS5Cl なども x = 0 の対象相としてプロットに含めます。
+サマリは「hull 補正」と明記し、E_hull には補正前の値を表示します。
+元の MP エネルギーで分解生成物の平衡を確認するときは、チェックを外してください。
 
-- δ = 0: hull 上 (境界上なのでウィンドウはほぼ 0 幅になります)
-- δ > 0: hull より δ meV/atom 安定にする。ウィンドウの幅は δ に依存するため、値は結果と一緒に報告してください
-- MP に該当組成のエントリがない場合は、その組成の仮想エントリを作ります
+- δ = 0: hull のわずかに下 (10⁻⁷ eV/atom) に置きます。hull 上ちょうどでは分解生成物の面上に乗って平衡が縮退するため、
+  その極限としての安定性ウィンドウを求めます (例: MP の Li6PS5Cl → 1.717–2.140 V)
+- δ > 0: hull より δ meV/atom 安定にする。ウィンドウは δ とともに広がるため、値は結果と一緒に報告してください
+- 画面では、該当組成のエントリがない場合は補正せず「該当エントリなし」と表示します。仮想相を自動で作ることはありません
+- 計算コアを直接使う場合のみ、`stabilize.allowVirtual` を省略または `true` にすると仮想相による評価も可能です
 
 ## エントリ JSON の形式
 
@@ -154,12 +159,13 @@ MP は計算手法ごとにエネルギーを提供しています。
   "thermoType": "GGA_GGA+U_R2SCAN",
   "elements": ["Cl", "Li", "P", "S"],
   "fetchedAt": "2026-10-19T00:00:00.000Z",
+  "energyBasis": "formation",
   "entries": [
     {
       "id": "mp-0000",
       "name": "Li2S",
       "composition": { "Li": 8, "S": 4 },
-      "energyPerAtom": -4.123,
+      "energyPerAtom": -1.503,
       "thermoType": "GGA_GGA+U_R2SCAN",
       "eAboveHull": 0,
       "volumePerAtom": 15.5
@@ -168,14 +174,30 @@ MP は計算手法ごとにエネルギーを提供しています。
 }
 ```
 
-| フィールド                                  | 必須 | 内容                                                          |
-| ------------------------------------------- | ---- | ------------------------------------------------------------- |
-| `composition`                               | ✓    | 元素 → 原子数 (単位胞でも組成式でも可)                        |
-| `energyPerAtom`                             | ✓    | **補正込み**の全エネルギー (eV/atom)。MP の `energy_per_atom` |
-| `id`, `name`                                |      | 表示用。`name` を省略すると組成から生成                       |
-| `thermoType`, `eAboveHull`, `volumePerAtom` |      | 参考情報 (計算には使いません)                                 |
+| フィールド                                  | 必須 | 内容                                                                                                  |
+| ------------------------------------------- | ---- | ----------------------------------------------------------------------------------------------------- |
+| `composition`                               | ✓    | 元素 → 原子数 (単位胞でも組成式でも可)                                                                |
+| `energyPerAtom`                             | ✓    | エネルギー (eV/atom)。補正込みの全エネルギー、または単体基準 0 の生成エネルギー。MP 由来は後者 (下記) |
+| `id`, `name`                                |      | 表示用。`name` を省略すると組成から生成                                                               |
+| `thermoType`, `eAboveHull`, `volumePerAtom` |      | 参考情報 (計算には使いません)                                                                         |
 
 各元素について単体のエントリが少なくとも 1 つ必要です (生成エネルギーの基準に使います)。
+1 つのファイル内では、すべてのエントリが同じ基準のエネルギーである必要があります。
+
+### Materials Project のエネルギーについて
+
+MP の thermo データの `energy_per_atom` は、mixed scheme (`GGA_GGA+U_R2SCAN`) では**同じスケールに揃っていません**
+(例: S や Li は r2SCAN の値そのまま、Li2S は混合用にシフトした r2SCAN、Li6PS5Cl は GGA)。
+そのまま比べると Li2S が不安定になるなど、相図が大きく崩れます。そこで MP 由来のデータでは次の値を使います
+(`energyBasis: "formation"`)。
+
+- 安定相 (`energy_above_hull` = 0): `formation_energy_per_atom`
+- それ以外: 安定相の hull のその組成での値 + MP の `energy_above_hull`
+  (GGA だけで計算された相の一部は、`formation_energy_per_atom` が自身の `energy_above_hull` と整合しないため)
+
+これにより MP の凸包が厳密に再現されます (`tests/mp-real.test.ts` で Cl-Li-P-S の全 108 エントリの E_hull を照合)。
+`energyBasis` のない古い MP 由来のファイルや、`formation_energy_per_atom` を含まない API レスポンスを読み込むと
+警告が出るので、再取得してください。
 
 ほかに次の形式も読み込めます。
 
@@ -214,7 +236,8 @@ json.dump([e.as_dict() for e in entries], open("entries.json", "w"))
 
 結果は pymatgen の `PhaseDiagram.get_element_profile` と同じ量です。`tests/pymatgen.test.ts` で、
 pymatgen で生成した 2〜5 元系の参照データ (78 ケース) と、x・μ・平衡相・元素収支・E_hull を
-1e-6 の精度で照合しています。
+1e-6 の精度で照合しています。さらに `tests/mp-real.test.ts` で、MP の実データ (Cl-Li-P-S, 108 エントリ) について
+全エントリの E_hull が MP の値と一致すること、Li6PS5Cl の分解生成物を確認しています。
 
 ## 制限事項と注意
 
@@ -329,7 +352,9 @@ CI の pnpm は公開から 1 日未満のパッケージを拒否します (`mi
 │   └── reaction_voltage_calculator/   pymatgen 参照データ生成 (Python)
 ├── tests/
 │   ├── pymatgen.test.ts       pymatgen との照合テスト
-│   └── fixtures/              参照データ
+│   ├── fixtures/              参照データ
+│   ├── mp-real.test.ts        MP 実データでの回帰テスト
+│   └── mp/                    MP 実データ (CC BY 4.0)
 ├── docs/                      README 用の図
 ├── vite.config.ts             Vite+ 設定 (build / fmt / lint / test)
 └── pyproject.toml             Python (uv) 設定

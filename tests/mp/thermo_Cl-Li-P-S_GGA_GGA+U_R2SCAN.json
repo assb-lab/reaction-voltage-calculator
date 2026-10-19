@@ -1,0 +1,1582 @@
+{
+  "data": [
+    {
+      "material_id": "mp-aaaaaaah",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 6.0
+      },
+      "energy_per_atom": -7.9828010350000005,
+      "formation_energy_per_atom": 0.05123619218750027,
+      "energy_above_hull": 0.051236192187499974,
+      "volume": 152.79889506945906,
+      "nsites": 6,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaabz",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energy_per_atom": -2.38503404,
+      "formation_energy_per_atom": 0.0016723733333336988,
+      "energy_above_hull": 0.0016723733333336988,
+      "volume": 20.347259270998425,
+      "nsites": 1,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaacb",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 2.0
+      },
+      "energy_per_atom": -8.81325881,
+      "formation_energy_per_atom": 0.18881750202380942,
+      "energy_above_hull": 0.18881750202380942,
+      "volume": 28.69098873982263,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaacz",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 32.0
+      },
+      "energy_per_atom": -8.0340372271875,
+      "formation_energy_per_atom": 0.0,
+      "energy_above_hull": 0.0,
+      "volume": 887.5956414230244,
+      "nsites": 32,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaadf",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 56.0
+      },
+      "energy_per_atom": -8.0051075625,
+      "formation_energy_per_atom": 0.02892966468750099,
+      "energy_above_hull": 0.028929664687501244,
+      "volume": 1494.2997364741343,
+      "nsites": 56,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaads",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 32.0
+      },
+      "energy_per_atom": -8.0330893815625,
+      "formation_energy_per_atom": 0.0009478456250011646,
+      "energy_above_hull": 0.0009478456250011646,
+      "volume": 899.2042490263103,
+      "nsites": 32,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaaeo",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 24.0
+      },
+      "energy_per_atom": -8.845681658750001,
+      "formation_energy_per_atom": 0.15639465327380955,
+      "energy_above_hull": 0.15639465327380897,
+      "volume": 689.6326217839045,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaafa",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 2.0
+      },
+      "energy_per_atom": -8.88944615,
+      "formation_energy_per_atom": 0.1126301620238106,
+      "energy_above_hull": 0.1126301620238106,
+      "volume": 32.28745931432384,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaaff",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energy_per_atom": -2.37705555,
+      "formation_energy_per_atom": 0.009650863333333426,
+      "energy_above_hull": 0.009650863333333426,
+      "volume": 20.34159020777027,
+      "nsites": 1,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaagb",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 4.0
+      },
+      "energy_per_atom": -8.9818617525,
+      "formation_energy_per_atom": 0.020214559523809683,
+      "energy_above_hull": 0.020214559523809683,
+      "volume": 81.83068009510166,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaaxo",
+      "formula_pretty": "PS",
+      "composition": {
+        "P": 8.0,
+        "S": 8.0
+      },
+      "energy_per_atom": -8.6688904425,
+      "formation_energy_per_atom": -0.15083367289434513,
+      "energy_above_hull": 0.026489451484373205,
+      "volume": 405.47341626624575,
+      "nsites": 16,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaabao",
+      "formula_pretty": "P4S5",
+      "composition": {
+        "P": 8.0,
+        "S": 10.0
+      },
+      "energy_per_atom": -8.653892881666668,
+      "formation_energy_per_atom": -0.18961606121858507,
+      "energy_above_hull": 0.005537089583331323,
+      "volume": 469.0018517014797,
+      "nsites": 18,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaabci",
+      "formula_pretty": "Li3P",
+      "composition": {
+        "Li": 6.0,
+        "P": 2.0
+      },
+      "energy_per_atom": -4.849909675,
+      "formation_energy_per_atom": -0.8093607869940476,
+      "energy_above_hull": 0.0,
+      "volume": 116.35462957137251,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaabrh",
+      "formula_pretty": "Li2S",
+      "composition": {
+        "Li": 8.0,
+        "S": 4.0
+      },
+      "energy_per_atom": -4.093691815000001,
+      "formation_energy_per_atom": -1.4419439997222228,
+      "energy_above_hull": 0.061509288333333245,
+      "volume": 170.8923316814056,
+      "nsites": 12,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaabsj",
+      "formula_pretty": "Li2S",
+      "composition": {
+        "Li": 2.0,
+        "S": 1.0
+      },
+      "energy_per_atom": -4.155201103333334,
+      "formation_energy_per_atom": -1.503453288055556,
+      "energy_above_hull": 0.0,
+      "volume": 45.579160174025624,
+      "nsites": 3,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaacem",
+      "formula_pretty": "P4S3",
+      "composition": {
+        "P": 32.0,
+        "S": 24.0
+      },
+      "energy_per_atom": -8.741601223214285,
+      "formation_energy_per_atom": -0.1543988046917509,
+      "energy_above_hull": 0.0,
+      "volume": 1505.202911217807,
+      "nsites": 56,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaacen",
+      "formula_pretty": "P4S3",
+      "composition": {
+        "P": 16.0,
+        "S": 12.0
+      },
+      "energy_per_atom": -8.738509939285715,
+      "formation_energy_per_atom": -0.15130752076317883,
+      "energy_above_hull": 0.0030912839285708316,
+      "volume": 753.5181609138565,
+      "nsites": 28,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaadou",
+      "formula_pretty": "LiP5",
+      "composition": {
+        "Li": 4.0,
+        "P": 20.0
+      },
+      "energy_per_atom": -8.138567135,
+      "formation_energy_per_atom": -0.23905247275793565,
+      "energy_above_hull": 0.007694938690475439,
+      "volume": 460.0201323636716,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaadxy",
+      "formula_pretty": "P4S7",
+      "composition": {
+        "P": 16.0,
+        "S": 28.0
+      },
+      "energy_per_atom": -8.607139174545454,
+      "formation_energy_per_atom": -0.22108773469020482,
+      "energy_above_hull": 0.0,
+      "volume": 1137.9158459348423,
+      "nsites": 44,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaksr",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 2.0
+      },
+      "energy_per_atom": -8.908563340357144,
+      "formation_energy_per_atom": 0.09351297166666583,
+      "energy_above_hull": 0.09351297166666583,
+      "volume": 32.15573096237113,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaktg",
+      "formula_pretty": "P4S5",
+      "composition": {
+        "P": 8.0,
+        "S": 10.0
+      },
+      "energy_per_atom": -8.637346151666668,
+      "formation_energy_per_atom": -0.17306933121858492,
+      "energy_above_hull": 0.022083819583331277,
+      "volume": 450.3317053768636,
+      "nsites": 18,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaoeu",
+      "formula_pretty": "LiP",
+      "composition": {
+        "Li": 8.0,
+        "P": 8.0
+      },
+      "energy_per_atom": -6.3110585625,
+      "formation_energy_per_atom": -0.6166671998214284,
+      "energy_above_hull": 0.0,
+      "volume": 248.52719555021827,
+      "nsites": 16,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaapbh",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 2.0
+      },
+      "energy_per_atom": -2.380718665,
+      "formation_energy_per_atom": 0.005987748333333709,
+      "energy_above_hull": 0.005987748333333709,
+      "volume": 40.20915440845307,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaaqcb",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energy_per_atom": -7.4075958003125,
+      "formation_energy_per_atom": 0.626441426875,
+      "energy_above_hull": 0.626441426875,
+      "volume": 17.09312194941744,
+      "nsites": 1,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaatbn",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 8.0
+      },
+      "energy_per_atom": -8.847505715,
+      "formation_energy_per_atom": 0.1545705970238096,
+      "energy_above_hull": 0.1545705970238096,
+      "volume": 231.3047215288384,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabhuu",
+      "formula_pretty": "Cl2",
+      "composition": {
+        "Cl": 4.0
+      },
+      "energy_per_atom": -1.84853666,
+      "formation_energy_per_atom": 0.0,
+      "energy_above_hull": 0.0,
+      "volume": 140.7080127118759,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabhwz",
+      "formula_pretty": "LiCl",
+      "composition": {
+        "Li": 4.0,
+        "Cl": 4.0
+      },
+      "energy_per_atom": -4.01950680375,
+      "formation_energy_per_atom": -2.1407770404166664,
+      "energy_above_hull": 0.0,
+      "volume": 131.42540639011227,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabijk",
+      "formula_pretty": "PCl5",
+      "composition": {
+        "P": 4.0,
+        "Cl": 20.0
+      },
+      "energy_per_atom": -3.52835783125,
+      "formation_energy_per_atom": -1.0853316936904764,
+      "energy_above_hull": 0.003938044583334133,
+      "volume": 661.1249524246367,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabijm",
+      "formula_pretty": "PCl3",
+      "composition": {
+        "P": 4.0,
+        "Cl": 12.0
+      },
+      "energy_per_atom": -3.9011690725,
+      "formation_energy_per_atom": -1.1608981961607139,
+      "energy_above_hull": 0.0,
+      "volume": 484.5099147924765,
+      "nsites": 16,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaboyx",
+      "formula_pretty": "LiP7",
+      "composition": {
+        "Li": 8.0,
+        "P": 56.0
+      },
+      "energy_per_atom": -8.3658560221875,
+      "formation_energy_per_atom": -0.19070094749999988,
+      "energy_above_hull": 0.0,
+      "volume": 1357.3671398103195,
+      "nsites": 64,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabpoq",
+      "formula_pretty": "SCl",
+      "composition": {
+        "S": 8.0,
+        "Cl": 8.0
+      },
+      "energy_per_atom": -3.4665140599999997,
+      "formation_energy_per_atom": -0.47354687374999926,
+      "energy_above_hull": 0.0,
+      "volume": 465.5479909369948,
+      "nsites": 16,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabppw",
+      "formula_pretty": "SCl2",
+      "composition": {
+        "S": 8.0,
+        "Cl": 16.0
+      },
+      "energy_per_atom": -3.1230945633333334,
+      "formation_energy_per_atom": -0.511604219166666,
+      "energy_above_hull": 0.053359090729166336,
+      "volume": 848.2355285515226,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabpxw",
+      "formula_pretty": "Li3P7",
+      "composition": {
+        "Li": 12.0,
+        "P": 28.0
+      },
+      "energy_per_atom": -7.4435614385,
+      "formation_energy_per_atom": -0.4260960960833316,
+      "energy_above_hull": 0.0,
+      "volume": 782.9438513326726,
+      "nsites": 40,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabqxy",
+      "formula_pretty": "P2S3",
+      "composition": {
+        "P": 16.0,
+        "S": 24.0
+      },
+      "energy_per_atom": -8.6192338875,
+      "formation_energy_per_atom": -0.1979810263779754,
+      "energy_above_hull": 0.011436145562498723,
+      "volume": 1029.752997139049,
+      "nsites": 40,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabwhl",
+      "formula_pretty": "LiS",
+      "composition": {
+        "Li": 1.0,
+        "S": 1.0
+      },
+      "energy_per_atom": -3.7780080750000002,
+      "formation_energy_per_atom": -0.7548477854166662,
+      "energy_above_hull": 0.43029531750000016,
+      "volume": 31.68880044902687,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabwma",
+      "formula_pretty": "LiP5",
+      "composition": {
+        "Li": 4.0,
+        "P": 20.0
+      },
+      "energy_per_atom": -8.04995546767857,
+      "formation_energy_per_atom": -0.1504408054365065,
+      "energy_above_hull": 0.09630660601190577,
+      "volume": 470.8186608267129,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaabwrj",
+      "formula_pretty": "Li2S",
+      "composition": {
+        "Li": 22.0,
+        "S": 11.0
+      },
+      "energy_per_atom": -4.080072009393938,
+      "formation_energy_per_atom": -1.4283241941161604,
+      "energy_above_hull": 0.07512909393939537,
+      "volume": 508.28445890736646,
+      "nsites": 33,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaaceng",
+      "formula_pretty": "Li2PS3",
+      "composition": {
+        "Li": 8.0,
+        "P": 4.0,
+        "S": 12.0
+      },
+      "energy_per_atom": -4.581849879166667,
+      "formation_energy_per_atom": -0.9742644798015861,
+      "energy_above_hull": 0.12146358490017306,
+      "volume": 423.35575321924426,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabevma",
+      "formula_pretty": "P2S5",
+      "composition": {
+        "P": 8.0,
+        "S": 20.0
+      },
+      "energy_per_atom": -8.526280050357142,
+      "formation_energy_per_atom": -0.21566022750212607,
+      "energy_above_hull": 0.0,
+      "volume": 768.3664039148517,
+      "nsites": 28,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabewsk",
+      "formula_pretty": "P4S9",
+      "composition": {
+        "P": 16.0,
+        "S": 36.0
+      },
+      "energy_per_atom": -8.550564723076924,
+      "formation_energy_per_atom": -0.2186693159397897,
+      "energy_above_hull": 0.0,
+      "volume": 1421.2464868262073,
+      "nsites": 52,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfqdk",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 9.0
+      },
+      "energy_per_atom": -8.004657398888888,
+      "formation_energy_per_atom": 0.029379828298611226,
+      "energy_above_hull": 0.02937982829861241,
+      "volume": 233.2140733904172,
+      "nsites": 9,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfqjj",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 72.0
+      },
+      "energy_per_atom": -8.020412214583333,
+      "formation_energy_per_atom": 0.01362501260416751,
+      "energy_above_hull": 0.013625012604167708,
+      "volume": 1965.586216616651,
+      "nsites": 72,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfqwz",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 72.0
+      },
+      "energy_per_atom": -8.002697388472221,
+      "formation_energy_per_atom": 0.03133983871527827,
+      "energy_above_hull": 0.031339838715279456,
+      "volume": 1964.8708235426507,
+      "nsites": 72,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfsah",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 32.0
+      },
+      "energy_per_atom": -8.00033874375,
+      "formation_energy_per_atom": 0.033698483437500926,
+      "energy_above_hull": 0.033698483437500926,
+      "volume": 854.1055156784778,
+      "nsites": 32,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfseo",
+      "formula_pretty": "Li2S",
+      "composition": {
+        "Li": 4.0,
+        "S": 2.0
+      },
+      "energy_per_atom": -3.9802377733333336,
+      "formation_energy_per_atom": -1.3284899580555554,
+      "energy_above_hull": 0.1749633300000002,
+      "volume": 95.0294518788338,
+      "nsites": 6,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfsno",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 20.0
+      },
+      "energy_per_atom": -8.007317802,
+      "formation_energy_per_atom": 0.026719425187499722,
+      "energy_above_hull": 0.026719425187501145,
+      "volume": 552.1624687973817,
+      "nsites": 20,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfsrw",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 36.0
+      },
+      "energy_per_atom": -8.021751542222223,
+      "formation_energy_per_atom": 0.01228568496527771,
+      "energy_above_hull": 0.01228568496527771,
+      "volume": 993.3686792517286,
+      "nsites": 36,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfsup",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 28.0
+      },
+      "energy_per_atom": -8.003902463214285,
+      "formation_energy_per_atom": 0.030134763973215684,
+      "energy_above_hull": 0.030134763973215684,
+      "volume": 746.6490425344975,
+      "nsites": 28,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabftgn",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 48.0
+      },
+      "energy_per_atom": -8.033665596875,
+      "formation_energy_per_atom": 0.0003716303125003151,
+      "energy_above_hull": 0.0003716303125003151,
+      "volume": 1353.5227071072102,
+      "nsites": 48,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabftmc",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 24.0
+      },
+      "energy_per_atom": -8.023738200416666,
+      "formation_energy_per_atom": 0.010299026770834274,
+      "energy_above_hull": 0.010299026770834274,
+      "volume": 664.8035179939542,
+      "nsites": 24,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfuwq",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 80.0
+      },
+      "energy_per_atom": -8.020091208124999,
+      "formation_energy_per_atom": 0.01394601906250017,
+      "energy_above_hull": 0.013946019062501591,
+      "volume": 2280.281118166013,
+      "nsites": 80,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfyle",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 88.0
+      },
+      "energy_per_atom": -8.0062967925,
+      "formation_energy_per_atom": 0.027740434687500357,
+      "energy_above_hull": 0.02774043468749987,
+      "volume": 2480.4978859920143,
+      "nsites": 88,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabfyqr",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 28.0
+      },
+      "energy_per_atom": -8.015491559285715,
+      "formation_energy_per_atom": 0.018545667901786293,
+      "energy_above_hull": 0.018545667901785023,
+      "volume": 798.5715364141055,
+      "nsites": 28,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabghgr",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 8.0
+      },
+      "energy_per_atom": -2.37788695,
+      "formation_energy_per_atom": 0.008819463333333388,
+      "energy_above_hull": 0.008819463333333388,
+      "volume": 161.75350839454015,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabgito",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 84.0
+      },
+      "energy_per_atom": -9.00207631202381,
+      "formation_energy_per_atom": 0.0,
+      "energy_above_hull": 0.0,
+      "volume": 1935.1232668474006,
+      "nsites": 84,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabgkik",
+      "formula_pretty": "PCl5",
+      "composition": {
+        "P": 3.0,
+        "Cl": 15.0
+      },
+      "energy_per_atom": -3.5322958758333343,
+      "formation_energy_per_atom": -1.0892697382738104,
+      "energy_above_hull": 0.0,
+      "volume": 472.63025157637736,
+      "nsites": 18,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabgmja",
+      "formula_pretty": "Cl2",
+      "composition": {
+        "Cl": 16.0
+      },
+      "energy_per_atom": -1.813558165,
+      "formation_energy_per_atom": 0.03497849499999983,
+      "energy_above_hull": 0.03497849499999983,
+      "volume": 1135.6489244522656,
+      "nsites": 16,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabgyvw",
+      "formula_pretty": "P4S9",
+      "composition": {
+        "P": 32.0,
+        "S": 72.0
+      },
+      "energy_per_atom": -8.54933666798079,
+      "formation_energy_per_atom": -0.2174412608436547,
+      "energy_above_hull": 0.0012280550961349945,
+      "volume": 3341.8628130291704,
+      "nsites": 104,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabhenw",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 104.0
+      },
+      "energy_per_atom": -8.007966474807692,
+      "formation_energy_per_atom": 0.026070752379807844,
+      "energy_above_hull": 0.026070752379808937,
+      "volume": 2928.126783960359,
+      "nsites": 104,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabijyv",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 4.0
+      },
+      "energy_per_atom": -2.124907669166667,
+      "formation_energy_per_atom": 0.2617987441666667,
+      "energy_above_hull": 0.2617987441666667,
+      "volume": 88.57255898929115,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabipom",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 18.0
+      },
+      "energy_per_atom": -7.593894283090277,
+      "formation_energy_per_atom": 0.4401429440972227,
+      "energy_above_hull": 0.4401429440972233,
+      "volume": 1105.4151880657635,
+      "nsites": 18,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabkngx",
+      "formula_pretty": "Li7P3S11",
+      "composition": {
+        "Li": 14.0,
+        "P": 6.0,
+        "S": 22.0
+      },
+      "energy_per_atom": -4.6652923416666665,
+      "formation_energy_per_atom": -1.0881373187981853,
+      "energy_above_hull": 0.019883183531745452,
+      "volume": 876.7672645547459,
+      "nsites": 42,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaablhdt",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 18.0
+      },
+      "energy_per_atom": -7.676728498645834,
+      "formation_energy_per_atom": 0.35730872854166607,
+      "energy_above_hull": 0.35730872854166673,
+      "volume": 894.4922654838493,
+      "nsites": 18,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaablypf",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 32.0
+      },
+      "energy_per_atom": -8.013310856875,
+      "formation_energy_per_atom": 0.020726370312500464,
+      "energy_above_hull": 0.020726370312500464,
+      "volume": 1159.350511707649,
+      "nsites": 32,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabmjhe",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 1.0
+      },
+      "energy_per_atom": -5.484301655357143,
+      "formation_energy_per_atom": 3.517774656666667,
+      "energy_above_hull": 3.517774656666667,
+      "volume": 122.02536719835948,
+      "nsites": 1,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabmyvp",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energy_per_atom": -6.732754460312501,
+      "formation_energy_per_atom": 1.3012827668749996,
+      "energy_above_hull": 1.3012827668749996,
+      "volume": 15.851947022234326,
+      "nsites": 1,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabpebg",
+      "formula_pretty": "Li2S",
+      "composition": {
+        "Li": 22.0,
+        "S": 11.0
+      },
+      "energy_per_atom": -4.0732109603030295,
+      "formation_energy_per_atom": -1.4214631450252517,
+      "energy_above_hull": 0.08199014303030427,
+      "volume": 508.2843531047319,
+      "nsites": 33,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaabpewf",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 4.0
+      },
+      "energy_per_atom": -5.483076395357143,
+      "formation_energy_per_atom": 3.518999916666667,
+      "energy_above_hull": 3.518999916666667,
+      "volume": 626.3359999999999,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacdokh",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 4.0
+      },
+      "energy_per_atom": -2.3808173225,
+      "formation_energy_per_atom": 0.0058890908333335545,
+      "energy_above_hull": 0.0058890908333335545,
+      "volume": 81.46327565480371,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacebzb",
+      "formula_pretty": "Li3PS4",
+      "composition": {
+        "Li": 12.0,
+        "P": 4.0,
+        "S": 16.0
+      },
+      "energy_per_atom": -4.6432519840625,
+      "formation_energy_per_atom": -1.1817728621428567,
+      "energy_above_hull": 0.0,
+      "volume": 644.980015636747,
+      "nsites": 32,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacebzk",
+      "formula_pretty": "Li6PS5Cl",
+      "composition": {
+        "Li": 6.0,
+        "P": 1.0,
+        "S": 5.0,
+        "Cl": 1.0
+      },
+      "energy_per_atom": -4.351717759230769,
+      "formation_energy_per_atom": -1.3205996093956036,
+      "energy_above_hull": 0.0829463015384615,
+      "volume": 271.55370202531924,
+      "nsites": 13,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaceptv",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 8.0
+      },
+      "energy_per_atom": -7.99184054,
+      "formation_energy_per_atom": 0.04219668718750036,
+      "energy_above_hull": 0.04219668718750036,
+      "volume": 5791.136965649507,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaceqmj",
+      "formula_pretty": "LiS4",
+      "composition": {
+        "Li": 2.0,
+        "S": 8.0
+      },
+      "energy_per_atom": -4.303887513,
+      "formation_energy_per_atom": -0.6121847696666656,
+      "energy_above_hull": 0.0,
+      "volume": 2115.0784624047956,
+      "nsites": 10,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaceywr",
+      "formula_pretty": "Li48P16S61",
+      "composition": {
+        "Li": 48.0,
+        "P": 16.0,
+        "S": 61.0
+      },
+      "energy_per_atom": -4.61059931408,
+      "formation_energy_per_atom": -1.1653422383342849,
+      "energy_above_hull": 0.018982198731428035,
+      "volume": 2652.9519320879044,
+      "nsites": 125,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacfgiw",
+      "formula_pretty": "P2S7",
+      "composition": {
+        "P": 4.0,
+        "S": 14.0
+      },
+      "energy_per_atom": -8.42160427111111,
+      "formation_energy_per_atom": -0.17244724729331848,
+      "energy_above_hull": 0.0016519577777778238,
+      "volume": 465.996426684307,
+      "nsites": 18,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacfsan",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 4.0
+      },
+      "energy_per_atom": -8.948089115,
+      "formation_energy_per_atom": 0.05398719702380994,
+      "energy_above_hull": 0.05398719702380994,
+      "volume": 530.1930428902824,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacfyda",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 3.0
+      },
+      "energy_per_atom": -2.3867064133333336,
+      "formation_energy_per_atom": 0.0,
+      "energy_above_hull": 0.0,
+      "volume": 61.205660097660434,
+      "nsites": 3,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacgiws",
+      "formula_pretty": "LiP3",
+      "composition": {
+        "Li": 2.0,
+        "P": 6.0
+      },
+      "energy_per_atom": -7.051785013973215,
+      "formation_energy_per_atom": 0.2964488233779754,
+      "energy_above_hull": 0.6552891627232134,
+      "volume": 124.81950337568067,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaachfdi",
+      "formula_pretty": "Li5P(S2Cl)2",
+      "composition": {
+        "Li": 5.0,
+        "P": 1.0,
+        "S": 4.0,
+        "Cl": 2.0
+      },
+      "energy_per_atom": -4.419001431666667,
+      "formation_energy_per_atom": -1.4851054292757933,
+      "energy_above_hull": 0.016335492291666753,
+      "volume": 227.9624165769512,
+      "nsites": 12,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacidye",
+      "formula_pretty": "LiS",
+      "composition": {
+        "Li": 1.0,
+        "S": 1.0
+      },
+      "energy_per_atom": -3.89905467,
+      "formation_energy_per_atom": -0.8758943804166659,
+      "energy_above_hull": 0.30924872250000046,
+      "volume": 33.509623443692156,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacimmv",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 3.0
+      },
+      "energy_per_atom": -2.37103553,
+      "formation_energy_per_atom": 0.015670883333333368,
+      "energy_above_hull": 0.015670883333333663,
+      "volume": 61.27228985134278,
+      "nsites": 3,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacinyq",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energy_per_atom": -6.8965534403125,
+      "formation_energy_per_atom": 1.1374837868750003,
+      "energy_above_hull": 1.1374837868750003,
+      "volume": 15.796038368311807,
+      "nsites": 1,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacipiz",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 4.0
+      },
+      "energy_per_atom": -7.6843734528125,
+      "formation_energy_per_atom": 0.3496637743750002,
+      "energy_above_hull": 0.3496637743750002,
+      "volume": 102.34700503620633,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacipve",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 4.0
+      },
+      "energy_per_atom": -7.6864095228125,
+      "formation_energy_per_atom": 0.34762770437500023,
+      "energy_above_hull": 0.34762770437500023,
+      "volume": 134.76762632015075,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaackglt",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 4.0
+      },
+      "energy_per_atom": -7.4631677603125,
+      "formation_energy_per_atom": 0.5708694668750001,
+      "energy_above_hull": 0.5708694668750001,
+      "volume": 104.20823614973897,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaackglv",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 10.0
+      },
+      "energy_per_atom": -8.915710175,
+      "formation_energy_per_atom": 0.08636613702381055,
+      "energy_above_hull": 0.08636613702381091,
+      "volume": 677.0461363781266,
+      "nsites": 10,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaackkvs",
+      "formula_pretty": "Li3PS4",
+      "composition": {
+        "Li": 12.0,
+        "P": 4.0,
+        "S": 16.0
+      },
+      "energy_per_atom": -4.6294222178125,
+      "formation_energy_per_atom": -1.167943095892857,
+      "energy_above_hull": 0.013829766249999764,
+      "volume": 641.378926570538,
+      "nsites": 32,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacktvf",
+      "formula_pretty": "Li",
+      "composition": {
+        "Li": 12.0
+      },
+      "energy_per_atom": -2.3313269408333332,
+      "formation_energy_per_atom": 0.055379472500000006,
+      "energy_above_hull": 0.055379472500000304,
+      "volume": 242.5665872337491,
+      "nsites": 12,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacltxn",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 4.0
+      },
+      "energy_per_atom": -8.129078745357145,
+      "formation_energy_per_atom": 0.8729975666666654,
+      "energy_above_hull": 0.8729975666666654,
+      "volume": 343.5168523410875,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacnhuq",
+      "formula_pretty": "P2S3",
+      "composition": {
+        "P": 4.0,
+        "S": 6.0
+      },
+      "energy_per_atom": -8.573795075,
+      "formation_energy_per_atom": -0.15254221387797456,
+      "energy_above_hull": 0.056874958062499203,
+      "volume": 1257.3259177445318,
+      "nsites": 10,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacnhuw",
+      "formula_pretty": "P2S3",
+      "composition": {
+        "P": 8.0,
+        "S": 12.0
+      },
+      "energy_per_atom": -8.595218916499999,
+      "formation_energy_per_atom": -0.17396605537797427,
+      "energy_above_hull": 0.03545111656250022,
+      "volume": 489.054292585416,
+      "nsites": 20,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpdat",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 4.0
+      },
+      "energy_per_atom": -7.6789978728125,
+      "formation_energy_per_atom": 0.3550393543750001,
+      "energy_above_hull": 0.3550393543750001,
+      "volume": 119.08171561035157,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpdav",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 4.0
+      },
+      "energy_per_atom": -7.689612260312501,
+      "formation_energy_per_atom": 0.3444249668749997,
+      "energy_above_hull": 0.3444249668749997,
+      "volume": 125.51793854022799,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpdax",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 4.0
+      },
+      "energy_per_atom": -7.6856301928125,
+      "formation_energy_per_atom": 0.34840703437500053,
+      "energy_above_hull": 0.34840703437500053,
+      "volume": 157.41454155871742,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpdog",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 2.0
+      },
+      "energy_per_atom": -8.125758350357144,
+      "formation_energy_per_atom": 0.8763179616666665,
+      "energy_above_hull": 0.8763179616666665,
+      "volume": 344.5304806352939,
+      "nsites": 2,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpeiq",
+      "formula_pretty": "LiS",
+      "composition": {
+        "Li": 4.0,
+        "S": 4.0
+      },
+      "energy_per_atom": -3.9964160625000003,
+      "formation_energy_per_atom": -0.9732557729166662,
+      "energy_above_hull": 0.21188733000000015,
+      "volume": 159.53202413914588,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpllf",
+      "formula_pretty": "LiCl",
+      "composition": {
+        "Li": 2.0,
+        "Cl": 2.0
+      },
+      "energy_per_atom": -4.0156540475,
+      "formation_energy_per_atom": -2.1369242841666667,
+      "energy_above_hull": 0.0038527562499997003,
+      "volume": 84.81000959835224,
+      "nsites": 4,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacpnvi",
+      "formula_pretty": "S3Cl",
+      "composition": {
+        "S": 6.0,
+        "Cl": 2.0
+      },
+      "energy_per_atom": -3.4884923724999997,
+      "formation_energy_per_atom": 0.07669007687500162,
+      "energy_above_hull": 0.3134635137500008,
+      "volume": 198.74095391314745,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacprdp",
+      "formula_pretty": "P2S3",
+      "composition": {
+        "P": 8.0,
+        "S": 12.0
+      },
+      "energy_per_atom": -8.616480052,
+      "formation_energy_per_atom": -0.19522719087797497,
+      "energy_above_hull": 0.014189981062498802,
+      "volume": 516.2618929958488,
+      "nsites": 20,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacqclz",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 80.0
+      },
+      "energy_per_atom": -8.0235285951875,
+      "formation_energy_per_atom": 0.010508631999999806,
+      "energy_above_hull": 0.010508632000000517,
+      "volume": 2580.2870495954758,
+      "nsites": 80,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacqfgu",
+      "formula_pretty": "P",
+      "composition": {
+        "P": 42.0
+      },
+      "energy_per_atom": -8.999905293333333,
+      "formation_energy_per_atom": 0.002171018690476211,
+      "energy_above_hull": 0.002171018690477311,
+      "volume": 1005.506016560507,
+      "nsites": 42,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacqhbm",
+      "formula_pretty": "P2S7",
+      "composition": {
+        "P": 8.0,
+        "S": 28.0
+      },
+      "energy_per_atom": -8.423256228888889,
+      "formation_energy_per_atom": -0.1740992050710967,
+      "energy_above_hull": 0.0,
+      "volume": 952.5813284124191,
+      "nsites": 36,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacqwpw",
+      "formula_pretty": "SCl4",
+      "composition": {
+        "S": 32.0,
+        "Cl": 128.0
+      },
+      "energy_per_atom": -2.9444053293124997,
+      "formation_energy_per_atom": -0.6380964588124993,
+      "energy_above_hull": 0.0,
+      "volume": 4367.596269856132,
+      "nsites": 160,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacqxxk",
+      "formula_pretty": "Li7PS6",
+      "composition": {
+        "Li": 28.0,
+        "P": 4.0,
+        "S": 24.0
+      },
+      "energy_per_atom": -4.401557397678571,
+      "formation_energy_per_atom": -1.2871059786054413,
+      "energy_above_hull": 0.03252992321428483,
+      "volume": 1001.8308825413908,
+      "nsites": 56,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacrktx",
+      "formula_pretty": "P2S",
+      "composition": {
+        "P": 4.0,
+        "S": 2.0
+      },
+      "energy_per_atom": -8.44110058549603,
+      "formation_energy_per_atom": 0.23829603158234272,
+      "energy_above_hull": 0.3583839907870381,
+      "volume": 97.45293015592594,
+      "nsites": 6,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaacroql",
+      "formula_pretty": "Li2PS3",
+      "composition": {
+        "Li": 4.0,
+        "P": 2.0,
+        "S": 6.0
+      },
+      "energy_per_atom": -4.577195875,
+      "formation_energy_per_atom": -0.9696104756349193,
+      "energy_above_hull": 0.12611758906683956,
+      "volume": 210.40515661506402,
+      "nsites": 12,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaaeinef",
+      "formula_pretty": "S",
+      "composition": {
+        "S": 80.0
+      },
+      "energy_per_atom": -8.027713336625,
+      "formation_energy_per_atom": 0.006323890562499912,
+      "energy_above_hull": 0.006323890562500267,
+      "volume": 2206.68632123838,
+      "nsites": 80,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    },
+    {
+      "material_id": "mp-aaafuprn",
+      "formula_pretty": "Li3PS4",
+      "composition": {
+        "Li": 3.0,
+        "P": 1.0,
+        "S": 4.0
+      },
+      "energy_per_atom": -4.63583138875,
+      "formation_energy_per_atom": -1.1743522668303563,
+      "energy_above_hull": 0.007420595312500389,
+      "volume": 159.510987889477,
+      "nsites": 8,
+      "deprecated": false,
+      "thermo_type": "GGA_GGA+U_R2SCAN"
+    }
+  ],
+  "meta": {
+    "total_doc": 108
+  }
+}

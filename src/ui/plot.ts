@@ -94,6 +94,14 @@ export function renderProfileSvg(profile: Profile): string {
     .profile-svg .cell-label { font-size: 11px; }
   </style>`);
 
+  if (profile.stabilized) {
+    const source =
+      profile.eAboveHull === null
+        ? "仮想相"
+        : `元の E_hull: ${formatNumber(profile.eAboveHull * 1000, 1)} meV/atom`;
+    parts.push(`<text class="muted" x="60" y="13">対象相を hull 補正 (${source})</text>`);
+  }
+
   // Stability window band across both panels.
   if (window?.targetIsPhase && window.high > window.low + 1e-9) {
     const y1 = Y(Math.min(window.high, vTop));

@@ -18,6 +18,12 @@ export const ION_CHARGE: Record<string, number> = {
 };
 
 const T_TOL = 1e-7;
+/**
+ * Minimum stabilisation (eV/atom). A target placed exactly on the hull usually lies on a facet of
+ * its decomposition products, which makes the equilibrium at x = 0 degenerate; lowering it by a
+ * negligible amount makes it a hull vertex, so δ = 0 yields the limiting stability window.
+ */
+const STABILIZE_EPS = 1e-7;
 const E_TOL = 1e-9;
 
 export interface PhaseAmount {
@@ -65,8 +71,10 @@ export interface StabilityWindow {
 export interface StabilizeOptions {
   /** Put the target onto the hull (useful for metastable phases). */
   enabled: boolean;
-  /** Extra stabilisation below the hull (eV/atom). */
+  /** Extra stabilisation below the hull (eV/atom). 0 means infinitesimally below (see STABILIZE_EPS). */
   delta: number;
+  /** Set false to leave an absent target unassessed instead of creating a virtual phase. */
+  allowVirtual?: boolean;
 }
 
 export interface ProfileInput {
@@ -205,9 +213,10 @@ export function computeProfile(input: ProfileInput): Profile {
 
   let set: PreparedSet = base;
   let targetEntry = best?.entry ?? null;
-  const stabilized = !!input.stabilize?.enabled;
+  const stabilized =
+    !!input.stabilize?.enabled && (!!best || input.stabilize.allowVirtual !== false);
   if (stabilized) {
-    const f = hullAll - Math.max(0, input.stabilize!.delta);
+    const f = hullAll - Math.max(0, input.stabilize!.delta) - STABILIZE_EPS;
     const refE = Object.entries(targetFrac).reduce((s, [el, x]) => s + x * base.refs[el], 0);
     targetEntry = best
       ? { ...best.entry, energyPerAtom: f + refE }

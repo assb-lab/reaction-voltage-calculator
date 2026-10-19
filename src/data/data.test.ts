@@ -18,6 +18,7 @@ const docs: ThermoDoc[] = [
     formula_pretty: "Li",
     composition: { Li: 2 },
     energy_per_atom: -1.9,
+    formation_energy_per_atom: 0,
     thermo_type: "R2SCAN",
   },
   {
@@ -25,6 +26,7 @@ const docs: ThermoDoc[] = [
     formula_pretty: "S",
     composition: { S: 32 },
     energy_per_atom: -4.1,
+    formation_energy_per_atom: 0,
     thermo_type: "R2SCAN",
   },
   {
@@ -32,6 +34,7 @@ const docs: ThermoDoc[] = [
     formula_pretty: "Li2S",
     composition: { Li: 8, S: 4 },
     energy_per_atom: -1.5 + (2 / 3) * -1.9 + (1 / 3) * -4.1,
+    formation_energy_per_atom: -1.5,
     thermo_type: "R2SCAN",
     volume: 186,
     nsites: 12,
@@ -65,7 +68,7 @@ describe("fetchThermoEntries", () => {
     const fetchFn = vi.fn(async () =>
       jsonResponse({ data: docs, meta: { total_doc: docs.length } }),
     );
-    const entries = await fetchThermoEntries({
+    const { entries } = await fetchThermoEntries({
       apiKey: "k",
       elements: ["Li", "S"],
       thermoType: "R2SCAN",
@@ -86,7 +89,7 @@ describe("fetchThermoEntries", () => {
       .fn()
       .mockResolvedValueOnce(jsonResponse({ data: page1, meta: { total_doc: 1001 } }))
       .mockResolvedValueOnce(jsonResponse({ data: [docs[1]], meta: { total_doc: 1001 } }));
-    const entries = await fetchThermoEntries({
+    const { entries } = await fetchThermoEntries({
       apiKey: "k",
       elements: ["Li", "S"],
       thermoType: "R2SCAN",
@@ -110,7 +113,7 @@ describe("fetchThermoEntries", () => {
 describe("entry JSON", () => {
   it("round-trips and gives the same profile", async () => {
     const fetchFn = vi.fn(async () => jsonResponse({ data: docs }));
-    const entries = await fetchThermoEntries({
+    const { entries } = await fetchThermoEntries({
       apiKey: "k",
       elements: ["Li", "S"],
       thermoType: "R2SCAN",
