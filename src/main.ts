@@ -17,7 +17,7 @@ import { demoEntrySet } from "./ui/demo";
 import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
 import { mountChart, voltageRange, type Chart } from "./ui/chart";
-import { escapeHtml, formulaHtml } from "./ui/html";
+import { escapeHtml, formulaHtml, idLinkHtml, phaseLinkHtml } from "./ui/html";
 import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
@@ -187,7 +187,7 @@ function render(p: Profile): void {
       : `${formatNumber(p.eAboveHull * 1000, 1)} meV/atom`;
   $("summary").innerHTML = `
     <div><span>${t("summary.window")}${p.stabilized ? t("summary.hullCorrected") : ""}</span><strong>${windowText}</strong></div>
-    <div><span>E<sub>hull</sub> (${formulaHtml(p.formula)})</span><strong>${hull}</strong></div>
+    <div><span>E<sub>hull</sub> (${formulaHtml(p.formula)}${p.targetEntry && p.eAboveHull !== null ? `, ${idLinkHtml(p.targetEntry.id)}` : ""})</span><strong>${hull}</strong></div>
     <div><span>${t("summary.regions")}</span><strong>${p.regions.length} / ${p.plateaus.length}</strong></div>
     <div><span>${t("summary.entries")}</span><strong>${p.nEntries}</strong></div>
     ${p.stabilized ? `<p class="note">${Number(delta.value) > 0 ? t("note.stabilizedBelow", { formula: formulaHtml(p.formula), delta: formatNumber(Number(delta.value)) }) : t("note.stabilizedOn", { formula: formulaHtml(p.formula) })}</p>` : ""}
@@ -206,10 +206,7 @@ function render(p: Profile): void {
       const atZero = Math.abs(r.x) < 1e-9;
       const side = atZero ? "" : r.x < 0 ? "ox" : "red";
       const phases = r.phases
-        .map(
-          (ph) =>
-            `<span title="${escapeHtml(ph.entry.id)}">${formatNumber(ph.amount)} ${formulaHtml(ph.entry.name)}</span>`,
-        )
+        .map((ph) => `<span>${formatNumber(ph.amount)} ${phaseLinkHtml(ph.entry)}</span>`)
         .join(" + ");
       return `<tr class="${side}${atZero ? " zero" : ""}">
         <td>${fmtV(r.vMin)} – ${fmtV(r.vMax)}</td>

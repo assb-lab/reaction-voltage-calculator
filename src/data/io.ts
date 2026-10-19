@@ -2,6 +2,7 @@ import type { Entry } from "../core/entries";
 import { formatFormula, numAtoms, reduceComposition, type Composition } from "../core/formula";
 import { alignToMpHull, docsToEntries, PER_PAGE, type EnergyBasis, type ThermoDoc } from "./mp";
 import { t } from "../i18n";
+import { normalizeMpId } from "../core/mpid";
 
 export interface EntrySet {
   version: 1;
@@ -48,7 +49,7 @@ function fromPymatgen(d: PymatgenEntryDict, i: number): Entry {
   }
   if (!isNumber(adjust)) throw new Error(t("io.correctionNaN", { i }));
   return {
-    id: d.entry_id ?? d.data?.material_id ?? `entry-${i}`,
+    id: normalizeMpId(d.entry_id ?? d.data?.material_id ?? `entry-${i}`),
     name: formatFormula(reduceComposition(d.composition).reduced),
     composition: d.composition,
     energyPerAtom: (d.energy + adjust) / atoms,
@@ -78,7 +79,7 @@ function validateEntry(e: Entry, i: number): Entry {
   return {
     ...e,
     composition,
-    id: String(e.id ?? `entry-${i}`),
+    id: normalizeMpId(String(e.id ?? `entry-${i}`)),
     name: e.name ?? formatFormula(reduceComposition(composition).reduced),
   };
 }

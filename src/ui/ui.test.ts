@@ -3,6 +3,7 @@ import { atomicFractions, computeProfile } from "../core/profile";
 import { demoEntrySet } from "./demo";
 import { profileToCsv, profileToJson } from "./export";
 import { formulaTspans, renderProfileSvg } from "./plot";
+import { idLinkHtml, phaseLinkHtml } from "./html";
 
 const profile = computeProfile({ entries: demoEntrySet().entries, formula: "Li6PS5Cl", ion: "Li" });
 
@@ -106,5 +107,21 @@ describe("phase equilibria grid", () => {
     expect(widths).toHaveLength(3);
     const total = widths.reduce((s, [, w]) => s + w, 0);
     for (const [name, w] of widths) expect(w / total).toBeCloseTo(byName[name], 9);
+  });
+});
+
+describe("phase links", () => {
+  it("links MP entries to their materials page and escapes names", () => {
+    const html = phaseLinkHtml({ id: "mp-aaacebzk", name: "Li6PS5Cl" });
+    expect(html).toContain('href="https://materialsproject.org/materials/mp-985592"');
+    expect(html).toContain('target="_blank" rel="noopener noreferrer"');
+    expect(html).toContain("Li<sub>6</sub>PS<sub>5</sub>Cl");
+    expect(phaseLinkHtml({ id: "demo-1", name: "<b>" })).toBe(
+      '<span title="demo-1">&lt;b&gt;</span>',
+    );
+    expect(idLinkHtml("mp-149")).toBe(
+      '<a href="https://materialsproject.org/materials/mp-149" target="_blank" rel="noopener noreferrer">mp-149</a>',
+    );
+    expect(idLinkHtml("virtual")).toBe("virtual");
   });
 });

@@ -114,6 +114,7 @@ export const en: Record<MessageKey, string> = {
     "The exclusion removed every elemental entry of {elements}. Elements are the reference for formation energies and cannot be excluded; check the phases to exclude.",
 
   // Tooltip and figure
+  "link.openMp": "Open {id} on Materials Project",
   "tip.plateau": "Plateau {v} V",
   "tip.uptake": "x: {from} → {to} ({dx} {ion} taken up)",
   "tip.range": "Voltage range: {range}",

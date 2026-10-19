@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { prepareEntries } from "../src/core/entries";
+import { excludeEntries, prepareEntries } from "../src/core/entries";
 import { computeProfile, hullEnergy, regionReaction } from "../src/core/profile";
 import { parseEntryFiles, parseEntrySet } from "../src/data/io";
 import { renderProfileSvg } from "../src/ui/plot";
@@ -13,6 +13,14 @@ describe("real MP data: Cl-Li-P-S, GGA_GGA+U_R2SCAN", () => {
   it("uses formation energies", () => {
     expect(set.energyBasis).toBe("formation");
     expect(set.entries).toHaveLength(108);
+  });
+
+  it("converts MP AlphaIDs (mp-aaacebzk) to the legacy ids used on the MP website", () => {
+    expect(set.entries.every((e) => /^mp-\d+$/.test(e.id))).toBe(true);
+    const lpsc = set.entries.find((e) => e.name === "Li6PS5Cl");
+    expect(lpsc?.id).toBe("mp-985592");
+    for (const item of ["mp-985592", "mp-aaacebzk"])
+      expect(excludeEntries(set.entries, [item]).excluded.map((e) => e.id)).toEqual(["mp-985592"]);
   });
 
   it("reproduces MP's energy above hull for every entry", () => {
@@ -55,7 +63,7 @@ describe("real MP data: Cl-Li-P-S, GGA_GGA+U_R2SCAN", () => {
       (r) => r.phases.length === 1 && r.phases[0].entry.name === "Li6PS5Cl",
     );
     expect(target?.x).toBeCloseTo(0, 9);
-    expect(target?.phases[0].entry.id).toBe("mp-aaacebzk");
+    expect(target?.phases[0].entry.id).toBe("mp-985592");
     expect(target?.phases[0].amount).toBeCloseTo(1, 9);
     expect(p.eAboveHull).toBeCloseTo(0.0829463, 6);
     const svg = renderProfileSvg(p);
@@ -68,7 +76,7 @@ describe("real MP data: Cl-Li-P-S, GGA_GGA+U_R2SCAN", () => {
     expect(exported.stabilized).toBe(true);
     expect(
       exported.regions.some((r: { phases: { id: string }[] }) =>
-        r.phases.some((e) => e.id === "mp-aaacebzk"),
+        r.phases.some((e) => e.id === "mp-985592"),
       ),
     ).toBe(true);
   });

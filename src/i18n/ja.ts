@@ -112,6 +112,7 @@ export const ja = {
     "除外により {elements} の単体エントリがなくなりました。単体は生成エネルギーの基準なので除外できません。除外する相を見直してください。",
 
   // Tooltip and figure
+  "link.openMp": "Materials Project で {id} を開く",
   "tip.plateau": "プラトー {v} V",
   "tip.uptake": "x: {from} → {to} ({ion} {dx} 取込)",
   "tip.range": "電位範囲: {range}",
