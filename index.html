@@ -5,20 +5,34 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reaction Voltage Calculator</title>
+    <script>
+      // Apply the saved theme before the first paint (see src/ui/theme.ts).
+      try {
+        const t = localStorage.getItem("rvc.theme");
+        if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
   </head>
   <body>
     <header class="page-header">
       <div class="title-row">
         <h1>Reaction Voltage Calculator</h1>
-        <button
-          id="helpToggle"
-          type="button"
-          class="link-button"
-          aria-controls="onboarding"
-          aria-expanded="false"
-        >
-          使い方
-        </button>
+        <div class="header-tools">
+          <select id="theme" aria-label="テーマ">
+            <option value="auto">テーマ: 自動</option>
+            <option value="light">テーマ: ライト</option>
+            <option value="dark">テーマ: ダーク</option>
+          </select>
+          <button
+            id="helpToggle"
+            type="button"
+            class="link-button"
+            aria-controls="onboarding"
+            aria-expanded="false"
+          >
+            使い方
+          </button>
+        </div>
       </div>
       <p class="lede">
         Materials Project
@@ -171,15 +185,16 @@
             <input id="delta" type="number" value="0" min="0" step="1" /> meV/atom 下げる
           </label>
           <label>
-            除外する相 (カンマ区切り)
-            <input
+            除外する相 (カンマ・改行区切り)
+            <textarea
               id="exclude"
               name="exclude"
+              rows="2"
               placeholder="例: Li3P7, mp-1234"
               spellcheck="false"
               autocomplete="off"
               aria-describedby="excludeHint"
-            />
+            ></textarea>
           </label>
           <p id="excludeHint" class="hint">
             化学式は同じ組成の全エントリ (多形を含む) を、material id
