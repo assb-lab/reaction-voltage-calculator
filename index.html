@@ -7,7 +7,100 @@
     <title>Reaction Voltage Calculator</title>
   </head>
   <body>
-    <div id="app"></div>
+    <header class="page-header">
+      <h1>Reaction Voltage Calculator</h1>
+      <p class="lede">
+        Materials Project
+        の計算エネルギーから、指定組成を作動イオンの開放系に置いたときの相平衡と反応電位
+        (電気化学的安定性ウィンドウ) を計算します。計算はすべてブラウザ内で行われます。
+      </p>
+    </header>
+
+    <main>
+      <form id="form" class="card" autocomplete="off">
+        <div class="grid">
+          <label>
+            組成
+            <input id="formula" name="formula" value="Li6PS5Cl" required spellcheck="false" />
+          </label>
+          <label>
+            作動イオン
+            <select id="ion" name="ion">
+              <option>Li</option>
+              <option>Na</option>
+              <option>K</option>
+              <option>Mg</option>
+              <option>Ca</option>
+              <option>Zn</option>
+              <option>Al</option>
+            </select>
+          </label>
+          <label>
+            Thermo type
+            <select id="thermo" name="thermo">
+              <option value="GGA_GGA+U_R2SCAN">GGA/GGA+U/R2SCAN (mixed)</option>
+              <option value="GGA_GGA+U">GGA/GGA+U</option>
+              <option value="R2SCAN">R2SCAN</option>
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="source">
+          <legend>データ</legend>
+          <div class="grid">
+            <label class="wide">
+              Materials Project API key
+              <input
+                id="apikey"
+                type="password"
+                placeholder="materialsproject.org の Dashboard で取得"
+                spellcheck="false"
+              />
+            </label>
+            <label class="check"> <input id="savekey" type="checkbox" /> このブラウザに保存 </label>
+          </div>
+          <div class="actions">
+            <button id="fetch" type="submit" class="primary">MP から取得して計算</button>
+            <label class="button">
+              JSON を読み込む
+              <input id="file" type="file" accept=".json,application/json" hidden />
+            </label>
+            <button id="demo" type="button">デモデータ</button>
+          </div>
+          <p id="dataStatus" class="status" role="status"></p>
+        </fieldset>
+
+        <fieldset>
+          <legend>オプション</legend>
+          <label class="check">
+            <input id="stabilize" type="checkbox" /> 対象相を hull 上に置く (準安定相の評価)
+          </label>
+          <label class="inline">
+            hull より
+            <input id="delta" type="number" value="0" min="0" step="1" /> meV/atom 下げる
+          </label>
+        </fieldset>
+      </form>
+
+      <section id="result" class="card" hidden>
+        <div id="summary" class="summary"></div>
+        <figure id="figure"></figure>
+        <div class="actions">
+          <button id="dlSvg" type="button">SVG</button>
+          <button id="dlCsv" type="button">CSV</button>
+          <button id="dlJson" type="button">結果 JSON</button>
+          <button id="dlEntries" type="button">エントリ JSON</button>
+        </div>
+        <h2>相平衡と反応</h2>
+        <div class="table-wrap"><table id="regions"></table></div>
+      </section>
+      <p id="error" class="error" role="alert" hidden></p>
+    </main>
+    <footer>
+      電位は V = −(μ − μ<sub>metal</sub>)/z。Ong et al., Chem. Mater. 20, 1798 (2008); Zhu, He &amp;
+      Mo, ACS Appl. Mater. Interfaces 7, 23685 (2015) の手法に基づく grand potential
+      相図による評価です。
+    </footer>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
