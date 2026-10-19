@@ -23,7 +23,7 @@ import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
 import { filmForRegion, type FilmOptions } from "./core/film";
-import { filmCellHtml, formatChange, formatLengthNm } from "./ui/film";
+import { filmCellHtml, filmGasHtml, formatChange, formatLengthNm } from "./ui/film";
 import {
   CORE_COLOR,
   displayCoreRatio,
@@ -52,6 +52,7 @@ const filmToggle = $<HTMLInputElement>("film");
 const filmOptionsBox = $<HTMLDivElement>("filmOptions");
 const filmDiameter = $<HTMLInputElement>("filmDiameter");
 const filmFraction = $<HTMLInputElement>("filmFraction");
+const filmGas = $<HTMLTextAreaElement>("filmGas");
 const result = $<HTMLElement>("result");
 const errorBox = $<HTMLParagraphElement>("error");
 
@@ -97,6 +98,7 @@ function restore(): void {
       filmToggle.checked = !!f.film;
       filmDiameter.value = f.filmDiameter ?? filmDiameter.value;
       filmFraction.value = f.filmFraction ?? filmFraction.value;
+      filmGas.value = f.filmGas ?? "";
       filmOptionsBox.hidden = !filmToggle.checked;
     }
   } catch {
@@ -115,6 +117,7 @@ function persist(): void {
       film: filmToggle.checked,
       filmDiameter: filmDiameter.value,
       filmFraction: filmFraction.value,
+      filmGas: filmGas.value,
     }),
   );
   storageSet(KEY_STORAGE, saveKey.checked && apiKeyInput.value ? apiKeyInput.value : null);
@@ -260,7 +263,7 @@ function filmOptions(): FilmOptions | null {
   const diameterUm = Number(filmDiameter.value);
   const percent = Number(filmFraction.value);
   if (!(diameterUm > 0) || !(percent >= 0 && percent <= 100)) return null;
-  return { diameterUm, fraction: percent / 100 };
+  return { diameterUm, fraction: percent / 100, gasPhases: parseExcludeList(filmGas.value) };
 }
 
 // 3D cutaway of the coated particle for one voltage region.
@@ -333,7 +336,12 @@ function drawFilm(): void {
   const region = p.regions[Number(filmRegion.value)];
   const film = region && filmForRegion(p, region, opts);
   if (!film || film.kind !== "film") return;
-  const { coreRatio, exaggerated } = displayCoreRatio(film.coreDiameterUm, film.outerDiameterUm);
+  // Without solid products there is no film: draw the bare core (or nothing if it is all gone).
+  const solid = film.phases.length > 0;
+  const { coreRatio, exaggerated } = solid
+    ? displayCoreRatio(film.coreDiameterUm, film.outerDiameterUm)
+    : { coreRatio: 1, exaggerated: false };
+  filmCanvas.hidden = !solid && film.fullyDecomposed;
   const phases = film.phases.map((ph, i) => ({
     name: ph.entry.name,
     color: PHASE_COLORS[i % PHASE_COLORS.length],
@@ -353,29 +361,36 @@ function drawFilm(): void {
       (ph) =>
         `<li>${swatch(ph.color)}<span>${formulaHtml(ph.name)} ${formatNumber(ph.volFraction * 100, 1)} vol%</span></li>`,
     ),
+    ...(film.gases.length ? [`<li><span>${filmGasHtml(film)}</span></li>`] : []),
   ].join("");
   const change = {
     pct: formatChange(film.diameterChange),
     v: formatChange(film.volumeChange),
     p: formatChange(film.particleVolumeChange),
   };
-  $("filmNote").innerHTML = film.fullyDecomposed
-    ? t("film.noteFull", {
+  $("filmNote").innerHTML = !solid
+    ? t("film.noteGasOnly", {
         d: formatNumber(opts.diameterUm),
-        out: film.outerDiameterUm.toFixed(3),
-        pct: change.pct,
+        f: formatNumber(opts.fraction * 100),
+        core: film.coreDiameterUm.toFixed(3),
       })
-    : [
-        t("film.note", {
+    : film.fullyDecomposed
+      ? t("film.noteFull", {
           d: formatNumber(opts.diameterUm),
-          f: formatNumber(opts.fraction * 100),
-          t: formatLengthNm(film.thicknessNm),
-          core: film.coreDiameterUm.toFixed(3),
           out: film.outerDiameterUm.toFixed(3),
-          ...change,
-        }),
-        exaggerated ? t("film.exaggerated") : "",
-      ].join(" ");
+          pct: change.pct,
+        })
+      : [
+          t("film.note", {
+            d: formatNumber(opts.diameterUm),
+            f: formatNumber(opts.fraction * 100),
+            t: formatLengthNm(film.thicknessNm),
+            core: film.coreDiameterUm.toFixed(3),
+            out: film.outerDiameterUm.toFixed(3),
+            ...change,
+          }),
+          exaggerated ? t("film.exaggerated") : "",
+        ].join(" ");
   filmCanvas.setAttribute(
     "aria-label",
     t("film.aria", { formula: p.formula, t: formatLengthNm(film.thicknessNm) }),
@@ -527,6 +542,7 @@ for (const el of [
   filmToggle,
   filmDiameter,
   filmFraction,
+  filmGas,
 ]) {
   el.addEventListener("change", () => {
     persist();

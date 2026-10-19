@@ -255,6 +255,21 @@
             <p class="hint" data-i18n="opt.filmHint">
               球状粒子が表面から分解し、生成物が未反応のコアを覆う緻密な混合層になると仮定します。
             </p>
+            <label class="film-gas">
+              <span data-i18n="opt.filmGas">ガスとして放出する相 (カンマ・改行区切り)</span>
+              <textarea
+                id="filmGas"
+                rows="1"
+                placeholder="例: CO2, SO2, PCl3"
+                data-i18n-attr="placeholder:opt.filmGasPlaceholder"
+                spellcheck="false"
+                autocomplete="off"
+                aria-describedby="filmGasHint"
+              ></textarea>
+            </label>
+            <p id="filmGasHint" class="hint" data-i18n="opt.filmGasHint">
+              O₂・Cl₂ などの気体の単体は常にガスとして被膜から除き、放出量を表示します。
+            </p>
           </div>
         </fieldset>
       </form>

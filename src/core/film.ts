@@ -1,5 +1,5 @@
 import { ATOMIC_MASS } from "./elements";
-import type { Entry } from "./entries";
+import { entryMatcher, type Entry } from "./entries";
 import { numAtoms } from "./formula";
 import type { Profile, Region } from "./profile";
 
@@ -11,6 +11,31 @@ export interface FilmOptions {
   diameterUm: number;
   /** Decomposed fraction of the particle volume (0–1). */
   fraction: number;
+  /**
+   * Extra phases released as gas (formulas or ids, as in the exclusion list), on top of the
+   * elemental gases (GAS_ELEMENTS) which are always treated as gas.
+   */
+  gasPhases?: string[];
+}
+
+/** Elements that are gases at room temperature: their elemental phases leave the particle. */
+export const GAS_ELEMENTS = new Set(["H", "N", "O", "F", "Cl", "He", "Ne", "Ar", "Kr", "Xe", "Rn"]);
+
+export interface FilmGas {
+  entry: Entry;
+  /** Units of the displayed formula (e.g. O2) per formula unit of the target. */
+  amount: number;
+  /** Gas released by the decomposed fraction per gram of target (mmol/g); null if a mass is unknown. */
+  mmolPerGram: number | null;
+}
+
+/** Whether a phase is released as gas: an elemental gas, or one named in `gasPhases`. */
+export function gasMatcher(gasPhases: string[] = []): (e: Entry) => boolean {
+  const extra = gasPhases.map(entryMatcher);
+  return (e) => {
+    const els = Object.keys(e.composition);
+    return (els.length === 1 && GAS_ELEMENTS.has(els[0])) || extra.some((m) => m(e));
+  };
 }
 
 export interface FilmPhase {
@@ -41,7 +66,10 @@ export type FilmResult =
       diameterChange: number;
       /** No core left (f = 100 %): the particle is entirely products, not a film. */
       fullyDecomposed: boolean;
+      /** Solid products forming the film (gases excluded). */
       phases: FilmPhase[];
+      /** Products released as gas: not part of the film or its volume. */
+      gases: FilmGas[];
       /** Charge for the decomposed fraction per gram of target (mAh/g); null if a mass is unknown. */
       capacityMAhG: number | null;
     };
@@ -52,20 +80,25 @@ export type FilmResult =
  * radius r = R (1 − f)^(1/3); its products, with their own molar volume (MP volume per atom), form a
  * dense, uniformly mixed shell around the core: R_out³ = r³ + f R³ · V_products / V_target.
  * The film thickness is R_out − r, so volume expansion or shrinkage on (de)lithiation is included.
+ * Gaseous products (O2, Cl2, … and `gasPhases`) leave the particle: they add no volume to the film
+ * and are reported separately.
  */
 export function filmForRegion(profile: Profile, region: Region, opts: FilmOptions): FilmResult {
   const target = profile.targetEntry;
   if (region.phases.length === 1 && target && region.phases[0].entry === target)
     return { kind: "none" };
 
+  const isGas = gasMatcher(opts.gasPhases);
+  const solids = region.phases.filter((p) => !isGas(p.entry));
+  const gases = region.phases.filter((p) => isGas(p.entry));
   const missing = [
     ...(target && target.volumePerAtom ? [] : [target?.name ?? profile.formula]),
-    ...region.phases.filter((p) => !p.entry.volumePerAtom).map((p) => p.entry.name),
+    ...solids.filter((p) => !p.entry.volumePerAtom).map((p) => p.entry.name),
   ];
   if (missing.length) return { kind: "unavailable", missing: [...new Set(missing)] };
 
   const targetVolume = numAtoms(profile.target) * target!.volumePerAtom!;
-  const volumes = region.phases.map((p) => p.atoms * p.entry.volumePerAtom!);
+  const volumes = solids.map((p) => p.atoms * p.entry.volumePerAtom!);
   const productVolume = volumes.reduce((a, b) => a + b, 0);
   const volumeRatio = productVolume / targetVolume;
 
@@ -84,21 +117,35 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
     particleVolumeChange: f * (volumeRatio - 1),
     diameterChange: rOut / R - 1,
     fullyDecomposed: f >= 1,
-    phases: region.phases.map((p, i) => ({
+    phases: solids.map((p, i) => ({
       entry: p.entry,
       volFraction: volumes[i] / productVolume,
     })),
+    gases: gases.map((p) => {
+      const m = molarMass(profile);
+      return {
+        entry: p.entry,
+        amount: p.amount,
+        mmolPerGram: m === null ? null : (f * p.amount * 1000) / m,
+      };
+    }),
     capacityMAhG: capacity(profile, region, f),
   };
 }
 
+/** Molar mass of the target formula (g/mol); null if an element mass is unknown. */
+function molarMass(profile: Profile): number | null {
+  let m = 0;
+  for (const [el, n] of Object.entries(profile.target)) {
+    const a = ATOMIC_MASS[el];
+    if (a === undefined) return null;
+    m += n * a;
+  }
+  return m;
+}
+
 /** f · |x| · z · F / M, in mAh per gram of target. */
 function capacity(profile: Profile, region: Region, f: number): number | null {
-  let molarMass = 0;
-  for (const [el, n] of Object.entries(profile.target)) {
-    const m = ATOMIC_MASS[el];
-    if (m === undefined) return null;
-    molarMass += n * m;
-  }
-  return (f * Math.abs(region.x) * profile.charge * FARADAY) / (3.6 * molarMass);
+  const m = molarMass(profile);
+  return m === null ? null : (f * Math.abs(region.x) * profile.charge * FARADAY) / (3.6 * m);
 }

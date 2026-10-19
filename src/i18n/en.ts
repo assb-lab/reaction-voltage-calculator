@@ -125,6 +125,14 @@ export const en: Record<MessageKey, string> = {
   "film.none": "—",
   "film.unavailable": "Not available (no volume data: {phases})",
   "film.capacity": "{q} mAh/g",
+  "film.gas": "Gas released: {list}",
+  "film.noSolid": "No film (all products are gases)",
+  "film.noteGasOnly":
+    "All products are released as gas, so no film forms. With a {d} µm particle and {f} % decomposed, only the {core} µm core remains.",
+  "opt.filmGas": "Phases released as gas (comma or newline separated)",
+  "opt.filmGasPlaceholder": "e.g. CO2, SO2, PCl3",
+  "opt.filmGasHint":
+    "Elemental gases such as O₂ and Cl₂ (H, N, O, F, Cl, noble gases) always leave the film and are reported as released gas. Add gaseous or liquid compounds such as CO₂ here by formula or material id.",
   "film.full": "Fully decomposed: diameter {d0} → {d1} µm ({pct})",
   "film.diameter": "Outer diameter {d} µm ({pct})",
   "film.volumeChange": "Volume change: decomposed part {v} / whole particle {p}",

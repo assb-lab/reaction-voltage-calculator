@@ -27,8 +27,23 @@ function volList(film: Film): string {
     .join(" / ");
 }
 
+/** Released gases (HTML), e.g. "放出ガス: O₂ 0.5 mol/mol (8.37 mmol/g)"; "" when none. */
+export function filmGasHtml(film: Film): string {
+  if (!film.gases.length) return "";
+  const list = film.gases
+    .map(
+      (g) =>
+        `${formulaHtml(g.entry.name)} ${formatNumber(g.amount)} mol/mol${
+          g.mmolPerGram === null ? "" : ` (${formatNumber(g.mmolPerGram, 2)} mmol/g)`
+        }`,
+    )
+    .join(", ");
+  return t("film.gas", { list });
+}
+
 /** Headline: the film thickness, or the size change when the whole particle has decomposed. */
 export function filmHeadline(film: Film): string {
+  if (!film.phases.length) return t("film.noSolid");
   const d0 = film.outerDiameterUm / (1 + film.diameterChange);
   return film.fullyDecomposed
     ? t("film.full", {
@@ -59,7 +74,9 @@ export function filmCellHtml(film: FilmResult): string {
     film.capacityMAhG === null
       ? ""
       : `<br>${t("film.capacity", { q: formatNumber(film.capacityMAhG, 1) })}`;
-  return `<strong>${filmHeadline(film)}</strong><br>${filmChangeHtml(film)}<br><span class="muted">vol%: ${volList(film)}</span>${q}`;
+  const vol = film.phases.length ? `<br><span class="muted">vol%: ${volList(film)}</span>` : "";
+  const gas = film.gases.length ? `<br>${filmGasHtml(film)}` : "";
+  return `<strong>${filmHeadline(film)}</strong><br>${filmChangeHtml(film)}${vol}${gas}${q}`;
 }
 
 /** Tooltip line for one region (HTML). */
@@ -67,11 +84,12 @@ export function filmTooltipHtml(film: FilmResult): string {
   if (film.kind === "none") return "";
   if (film.kind === "unavailable")
     return `<div>${escapeHtml(t("film.unavailable", { phases: film.missing.join(", ") }))}</div>`;
-  const head = film.fullyDecomposed
-    ? filmHeadline(film)
-    : t("film.tooltip", { t: formatLengthNm(film.thicknessNm) });
+  const head =
+    film.fullyDecomposed || !film.phases.length
+      ? filmHeadline(film)
+      : t("film.tooltip", { t: formatLengthNm(film.thicknessNm) });
   return `<div>${head} <span class="muted">(${t("film.volumeChange", {
     v: formatChange(film.volumeChange),
     p: formatChange(film.particleVolumeChange),
-  })})</span></div>`;
+  })})</span></div>${film.gases.length ? `<div>${filmGasHtml(film)}</div>` : ""}`;
 }

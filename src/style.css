@@ -490,6 +490,9 @@ figure.interactive:focus-visible {
   gap: 8px 16px;
   margin-top: 8px;
 }
+.film-options .film-gas {
+  flex-basis: 100%;
+}
 .film-options .hint {
   flex-basis: 100%;
   margin: 0;

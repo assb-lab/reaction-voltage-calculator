@@ -183,6 +183,7 @@ describe("volume change display", () => {
               diameterChange: 0,
               fullyDecomposed: false,
               phases: [],
+              gases: [],
               capacityMAhG: null,
             },
     }));

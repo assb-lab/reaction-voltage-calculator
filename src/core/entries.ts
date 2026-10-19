@@ -110,23 +110,29 @@ function sameComposition(a: Composition, b: Composition): boolean {
 }
 
 /**
+ * Predicate for one list item: an entry id (case-insensitive, either MP id form) matches that entry;
+ * otherwise the item is read as a formula and matches every entry with the same composition ratio.
+ */
+export function entryMatcher(item: string): (e: Entry) => boolean {
+  let comp: Composition | null = null;
+  try {
+    comp = parseFormula(item);
+  } catch {
+    // Not a formula: only matches ids.
+  }
+  const id = normalizeMpId(item).toLowerCase();
+  return (e: Entry) =>
+    normalizeMpId(e.id).toLowerCase() === id ||
+    (comp !== null && sameComposition(comp, e.composition));
+}
+
+/**
  * Remove entries named in `items`. An item equal to an entry id (case-insensitive) removes that entry;
  * otherwise it is read as a formula and removes every entry with the same composition ratio
  * (all polymorphs).
  */
 export function excludeEntries(entries: Entry[], items: string[]): ExcludeResult {
-  const matchers = items.map((item) => {
-    let comp: Composition | null = null;
-    try {
-      comp = parseFormula(item);
-    } catch {
-      // Not a formula: only matches ids.
-    }
-    const id = normalizeMpId(item).toLowerCase();
-    return (e: Entry) =>
-      normalizeMpId(e.id).toLowerCase() === id ||
-      (comp !== null && sameComposition(comp, e.composition));
-  });
+  const matchers = items.map(entryMatcher);
   const hits = items.map(() => false);
   const kept: Entry[] = [];
   const excluded: Entry[] = [];

@@ -123,6 +123,14 @@ export const ja = {
   "film.none": "—",
   "film.unavailable": "計算不可 (体積データなし: {phases})",
   "film.capacity": "{q} mAh/g",
+  "film.gas": "放出ガス: {list}",
+  "film.noSolid": "被膜なし (生成物はすべてガス)",
+  "film.noteGasOnly":
+    "生成物はすべてガスとして放出されるため、被膜はできません。粒子径 {d} µm、分解率 {f} % で、粒子は直径 {core} µm のコアだけになります。",
+  "opt.filmGas": "ガスとして放出する相 (カンマ・改行区切り)",
+  "opt.filmGasPlaceholder": "例: CO2, SO2, PCl3",
+  "opt.filmGasHint":
+    "O₂・Cl₂ などの気体の単体 (H, N, O, F, Cl, 貴ガス) は常にガスとして被膜から除き、放出量を表示します。CO₂ などの化合物のガスや液体の生成物は、化学式または material id でここに追加してください。",
   "film.full": "全分解: 粒子径 {d0} → {d1} µm ({pct})",
   "film.diameter": "外径 {d} µm ({pct})",
   "film.volumeChange": "体積変化: 分解部 {v} / 粒子全体 {p}",

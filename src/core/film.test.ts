@@ -101,3 +101,57 @@ describe("filmForRegion", () => {
     expect(byName.LiCl).toBeCloseTo(40 / 85, 12);
   });
 });
+
+describe("gas release", () => {
+  // MP volumes (Å³/atom): Li2O 8.40, Li2O2 7.89, O2 13.46 (a molecular crystal of solid O2)
+  const oxide = [
+    entry("Li", { Li: 1 }, 0, 20.3),
+    entry("O2", { O: 2 }, 0, 13.46),
+    entry("Li2O", { Li: 2, O: 1 }, -2.0, 8.4),
+    entry("Li2O2", { Li: 2, O: 2 }, -1.6, 7.89),
+  ];
+  const p = computeProfile({ entries: oxide, formula: "Li2O", ion: "Li" });
+  const top = p.regions[0];
+
+  it("releases elemental gases instead of counting them as solid film", () => {
+    expect(top.phases.map((ph) => ph.entry.name)).toEqual(["O2"]);
+    const film = filmForRegion(p, top, { diameterUm: 2, fraction: 0.5 });
+    if (film.kind !== "film") throw new Error(film.kind);
+    expect(film.phases).toEqual([]);
+    expect(film.gases.map((g) => [g.entry.name, g.amount])).toEqual([["O2", 0.5]]);
+    // Li2O -> 1/2 O2 (gas): nothing solid remains, so no film and the particle shrinks to its core
+    expect(film.volumeRatio).toBe(0);
+    expect(film.thicknessNm).toBeCloseTo(0, 9);
+    expect(film.outerDiameterUm).toBeCloseTo(2 * Math.cbrt(0.5), 12);
+    expect(film.volumeChange).toBe(-1);
+    // 0.5 decomposed × 0.5 O2 per Li2O (29.88 g/mol)
+    expect(film.gases[0].mmolPerGram).toBeCloseTo((0.5 * 0.5 * 1000) / 29.8814, 3);
+  });
+
+  it("keeps solid products and needs no volume for gases", () => {
+    const noGasVolume = computeProfile({
+      entries: oxide.map((e) => (e.name === "O2" ? { ...e, volumePerAtom: undefined } : e)),
+      formula: "Li2O",
+      ion: "Li",
+    });
+    const peroxide = noGasVolume.regions.find((r) =>
+      r.phases.some((ph) => ph.entry.name === "Li2O2"),
+    )!;
+    const film = filmForRegion(noGasVolume, peroxide, { diameterUm: 1, fraction: 0.1 });
+    expect(film.kind).toBe("film");
+    expect(
+      filmForRegion(noGasVolume, noGasVolume.regions[0], { diameterUm: 1, fraction: 0.1 }).kind,
+    ).toBe("film");
+  });
+
+  it("treats extra phases named by the user as gas", () => {
+    const film = filmForRegion(profile, lithiated, {
+      diameterUm: 2,
+      fraction: 0.5,
+      gasPhases: ["Li2S"],
+    });
+    if (film.kind !== "film") throw new Error(film.kind);
+    expect(film.phases).toEqual([]);
+    expect(film.gases.map((g) => g.entry.name)).toEqual(["Li2S"]);
+  });
+});
