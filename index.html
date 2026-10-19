@@ -170,6 +170,22 @@
             hull より
             <input id="delta" type="number" value="0" min="0" step="1" /> meV/atom 下げる
           </label>
+          <label>
+            除外する相 (カンマ区切り)
+            <input
+              id="exclude"
+              name="exclude"
+              placeholder="例: Li3P7, mp-1234"
+              spellcheck="false"
+              autocomplete="off"
+              aria-describedby="excludeHint"
+            />
+          </label>
+          <p id="excludeHint" class="hint">
+            化学式は同じ組成の全エントリ (多形を含む) を、material id
+            はそのエントリだけを計算から除きます。
+            不自然な組成や信頼できない計算の相を外すときに使います。
+          </p>
         </fieldset>
       </form>
 
