@@ -328,7 +328,8 @@ vp test
 vp build
 ```
 
-CI (GitHub Actions) は push / PR ごとに `vp check`、`vp test`、`vp build` を実行します。
+CI はありません (private リポジトリの GitHub Actions の無料枠を節約するため)。PR を出す前に、手元で `vp check`、`vp test`、`vp build` がすべて通ることを確認してください。
+ワークフローは `git log --diff-filter=D -- .github/workflows/ci.yml` で削除したコミットを探して戻せます。
 
 ### デプロイ
 
@@ -362,8 +363,8 @@ uv run --extra mp reaction-voltage-calculator --mp Li6PS5Cl --out tests/fixtures
 
 ### 依存関係のポリシー
 
-CI の pnpm は公開から 1 日未満のパッケージを拒否します (`minimumReleaseAge`)。
-新しすぎるバージョンがロックファイルに入って CI が失敗する場合は、`pnpm-workspace.yaml` の
+pnpm (12 系) は公開から 1 日未満のパッケージを拒否します (`minimumReleaseAge`)。
+新しすぎるバージョンがロックファイルに入って `vp install` が失敗する場合は、`pnpm-workspace.yaml` の
 `overrides` で一つ前のバージョンに固定してください。
 
 ## ディレクトリ構成
