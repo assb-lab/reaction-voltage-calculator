@@ -7,6 +7,10 @@ export interface Entry {
   composition: Composition;
   energyPerAtom: number;
   thermoType?: string;
+  /** MP energy above hull as reported by the source (eV/atom), informational only. */
+  eAboveHull?: number;
+  /** Volume per atom (Å^3/atom), if known. */
+  volumePerAtom?: number;
 }
 
 /** Entry with derived per-atom data used by the solvers. */
