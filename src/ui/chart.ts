@@ -43,7 +43,15 @@ export function panView(view: View, dv: number, dx: number): View {
 
 /** Voltage range from user input; returns null when invalid. */
 export function voltageRange(min: number, max: number): [number, number] | null {
-  if (!Number.isFinite(min) || !Number.isFinite(max) || max - min < MIN_V_SPAN) return null;
+  const span = max - min;
+  if (
+    !Number.isFinite(min) ||
+    !Number.isFinite(max) ||
+    !Number.isFinite(span) ||
+    span < MIN_V_SPAN ||
+    span > MAX_V_SPAN
+  )
+    return null;
   return [min, max];
 }
 
@@ -170,7 +178,7 @@ export function mountChart(
     } else if (pointers.size === 2) {
       const [a, b] = [...pointers.values()];
       pinch = {
-        dist: Math.max(Math.abs(a.y - b.y), 10),
+        dist: Math.max(Math.hypot(a.x - b.x, a.y - b.y), 10),
         view,
         center: scales(view).vAt((a.y + b.y) / 2),
       };
@@ -194,7 +202,7 @@ export function mountChart(
       update(panView(drag.view, dv, dx));
     } else if (pinch && pointers.size === 2) {
       const [a, b] = [...pointers.values()];
-      const dist = Math.max(Math.abs(a.y - b.y), 10);
+      const dist = Math.max(Math.hypot(a.x - b.x, a.y - b.y), 10);
       update(zoomVoltage(pinch.view, pinch.center, pinch.dist / dist));
     }
   };

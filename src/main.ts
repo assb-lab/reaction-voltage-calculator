@@ -323,7 +323,7 @@ const vMaxInput = $<HTMLInputElement>("vMax");
 for (const input of [vMinInput, vMaxInput]) {
   input.addEventListener("change", () => {
     if (!chart) return;
-    const range = voltageRange(Number(vMinInput.value), Number(vMaxInput.value));
+    const range = voltageRange(vMinInput.valueAsNumber, vMaxInput.valueAsNumber);
     if (range) chart.setView({ ...chart.view(), vMin: range[0], vMax: range[1] });
     else {
       const v = chart.view();

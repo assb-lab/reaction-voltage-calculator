@@ -62,10 +62,33 @@ function niceStep(range: number, target: number): number {
 }
 
 export function ticks(lo: number, hi: number, target: number): number[] {
-  const step = niceStep(hi - lo, target);
+  const span = hi - lo;
+  if (
+    !Number.isFinite(lo) ||
+    !Number.isFinite(hi) ||
+    !Number.isFinite(span) ||
+    span <= 0 ||
+    !Number.isFinite(target) ||
+    target < 1
+  )
+    return [];
+  const step = niceStep(span, Math.min(Math.floor(target), 100));
+  if (!Number.isFinite(step) || step <= 0) return [];
+  const first = Math.ceil(lo / step - 1e-9) * step;
   const out: number[] = [];
-  for (let v = Math.ceil(lo / step - 1e-9) * step; v <= hi + 1e-9; v += step)
-    out.push(Number(v.toFixed(10)));
+  // Count from zero: adding a small step to a large offset can round back to
+  // the same float forever. Bound work even for pathological user ranges.
+  const count = Math.min(Math.ceil(span / step) + 2, 102);
+  for (let i = 0; i < count; i++) {
+    const v = Number((first + i * step).toFixed(10));
+    if (
+      Number.isFinite(v) &&
+      v >= lo - step * 1e-7 &&
+      v <= hi + step * 1e-7 &&
+      (!out.length || v > out[out.length - 1])
+    )
+      out.push(v);
+  }
   return out;
 }
 
