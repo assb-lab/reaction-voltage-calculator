@@ -105,6 +105,12 @@ export function scales(view: View) {
 export interface RenderOptions {
   /** Prefix for element ids (clip paths) so several figures can share a document. */
   idPrefix?: string;
+  /** Region index to highlight in both panels. */
+  highlight?: number | null;
+  /** Phase cell (within the highlighted region) to emphasise. */
+  highlightPhase?: number | null;
+  /** Native SVG <title> tooltips; the interactive chart draws its own. Default true. */
+  titles?: boolean;
 }
 
 /** SVG of the voltage profile (left) and the voltage-resolved phase equilibria (right). */
@@ -141,6 +147,8 @@ export function renderProfileSvg(
     .profile-svg .box.red { fill: var(--red-bg, #dde7f7); }
     .profile-svg .box.target { fill: var(--window, #bbb); fill-opacity: 0.6; }
     .profile-svg .cell-label { font-size: 11px; }
+    .profile-svg .hl { fill: none; stroke: var(--accent, #1f5fbf); stroke-width: 2.5; }
+    .profile-svg .hl-seg { stroke: var(--accent, #1f5fbf); stroke-opacity: 0.35; stroke-width: 9; stroke-linecap: round; }
   </style>`);
   parts.push(`<defs>
     <clipPath id="${id}-clip-profile"><rect x="${L.profileL}" y="${L.top}" width="${L.profileR - L.profileL}" height="${plotH}"/></clipPath>
@@ -219,7 +227,9 @@ export function renderProfileSvg(
       const w = (L.phaseR - L.phaseL) * fractions[i];
       const pct = formatNumber(fractions[i] * 100, 1);
       parts.push(
-        `<g class="cell"><title>${esc(`${ph.entry.name}: ${pct} at.% (${formatNumber(ph.amount)} per ${profile.formula}), ${range}`)}</title>`,
+        opts.titles === false
+          ? `<g class="cell">`
+          : `<g class="cell"><title>${esc(`${ph.entry.name}: ${pct} at.% (${formatNumber(ph.amount)} per ${profile.formula}), ${range}`)}</title>`,
       );
       parts.push(`<rect class="box ${side}" x="${x0}" y="${yTop}" width="${w}" height="${h}"/>`);
       // Label only when it fits; narrow cells rely on the tooltip.
@@ -233,6 +243,29 @@ export function renderProfileSvg(
     });
   });
   parts.push(`</g>`);
+
+  // Hover highlight, linked across both panels.
+  const hr = opts.highlight == null ? undefined : regions[opts.highlight];
+  if (hr) {
+    parts.push(`<g clip-path="url(#${id}-clip-all)" pointer-events="none">`);
+    parts.push(
+      `<line class="hl-seg" x1="${X(hr.x)}" x2="${X(hr.x)}" y1="${Y(hr.vMax)}" y2="${Y(hr.vMin)}"/>`,
+    );
+    const yTop = Y(hr.vMax);
+    parts.push(
+      `<rect class="hl" x="${L.phaseL}" y="${yTop}" width="${L.phaseR - L.phaseL}" height="${Y(hr.vMin) - yTop}"/>`,
+    );
+    if (opts.highlightPhase != null && hr.phases[opts.highlightPhase]) {
+      const fr = atomicFractions(hr);
+      const x0 =
+        L.phaseL +
+        (L.phaseR - L.phaseL) * fr.slice(0, opts.highlightPhase).reduce((a, b) => a + b, 0);
+      parts.push(
+        `<rect class="hl" x="${x0}" y="${yTop}" width="${(L.phaseR - L.phaseL) * fr[opts.highlightPhase]}" height="${Y(hr.vMin) - yTop}"/>`,
+      );
+    }
+    parts.push(`</g>`);
+  }
 
   // Frames with inward ticks mirrored on all four sides.
   for (const [x0, x1] of [

@@ -421,3 +421,29 @@ figure.interactive:focus-visible {
   flex-basis: 100%;
   margin: 0;
 }
+
+.chart-tooltip {
+  position: fixed;
+  z-index: 10;
+  max-width: min(360px, calc(100vw - 16px));
+  padding: 8px 10px;
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.18);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  pointer-events: none;
+}
+.chart-tooltip ul {
+  margin: 4px 0;
+  padding-left: 1.1em;
+}
+.chart-tooltip .muted {
+  color: var(--muted);
+}
+.chart-tooltip .rxn {
+  margin-top: 4px;
+  color: var(--muted);
+}
