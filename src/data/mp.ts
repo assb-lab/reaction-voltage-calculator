@@ -1,4 +1,5 @@
-import type { Entry } from "../core/entries";
+import { prepareEntries, type Entry } from "../core/entries";
+import { hullEnergy } from "../core/profile";
 
 export const MP_API_BASE = "https://api.materialsproject.org";
 /** Same-origin path proxied to MP_API_BASE by `vp dev` / `vp preview` (see vite.config.ts). */
@@ -12,6 +13,7 @@ const FIELDS = [
   "formula_pretty",
   "composition",
   "energy_per_atom",
+  "formation_energy_per_atom",
   "energy_above_hull",
   "thermo_type",
   "volume",
@@ -25,6 +27,7 @@ export interface ThermoDoc {
   formula_pretty: string;
   composition: Record<string, number>;
   energy_per_atom: number;
+  formation_energy_per_atom?: number | null;
   energy_above_hull?: number | null;
   thermo_type: string;
   volume?: number | null;
@@ -42,17 +45,71 @@ export function subChemsys(elements: string[]): string[] {
   return out;
 }
 
-export function docToEntry(doc: ThermoDoc): Entry {
+/**
+ * Which MP energy the entries carry.
+ * - "formation": MP formation energies (elemental references at 0), with unstable entries placed at
+ *   MP's `energy_above_hull` (see alignToMpHull) so that the hull matches Materials Project.
+ * - "total": `energy_per_atom`. In the GGA_GGA+U_R2SCAN mixing scheme these are NOT on one
+ *   energy scale (e.g. r2SCAN S/Li unshifted vs. shifted r2SCAN Li2S), so hulls built from them are wrong.
+ */
+export type EnergyBasis = "formation" | "total";
+
+function hasFormation(doc: ThermoDoc): boolean {
+  return (
+    typeof doc.formation_energy_per_atom === "number" &&
+    Number.isFinite(doc.formation_energy_per_atom)
+  );
+}
+
+export function docToEntry(
+  doc: ThermoDoc,
+  basis: EnergyBasis = hasFormation(doc) ? "formation" : "total",
+): Entry {
   const atoms = Object.values(doc.composition).reduce((a, b) => a + b, 0);
   return {
     id: String(doc.material_id),
     name: doc.formula_pretty,
     composition: doc.composition,
-    energyPerAtom: doc.energy_per_atom,
+    energyPerAtom: basis === "formation" ? doc.formation_energy_per_atom! : doc.energy_per_atom,
     thermoType: doc.thermo_type,
     eAboveHull: doc.energy_above_hull ?? undefined,
     volumePerAtom: doc.volume && atoms ? doc.volume / atoms : undefined,
   };
+}
+
+/**
+ * Convert non-deprecated thermo docs to entries on one energy basis: formation energies when every
+ * doc has one (always the case for current MP data), otherwise total energies.
+ */
+export function docsToEntries(docs: ThermoDoc[]): { entries: Entry[]; energyBasis: EnergyBasis } {
+  const live = docs.filter((d) => !d.deprecated);
+  const energyBasis: EnergyBasis = live.length && live.every(hasFormation) ? "formation" : "total";
+  const entries = live.map((d) => docToEntry(d, energyBasis));
+  return { entries: energyBasis === "formation" ? alignToMpHull(entries) : entries, energyBasis };
+}
+
+/**
+ * Place unstable entries at MP's reported distance above the hull of the stable entries.
+ *
+ * In the mixing scheme, `formation_energy_per_atom` of some GGA-only entries disagrees with their own
+ * `energy_above_hull` (e.g. Li7P3S11: Ef lies 14 meV/atom below the Li3PS4–P2S5 tie line while MP
+ * reports E_hull = 20 meV/atom). The stable entries (E_hull = 0) are mutually consistent, so
+ * E_f = hull_stable(composition) + E_hull reproduces MP's phase diagram exactly.
+ */
+export function alignToMpHull(entries: Entry[]): Entry[] {
+  const stable = entries.filter((e) => e.eAboveHull !== undefined && e.eAboveHull <= 1e-9);
+  const elements = [...new Set(entries.flatMap((e) => Object.keys(e.composition)))].sort();
+  let prepared;
+  try {
+    prepared = prepareEntries(stable, elements);
+  } catch {
+    return entries; // incomplete data (no stable elemental entry): keep MP formation energies
+  }
+  return entries.map((e) => {
+    if (e.eAboveHull === undefined || e.eAboveHull <= 1e-9) return e;
+    const hull = hullEnergy(prepared.entries, prepared.elements, e.composition);
+    return { ...e, energyPerAtom: hull + e.eAboveHull };
+  });
 }
 
 /** Thermo endpoint URL for one page of the chemical system and all its sub-systems. */
@@ -114,7 +171,9 @@ export interface FetchOptions {
 }
 
 /** Fetch every (non-deprecated) thermo entry of the chemical system and its sub-systems. */
-export async function fetchThermoEntries(opts: FetchOptions): Promise<Entry[]> {
+export async function fetchThermoEntries(
+  opts: FetchOptions,
+): Promise<{ entries: Entry[]; energyBasis: EnergyBasis }> {
   const fetchFn = opts.fetchFn ?? fetch.bind(globalThis);
   if (!opts.apiKey.trim()) throw new Error("Materials Project API key を入力してください");
   const docs: ThermoDoc[] = [];
@@ -149,5 +208,5 @@ export async function fetchThermoEntries(opts: FetchOptions): Promise<Entry[]> {
     opts.onProgress?.(docs.length, total);
     if (data.length < PER_PAGE || (total !== null && docs.length >= total)) break;
   }
-  return docs.filter((d) => !d.deprecated && d.thermo_type === opts.thermoType).map(docToEntry);
+  return docsToEntries(docs.filter((d) => d.thermo_type === opts.thermoType));
 }
