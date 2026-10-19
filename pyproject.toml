@@ -3,7 +3,9 @@ name = "reaction-voltage-calculator"
 version = "0.1.0"
 description = "pymatgen reference fixtures for the reaction voltage calculator web app"
 readme = "README.md"
-authors = [{ name = "ks25026", email = "shimizu.k.ak@gmail.com" }]
+authors = [{ name = "assb-lab" }]
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.14"
 dependencies = ["pymatgen>=2026.9.24"]
 

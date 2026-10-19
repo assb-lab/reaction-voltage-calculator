@@ -7,3 +7,7 @@ __pycache__/
 *.local
 *.log
 .claude/
+# Secrets (e.g. MP_API_KEY) and MP data downloaded with the README curl command
+.env
+.env.*
+mp_*.json
