@@ -1,6 +1,6 @@
 import type { Entry } from "../core/entries";
 import { formatFormula, numAtoms, reduceComposition, type Composition } from "../core/formula";
-import { docToEntry, PER_PAGE, type ThermoDoc } from "./mp";
+import { alignToMpHull, docsToEntries, PER_PAGE, type EnergyBasis, type ThermoDoc } from "./mp";
 
 export interface EntrySet {
   version: 1;
@@ -8,8 +8,13 @@ export interface EntrySet {
   thermoType?: string;
   elements: string[];
   fetchedAt?: string;
+  /** For Materials Project data: which MP energy `energyPerAtom` holds (see EnergyBasis). */
+  energyBasis?: EnergyBasis;
   entries: Entry[];
 }
+
+const STALE_MP_ENERGY =
+  "Materials Project の energy_per_atom を使ったデータです。mixed scheme (GGA_GGA+U_R2SCAN) では値のスケールが揃っておらず、相図が正しくなりません。最新のコマンドまたは「MP から取得」で再取得してください。";
 
 export function serializeEntrySet(set: EntrySet): string {
   return JSON.stringify(set, null, 1);
@@ -86,25 +91,26 @@ interface ParsedFile {
   set: EntrySet;
   /** Raw Materials Project API response: document ids in this file and the reported total. */
   mp?: { ids: string[]; total: number | null };
+  warnings: string[];
 }
 
 function fromMpResponse(raw: { data: unknown[]; meta?: { total_doc?: unknown } }): ParsedFile {
   const ids: string[] = [];
-  const entries: Entry[] = [];
-  raw.data.forEach((item, i) => {
+  const docs = raw.data.map((item, i): ThermoDoc => {
     const doc = item as ThermoDoc;
     if (!doc || typeof doc !== "object" || !isNumber(doc.energy_per_atom))
       throw new Error(`data[${i}] は Materials Project の thermo ドキュメントではありません`);
     ids.push(`${doc.material_id}|${doc.thermo_type}`);
-    if (doc.deprecated) return;
-    const entry = docToEntry({
+    return {
       ...doc,
       composition: validateComposition(doc.composition, i),
       formula_pretty:
         doc.formula_pretty ?? formatFormula(reduceComposition(doc.composition).reduced),
-    });
-    entries.push(validateEntry(entry, i));
+    };
   });
+  const converted = docsToEntries(docs);
+  const entries = converted.entries.map((e, i) => validateEntry(e, i));
+  const energyBasis = converted.energyBasis;
   const total = isNumber(raw.meta?.total_doc) ? raw.meta.total_doc : null;
   return {
     set: {
@@ -112,9 +118,11 @@ function fromMpResponse(raw: { data: unknown[]; meta?: { total_doc?: unknown } }
       source: "Materials Project",
       thermoType: entries.find((e) => e.thermoType)?.thermoType,
       elements: [...new Set(entries.flatMap((e) => Object.keys(e.composition)))].sort(),
+      energyBasis,
       entries,
     },
     mp: { ids, total },
+    warnings: energyBasis === "total" && entries.length ? [STALE_MP_ENERGY] : [],
   };
 }
 
@@ -152,6 +160,8 @@ function parseOne(text: string): ParsedFile {
   });
   const elements =
     meta.elements ?? [...new Set(entries.flatMap((e) => Object.keys(e.composition)))].sort();
+  const staleMp =
+    !!meta.source?.startsWith("Materials Project") && meta.energyBasis !== "formation";
   return {
     set: {
       version: 1,
@@ -159,8 +169,10 @@ function parseOne(text: string): ParsedFile {
       thermoType: meta.thermoType ?? entries.find((e) => e.thermoType)?.thermoType,
       elements,
       fetchedAt: meta.fetchedAt,
+      energyBasis: meta.energyBasis,
       entries,
     },
+    warnings: staleMp ? [STALE_MP_ENERGY] : [],
   };
 }
 
@@ -208,7 +220,13 @@ export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: s
     }
   }
 
-  const warnings: string[] = [];
+  const bases = [...new Set(parsed.map((p) => p.set.energyBasis ?? "total"))];
+  if (bases.length > 1)
+    throw new Error(
+      "エネルギーの基準が異なるファイルが混在しています。同じ方法で取得し直してください",
+    );
+
+  const warnings = [...new Set(parsed.flatMap((p) => p.warnings))];
   const mpFiles = parsed.filter((p) => p.mp);
   if (mpFiles.length) {
     const docs = new Set(mpFiles.flatMap((p) => p.mp!.ids)).size;
@@ -229,7 +247,10 @@ export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: s
       thermoType: thermoTypes[0] ?? first.thermoType,
       elements: [...new Set(parsed.flatMap((p) => p.set.elements))].sort(),
       fetchedAt: first.fetchedAt,
-      entries,
+      energyBasis: first.energyBasis,
+      // Individual pages may omit elemental references or stable compounds. Re-align
+      // against the complete stable hull after merging, independent of page boundaries.
+      entries: first.energyBasis === "formation" ? alignToMpHull(entries) : entries,
     },
     warnings,
   };

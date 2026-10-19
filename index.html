@@ -160,8 +160,12 @@
         <fieldset>
           <legend>オプション</legend>
           <label class="check">
-            <input id="stabilize" type="checkbox" /> 対象相を hull 上に置く (準安定相の評価)
+            <input id="stabilize" type="checkbox" checked /> 対象相を hull 上に置く (既定)
           </label>
+          <p class="hint">
+            準安定な対象相もプロットに含めて評価します。元のエネルギーでの平衡相を調べる場合は
+            チェックを外してください。該当エントリがない組成の仮想相は作りません。
+          </p>
           <label class="inline">
             hull より
             <input id="delta" type="number" value="0" min="0" step="1" /> meV/atom 下げる

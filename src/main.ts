@@ -120,7 +120,11 @@ function recompute(): void {
       entries: data.entries,
       formula: formulaInput.value.trim(),
       ion: ionSelect.value,
-      stabilize: { enabled: stabilize.checked, delta: (Number(delta.value) || 0) / 1000 },
+      stabilize: {
+        enabled: stabilize.checked,
+        delta: (Number(delta.value) || 0) / 1000,
+        allowVirtual: false,
+      },
     });
     render(profile);
   } catch (e) {
@@ -140,12 +144,13 @@ function render(p: Profile): void {
   const hull =
     p.eAboveHull === null ? "該当エントリなし" : `${formatNumber(p.eAboveHull * 1000, 1)} meV/atom`;
   $("summary").innerHTML = `
-    <div><span>安定性ウィンドウ</span><strong>${windowText}</strong></div>
+    <div><span>安定性ウィンドウ${p.stabilized ? " (hull 補正)" : ""}</span><strong>${windowText}</strong></div>
     <div><span>E<sub>hull</sub> (${formulaHtml(p.formula)})</span><strong>${hull}</strong></div>
     <div><span>平衡領域 / プラトー</span><strong>${p.regions.length} / ${p.plateaus.length}</strong></div>
     <div><span>使用エントリ</span><strong>${p.nEntries}</strong></div>
-    ${p.stabilized ? `<p class="note">対象相を hull 上に置いて計算しています。</p>` : ""}
-    ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。</p>` : ""}`;
+    ${p.stabilized ? `<p class="note">${formulaHtml(p.formula)} を hull 上${Number(delta.value) > 0 ? `から ${formatNumber(Number(delta.value))} meV/atom 下` : ""}に補正して評価しています。上の E<sub>hull</sub> は補正前の値です。このウィンドウは補正した対象相の評価です。</p>` : ""}
+    ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。「対象相を hull 上に置く」を有効にすると対象相を含むプロファイルを評価できます。</p>` : ""}
+    ${!p.targetEntry ? `<p class="note">${formulaHtml(p.formula)} の該当エントリがありません。仮想相は作らず、分解生成物の平衡のみを表示しています。</p>` : ""}`;
   chart?.destroy();
   chart = mountChart($("figure"), p, (view) => {
     const fmt = (v: number) => String(Number(v.toFixed(3)));
@@ -200,13 +205,13 @@ async function fetchFromMp(): Promise<void> {
         onProgress: (n, total) =>
           (dataStatus.textContent = `取得中… ${n}${total ? ` / ${total}` : ""}`),
       });
-    let entries;
+    let fetched;
     try {
       // `vp dev` / `vp preview` proxy the API on localhost; other servers return 404 there.
-      entries = await fetchFrom(isLocalHost() ? MP_DEV_PROXY : MP_API_BASE);
+      fetched = await fetchFrom(isLocalHost() ? MP_DEV_PROXY : MP_API_BASE);
     } catch (e) {
       if (!(isLocalHost() && e instanceof MpHttpError && e.status === 404)) throw e;
-      entries = await fetchFrom(MP_API_BASE);
+      fetched = await fetchFrom(MP_API_BASE);
     }
     setData({
       version: 1,
@@ -214,7 +219,8 @@ async function fetchFromMp(): Promise<void> {
       thermoType,
       elements,
       fetchedAt: new Date().toISOString(),
-      entries,
+      energyBasis: fetched.energyBasis,
+      entries: fetched.entries,
     });
     recompute();
   } catch (e) {
