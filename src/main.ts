@@ -7,6 +7,7 @@ import { demoEntrySet } from "./ui/demo";
 import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
 import { escapeHtml, formulaHtml } from "./ui/html";
+import { stabilityWindowText } from "./ui/summary";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -123,11 +124,7 @@ function fmtV(v: number): string {
 function render(p: Profile): void {
   result.hidden = false;
   const w = p.window;
-  const windowText = !w
-    ? `${p.ion} 金属と反応 (0 V 以下)`
-    : w.high - w.low < 1e-9
-      ? `なし (${w.low.toFixed(3)} V で分解)`
-      : `${w.low.toFixed(3)} – ${fmtV(w.high)} V`;
+  const windowText = stabilityWindowText(p);
   const hull =
     p.eAboveHull === null ? "該当エントリなし" : `${formatNumber(p.eAboveHull * 1000, 1)} meV/atom`;
   $("summary").innerHTML = `

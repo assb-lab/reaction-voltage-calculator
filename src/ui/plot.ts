@@ -87,7 +87,7 @@ export function renderProfileSvg(profile: Profile): string {
   </style>`);
 
   // Stability window band across both panels.
-  if (window && window.high > window.low + 1e-9) {
+  if (window?.targetIsPhase && window.high > window.low + 1e-9) {
     const y1 = Y(Math.min(window.high, vTop));
     const y0 = Y(window.low);
     parts.push(

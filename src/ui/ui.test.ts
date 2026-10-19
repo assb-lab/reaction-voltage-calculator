@@ -53,3 +53,33 @@ describe("HTML escaping", () => {
     expect(formulaHtml('Li2S <img src="x">')).toBe("Li<sub>2</sub>S &lt;img src=&quot;x&quot;&gt;");
   });
 });
+
+describe("target stability reporting", () => {
+  it("does not label a finite decomposition equilibrium interval as target stability", async () => {
+    const { parseFormula } = await import("../core/formula");
+    const { stabilityWindowText } = await import("./summary");
+    const entries = [
+      ["Li", 0],
+      ["P", 0],
+      ["S", 0],
+      ["LiS", -1.5],
+      ["PS", -1.5],
+      ["LiPS2", -1],
+    ].map(([name, energy]) => ({
+      id: String(name),
+      name: String(name),
+      composition: parseFormula(String(name)),
+      energyPerAtom: Number(energy),
+    }));
+    const p = computeProfile({ entries, formula: "LiPS2", ion: "Li" });
+    expect(p.window?.high).toBeGreaterThan(p.window!.low);
+    expect(p.window?.targetIsPhase).toBe(false);
+    expect(stabilityWindowText(p)).toBe("なし (分解生成物が安定)");
+    expect(renderProfileSvg(p)).not.toContain('class="window"');
+  });
+  it("marks targets without an entry as unassessed", async () => {
+    const { stabilityWindowText } = await import("./summary");
+    const p = computeProfile({ entries: demoEntrySet().entries, formula: "Li5PS5Cl", ion: "Li" });
+    expect(stabilityWindowText(p)).toBe("評価不可 (該当エントリなし)");
+  });
+});
