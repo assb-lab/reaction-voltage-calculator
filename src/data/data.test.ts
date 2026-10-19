@@ -156,3 +156,74 @@ describe("entry JSON", () => {
     expect(() => parseEntrySet('[{"composition":{"Li":1}}]')).toThrow(/energyPerAtom/);
   });
 });
+
+describe("review regressions", () => {
+  it("preserves the total correction from real pymatgen adjustment dictionaries", () => {
+    const set = parseEntrySet(
+      JSON.stringify([
+        { composition: { Li: 1 }, energy: 0 },
+        { composition: { S: 1 }, energy: 0 },
+        {
+          "@class": "ComputedEntry",
+          composition: { Li: 2, S: 1 },
+          energy: -3,
+          correction: -1.5,
+          energy_adjustments: [
+            { "@class": "CompositionEnergyAdjustment", adj_per_atom: -0.5, n_atoms: 3 },
+          ],
+        },
+      ]),
+    );
+    expect(set.entries[2].energyPerAtom).toBe(-1.5);
+    expect(
+      computeProfile({ entries: set.entries, formula: "S", ion: "Li" }).plateaus[0].voltage,
+    ).toBeCloseTo(2.25, 9);
+  });
+
+  it.each([{}, { Li: 0 }, { Li: -1 }, [], { Li: "1" }].map((composition) => ({ composition })))(
+    "rejects invalid compositions in both formats: %j",
+    ({ composition }) => {
+      expect(() => parseEntrySet(JSON.stringify([{ composition, energyPerAtom: -1 }]))).toThrow(
+        /composition/,
+      );
+      expect(() => parseEntrySet(JSON.stringify([{ composition, energy: -1 }]))).toThrow(
+        /composition/,
+      );
+    },
+  );
+
+  it("removes zero components before reference selection", () => {
+    const set = parseEntrySet(JSON.stringify([{ composition: { Li: 1, S: 0 }, energyPerAtom: 0 }]));
+    expect(set.entries[0].composition).toEqual({ Li: 1 });
+    expect(set.elements).toEqual(["Li"]);
+  });
+
+  it("rejects unsupported corrections rather than silently dropping them", () => {
+    expect(() =>
+      parseEntrySet(
+        JSON.stringify([
+          {
+            composition: { Li: 2, S: 1 },
+            energy: -3,
+            energy_adjustments: [{ "@class": "UnknownAdjustment" }],
+          },
+        ]),
+      ),
+    ).toThrow(/correction|adjustment/);
+  });
+
+  it("rejects non-string phase names", () => {
+    expect(() => parseEntrySet('[{"composition":{"Li":1},"energyPerAtom":0,"name":42}]')).toThrow(
+      /name/,
+    );
+  });
+
+  it("rejects partial API responses carrying errors", async () => {
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({ data: docs, errors: [{ message: "partial failure" }] }),
+    );
+    await expect(
+      fetchThermoEntries({ apiKey: "k", elements: ["Li", "S"], thermoType: "R2SCAN", fetchFn }),
+    ).rejects.toThrow(/API/);
+  });
+});

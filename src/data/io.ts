@@ -1,5 +1,5 @@
 import type { Entry } from "../core/entries";
-import { formatFormula, numAtoms, reduceComposition } from "../core/formula";
+import { formatFormula, numAtoms, reduceComposition, type Composition } from "../core/formula";
 
 export interface EntrySet {
   version: 1;
@@ -29,10 +29,20 @@ function isNumber(v: unknown): v is number {
 }
 
 function fromPymatgen(d: PymatgenEntryDict, i: number): Entry {
+  d = { ...d, composition: validateComposition(d.composition, i) };
   const atoms = numAtoms(d.composition);
-  const adjust = d.energy_adjustments
-    ? d.energy_adjustments.reduce((s, a) => s + (a.value ?? 0), 0)
-    : (d.correction ?? 0);
+  // as_dict() includes the total correction. Composition/temperature adjustment
+  // dictionaries store constructor arguments, not a computed "value" property.
+  let adjust = d.correction ?? 0;
+  if (d.correction == null && d.energy_adjustments) {
+    if (
+      !Array.isArray(d.energy_adjustments) ||
+      d.energy_adjustments.some((a) => !a || !isNumber(a.value))
+    )
+      throw new Error(`entries[${i}]: energy_adjustments に対応する correction が必要です`);
+    adjust = d.energy_adjustments.reduce((s, a) => s + a.value!, 0);
+  }
+  if (!isNumber(adjust)) throw new Error(`entries[${i}].correction が数値ではありません`);
   return {
     id: d.entry_id ?? d.data?.material_id ?? `entry-${i}`,
     name: formatFormula(reduceComposition(d.composition).reduced),
@@ -42,20 +52,32 @@ function fromPymatgen(d: PymatgenEntryDict, i: number): Entry {
   };
 }
 
-function validateEntry(e: Entry, i: number): Entry {
-  if (!e || typeof e !== "object") throw new Error(`entries[${i}] がオブジェクトではありません`);
-  if (!e.composition || typeof e.composition !== "object")
-    throw new Error(`entries[${i}].composition がありません`);
-  for (const [el, n] of Object.entries(e.composition)) {
+function validateComposition(comp: unknown, i: number): Composition {
+  if (!comp || typeof comp !== "object" || Array.isArray(comp))
+    throw new Error(`entries[${i}].composition が不正です`);
+  const out: Composition = {};
+  for (const [el, n] of Object.entries(comp)) {
     if (!/^[A-Z][a-z]?$/.test(el) || !isNumber(n) || n < 0)
       throw new Error(`entries[${i}].composition が不正です`);
+    if (n > 0) out[el] = n;
   }
+  if (!Object.keys(out).length || !Number.isFinite(numAtoms(out)))
+    throw new Error(`entries[${i}].composition が不正です`);
+  return out;
+}
+
+function validateEntry(e: Entry, i: number): Entry {
+  if (!e || typeof e !== "object") throw new Error(`entries[${i}] がオブジェクトではありません`);
+  const composition = validateComposition(e.composition, i);
   if (!isNumber(e.energyPerAtom))
     throw new Error(`entries[${i}].energyPerAtom が数値ではありません`);
+  if (e.name != null && typeof e.name !== "string")
+    throw new Error(`entries[${i}].name が文字列ではありません`);
   return {
     ...e,
+    composition,
     id: String(e.id ?? `entry-${i}`),
-    name: e.name ?? formatFormula(reduceComposition(e.composition).reduced),
+    name: e.name ?? formatFormula(reduceComposition(composition).reduced),
   };
 }
 
@@ -83,7 +105,7 @@ export function parseEntrySet(text: string): EntrySet {
   const entries = list.map((item, i) => {
     const d = item as PymatgenEntryDict & Entry;
     if (d && isNumber(d.energy) && d.composition && !isNumber(d.energyPerAtom))
-      return fromPymatgen(d, i);
+      return validateEntry(fromPymatgen(d, i), i);
     return validateEntry(d, i);
   });
   const elements =
