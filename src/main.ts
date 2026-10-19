@@ -20,7 +20,6 @@ import { mountChart, voltageRange, type Chart } from "./ui/chart";
 import { escapeHtml, formulaHtml } from "./ui/html";
 import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
-import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -436,16 +435,6 @@ onboarding.addEventListener("keydown", (ev) => {
     setOnboarding(false);
     helpToggle.focus();
   }
-});
-
-// Theme: auto (OS setting) / light / dark. index.html applies the saved choice before first paint.
-const themeSelect = $<HTMLSelectElement>("theme");
-themeSelect.value = loadTheme(browserStorage);
-applyTheme(document.documentElement, themeSelect.value as Theme);
-themeSelect.addEventListener("change", () => {
-  const theme = themeSelect.value as Theme;
-  applyTheme(document.documentElement, theme);
-  saveTheme(browserStorage, theme);
 });
 
 if (shouldShowOnboarding(browserStorage)) {

@@ -14,14 +14,12 @@
   --box: #f1f1ef;
   --window: #b8b8b8;
   --error: #b3261e;
-  color-scheme: light;
   font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
   line-height: 1.55;
   color: var(--fg);
 }
-/* Dark tokens: the OS setting unless the user picked light, or an explicit dark choice. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root {
     --bg: #161618;
     --card: #1f1f22;
     --fg: #ececec;
@@ -37,26 +35,7 @@
     --box: #2a2a2e;
     --window: #6b6b70;
     --error: #ff8a80;
-    color-scheme: dark;
   }
-}
-:root[data-theme="dark"] {
-  --bg: #161618;
-  --card: #1f1f22;
-  --fg: #ececec;
-  --muted: #a0a0a6;
-  --border: #3a3a3f;
-  --grid: #2f2f34;
-  --accent: #7aa7ff;
-  --on-accent: #0b1a33;
-  --ox: #ff7b72;
-  --red: #79a8ff;
-  --ox-bg: #4a2523;
-  --red-bg: #22324d;
-  --box: #2a2a2e;
-  --window: #6b6b70;
-  --error: #ff8a80;
-  color-scheme: dark;
 }
 
 * {
@@ -265,15 +244,6 @@ footer {
   padding-bottom: 32px;
 }
 
-.header-tools {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.header-tools select {
-  padding: 4px 8px;
-  font-size: 0.85rem;
-}
 .title-row {
   display: flex;
   align-items: baseline;
