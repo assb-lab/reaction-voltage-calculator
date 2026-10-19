@@ -9,6 +9,7 @@ const TOKEN = /([A-Z][a-z]?)|(\d*\.\d+|\d+)|([([{])|([)\]}])|(\s+)/y;
  */
 export function parseFormula(formula: string): Composition {
   const stack: Composition[] = [{}];
+  const brackets: string[] = [];
   let pendingGroup: Composition | null = null;
   let lastElement: string | null = null;
   TOKEN.lastIndex = 0;
@@ -48,11 +49,14 @@ export function parseFormula(formula: string): Composition {
     } else if (open) {
       flushGroup(1);
       stack.push({});
+      brackets.push(open);
       lastElement = null;
     } else if (close) {
       flushGroup(1);
-      if (stack.length < 2) throw new Error(`括弧の対応が不正です: "${formula}"`);
+      if (stack.length < 2 || "([{".indexOf(brackets.pop()!) !== ")]}".indexOf(close))
+        throw new Error(`括弧の対応が不正です: "${formula}"`);
       pendingGroup = stack.pop()!;
+      if (!Object.keys(pendingGroup).length) throw new Error(`空の括弧です: "${formula}"`);
       lastElement = null;
     }
   }

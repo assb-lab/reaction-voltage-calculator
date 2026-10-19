@@ -17,14 +17,12 @@ export const ION_CHARGE: Record<string, number> = {
   Al: 3,
 };
 
-/** Lowest working-ion chemical potential scanned (eV, relative to the ion metal). */
-const MU_FLOOR = -50;
 const T_TOL = 1e-7;
 const E_TOL = 1e-9;
 
 export interface PhaseAmount {
   entry: Entry;
-  /** Reduced formula units per formula unit of the target. */
+  /** Units of the phase's displayed formula per formula unit of the target. */
   amount: number;
 }
 
@@ -207,11 +205,7 @@ export function computeProfile(input: ProfileInput): Profile {
   let targetEntry = best?.entry ?? null;
   const stabilized = !!input.stabilize?.enabled;
   if (stabilized) {
-    const hullOthers = hullEnergy(others, base.elements, target);
-    const f = Math.min(
-      best?.formationPerAtom ?? Infinity,
-      hullOthers - Math.max(0, input.stabilize!.delta),
-    );
+    const f = hullAll - Math.max(0, input.stabilize!.delta);
     const refE = Object.entries(targetFrac).reduce((s, [el, x]) => s + x * base.refs[el], 0);
     targetEntry = best
       ? { ...best.entry, energyPerAtom: f + refE }
@@ -228,7 +222,13 @@ export function computeProfile(input: ProfileInput): Profile {
   }
 
   const solve = makeGrandSolver(set, target, ion);
-  const lo = solve(MU_FLOOR);
+  // The ion-free assemblage is the exact oxidised endpoint at μ → −∞.
+  // A fixed finite scan limit can miss transitions in dilute-ion compositions.
+  const lo = makeGrandSolver(
+    { ...set, entries: set.entries.filter((e) => !e.fraction[ion]) },
+    target,
+    ion,
+  )(0);
   const hi = solve(0);
   const mus = findBreakpoints(solve, lo, hi);
 
