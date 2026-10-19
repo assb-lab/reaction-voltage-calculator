@@ -1,4 +1,236 @@
 :root {
-  font-family: system-ui, sans-serif;
-  color-scheme: light dark;
+  --bg: #f7f7f5;
+  --card: #ffffff;
+  --fg: #1d1d1f;
+  --muted: #5f6368;
+  --border: #d9d9d6;
+  --grid: #e4e4e1;
+  --accent: #1f5fbf;
+  --ox: #c62828;
+  --red: #1f5fbf;
+  --ox-bg: #fbe4e2;
+  --red-bg: #dfe8f7;
+  --box: #f1f1ef;
+  --window: #b8b8b8;
+  --error: #b3261e;
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.55;
+  color: var(--fg);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161618;
+    --card: #1f1f22;
+    --fg: #ececec;
+    --muted: #a0a0a6;
+    --border: #3a3a3f;
+    --grid: #2f2f34;
+    --accent: #7aa7ff;
+    --ox: #ff7b72;
+    --red: #79a8ff;
+    --ox-bg: #4a2523;
+    --red-bg: #22324d;
+    --box: #2a2a2e;
+    --window: #6b6b70;
+    --error: #ff8a80;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+.page-header,
+main,
+footer {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.page-header h1 {
+  margin: 28px 0 4px;
+  font-size: 1.6rem;
+}
+.lede {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+.grid .wide {
+  grid-column: span 2;
+}
+@media (max-width: 480px) {
+  .grid .wide {
+    grid-column: auto;
+  }
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+label.check,
+label.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  color: var(--fg);
+}
+label.inline input {
+  width: 6em;
+}
+input,
+select,
+button,
+.button {
+  font: inherit;
+  color: var(--fg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+input[type="checkbox"] {
+  padding: 0;
+}
+button,
+.button {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+button:hover,
+.button:hover {
+  border-color: var(--accent);
+}
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 14px 0 0;
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+legend {
+  font-size: 0.85rem;
+  color: var(--muted);
+  padding: 0 4px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.status {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-height: 1.2em;
+}
+.error {
+  color: var(--error);
+  font-weight: 600;
+}
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px 16px;
+}
+.summary div {
+  display: flex;
+  flex-direction: column;
+}
+.summary span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.summary strong {
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+.summary .note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+figure {
+  margin: 16px 0 0;
+}
+figure svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+h2 {
+  font-size: 1.05rem;
+  margin: 20px 0 8px;
+}
+.table-wrap {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+th,
+td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+td:first-child {
+  white-space: nowrap;
+}
+tr.ox td:first-child {
+  box-shadow: inset 3px 0 var(--ox);
+}
+tr.red td:first-child {
+  box-shadow: inset 3px 0 var(--red);
+}
+tr.zero {
+  background: color-mix(in srgb, var(--window) 25%, transparent);
+}
+footer {
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding-bottom: 32px;
 }
