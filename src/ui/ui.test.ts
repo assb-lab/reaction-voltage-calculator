@@ -4,6 +4,9 @@ import { demoEntrySet } from "./demo";
 import { profileToCsv, profileToJson } from "./export";
 import { formulaTspans, renderProfileSvg } from "./plot";
 import { idLinkHtml, phaseLinkHtml } from "./html";
+import { filmCellHtml, formatLengthNm } from "./film";
+import { displayCoreRatio } from "./particle3d";
+import { filmForRegion } from "../core/film";
 
 const profile = computeProfile({ entries: demoEntrySet().entries, formula: "Li6PS5Cl", ion: "Li" });
 
@@ -130,5 +133,27 @@ describe("phase links", () => {
       '<a href="https://materialsproject.org/materials/mp-149" target="_blank" rel="noopener noreferrer">mp-149</a>',
     );
     expect(idLinkHtml("virtual")).toBe("virtual");
+  });
+});
+
+describe("film display", () => {
+  it("formats lengths and keeps thin films visible in the 3D model", () => {
+    expect(formatLengthNm(1.1934)).toBe("1.19 nm");
+    expect(formatLengthNm(88.25)).toBe("88.3 nm");
+    expect(formatLengthNm(1534)).toBe("1.53 µm");
+    expect(displayCoreRatio(0.997, 0.999)).toEqual({ coreRatio: 0.96, exaggerated: true });
+    expect(displayCoreRatio(0.888, 1.065).exaggerated).toBe(false);
+    expect(displayCoreRatio(0, 1.2)).toEqual({ coreRatio: 0, exaggerated: false });
+  });
+
+  it("marks regions without volume data and escapes phase names", () => {
+    const cell = filmCellHtml({ kind: "unavailable", missing: ["<b>"] });
+    expect(cell).toContain("&lt;b&gt;");
+    expect(cell).not.toContain("<b>");
+    // The demo data has no volumes: every decomposed region is "not available".
+    const region = profile.regions.at(-1)!;
+    expect(filmForRegion(profile, region, { diameterUm: 1, fraction: 0.1 }).kind).toBe(
+      "unavailable",
+    );
   });
 });

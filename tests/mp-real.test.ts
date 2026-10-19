@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 import { excludeEntries, prepareEntries } from "../src/core/entries";
+import { filmForRegion } from "../src/core/film";
 import { computeProfile, hullEnergy, regionReaction } from "../src/core/profile";
 import { parseEntryFiles, parseEntrySet } from "../src/data/io";
 import { renderProfileSvg } from "../src/ui/plot";
@@ -79,6 +80,26 @@ describe("real MP data: Cl-Li-P-S, GGA_GGA+U_R2SCAN", () => {
         r.phases.some((e) => e.id === "mp-985592"),
       ),
     ).toBe(true);
+  });
+
+  it("computes the film of the Li6PS5Cl reduction products from MP volumes", () => {
+    const profile = computeProfile({
+      entries: set.entries,
+      formula: "Li6PS5Cl",
+      ion: "Li",
+      stabilize: { enabled: true, delta: 0, allowVirtual: false },
+    });
+    const last = profile.regions.at(-1)!;
+    const film = filmForRegion(profile, last, { diameterUm: 1, fraction: 0.3 });
+    if (film.kind !== "film") throw new Error(film.kind);
+    expect(film.phases.map((p) => p.entry.name).sort()).toEqual(["Li2S", "Li3P", "LiCl"]);
+    expect(film.phases.reduce((s, p) => s + p.volFraction, 0)).toBeCloseTo(1, 12);
+    // Reduction with 8 Li expands the solid, so the film is thicker than the decomposed depth.
+    expect(film.volumeRatio).toBeGreaterThan(1);
+    expect(film.outerDiameterUm).toBeGreaterThan(1);
+    expect(film.thicknessNm).toBeGreaterThan((1 - Math.cbrt(0.7)) * 500);
+    // 30 % of 8 Li per Li6PS5Cl (268.4 g/mol)
+    expect(film.capacityMAhG).toBeCloseTo((0.3 * 8 * 96485.33212) / (3.6 * 268.36), 0);
   });
 
   it("does not fabricate a target entry when the requested composition is absent", () => {

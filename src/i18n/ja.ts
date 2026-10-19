@@ -111,6 +111,28 @@ export const ja = {
   "err.lostRefs":
     "除外により {elements} の単体エントリがなくなりました。単体は生成エネルギーの基準なので除外できません。除外する相を見直してください。",
 
+  "opt.film": "被膜厚みを計算 (分解生成物が粒子表面に形成されると仮定)",
+  "opt.filmDiameter": "粒子径",
+  "opt.filmFraction": "分解率 (粒子体積の)",
+  "opt.filmHint":
+    "球状粒子が表面から分解し、生成物が未反応のコアを覆う緻密な混合層になると仮定します。生成物の体積は MP の体積/原子から求め、体積変化を含めます。",
+  "film.title": "被膜モデル",
+  "film.region": "電位区間",
+  "film.drag": "ドラッグ (または矢印キー) で回転",
+  "film.column": "被膜 (厚み / vol% / 容量)",
+  "film.none": "—",
+  "film.unavailable": "計算不可 (体積データなし: {phases})",
+  "film.capacity": "{q} mAh/g",
+  "film.tooltip": "被膜 {t}",
+  "film.invalid": "被膜: 粒子径 (> 0 µm) と分解率 (0–100 %) を正しく入力してください。",
+  "film.noRegion":
+    "被膜を計算できる電位区間がありません (体積データのある分解生成物がありません)。",
+  "film.core": "未反応の {formula}",
+  "film.note":
+    "粒子径 {d} µm、分解率 {f} % で、被膜の厚みは {t} (コア径 {core} µm、外径 {out} µm)。",
+  "film.exaggerated": "被膜が薄いため、図では厚みを誇張しています。",
+  "film.aria": "{formula} 粒子の断面モデル。被膜の厚み {t}",
+
   // Tooltip and figure
   "link.openMp": "Materials Project で {id} を開く",
   "tip.plateau": "プラトー {v} V",

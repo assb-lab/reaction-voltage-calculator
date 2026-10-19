@@ -482,3 +482,62 @@ figure.interactive:focus-visible {
   margin-top: 4px;
   color: var(--muted);
 }
+
+/* Film thickness mode */
+.film-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+.film-options .hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+.film-panel {
+  margin: 16px 0;
+}
+.film-panel h2 {
+  margin-bottom: 8px;
+}
+.film-panel select {
+  max-width: 100%;
+}
+.film-view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-top: 12px;
+}
+#filmCanvas {
+  width: min(320px, 100%);
+  aspect-ratio: 1;
+  cursor: grab;
+  border-radius: 8px;
+}
+#filmCanvas:active {
+  cursor: grabbing;
+}
+#filmCanvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.film-info {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.swatch-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex: none;
+}
+.film-legend {
+  flex-direction: column;
+  align-items: flex-start;
+}
+#regions td.film {
+  min-width: 12em;
+}

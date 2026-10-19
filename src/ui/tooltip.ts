@@ -3,6 +3,8 @@ import { atomicFractions, regionReaction, type PhaseAmount, type Profile } from 
 import { formulaHtml, escapeHtml } from "./html";
 import { LAYOUT, scales, type View } from "./plot";
 import { t } from "../i18n";
+import { filmForRegion, type FilmOptions } from "../core/film";
+import { filmTooltipHtml } from "./film";
 
 /** What is under the pointer. */
 export type Hit =
@@ -64,7 +66,7 @@ function phaseList(phases: PhaseAmount[], fractions: number[]): string {
 }
 
 /** Tooltip body (HTML) for a hit. All data-derived text is escaped. */
-export function tooltipHtml(profile: Profile, hit: Hit): string {
+export function tooltipHtml(profile: Profile, hit: Hit, film?: FilmOptions | null): string {
   const ion = escapeHtml(profile.ion);
   if (hit.kind === "plateau") {
     const p = profile.plateaus[hit.plateau];
@@ -94,5 +96,6 @@ export function tooltipHtml(profile: Profile, hit: Hit): string {
   return `<strong>${hit.voltage.toFixed(3)} V</strong> <span class="muted">${t("tip.interval", { range })}</span>
     <div>x = ${formatNumber(r.x)}</div>
     <ul>${phaseList(r.phases, fr)}</ul>
-    <div class="rxn">${formulaHtml(regionReaction(profile, r))}</div>`;
+    <div class="rxn">${formulaHtml(regionReaction(profile, r))}</div>
+    ${film ? filmTooltipHtml(filmForRegion(profile, r, film)) : ""}`;
 }

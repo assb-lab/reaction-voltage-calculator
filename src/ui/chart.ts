@@ -1,6 +1,7 @@
 import type { Profile } from "../core/profile";
 import { defaultView, LAYOUT, renderProfileSvg, scales, type View } from "./plot";
 import { hitRegion, hitTest, tooltipHtml, type Hit } from "./tooltip";
+import type { FilmOptions } from "../core/film";
 
 const MIN_V_SPAN = 1e-3;
 const MAX_V_SPAN = 100;
@@ -73,6 +74,7 @@ export function mountChart(
   container: HTMLElement,
   profile: Profile,
   onChange?: (view: View) => void,
+  opts: { film?: FilmOptions | null } = {},
 ): Chart {
   const initial = defaultView(profile);
   let view = initial;
@@ -110,7 +112,7 @@ export function mountChart(
       return;
     }
     if (changed) {
-      tip.innerHTML = tooltipHtml(profile, next);
+      tip.innerHTML = tooltipHtml(profile, next, opts.film);
       redraw();
     }
     tip.hidden = false;

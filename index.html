@@ -237,6 +237,25 @@
             はそのエントリだけを計算から除きます。
             不自然な組成や信頼できない計算の相を外すときに使います。
           </p>
+          <label class="check">
+            <input id="film" type="checkbox" />
+            <span data-i18n="opt.film"
+              >被膜厚みを計算 (分解生成物が粒子表面に形成されると仮定)</span
+            >
+          </label>
+          <div id="filmOptions" class="film-options" hidden>
+            <label class="inline">
+              <span data-i18n="opt.filmDiameter">粒子径</span>
+              <input id="filmDiameter" type="number" value="1" min="0" step="any" /> µm
+            </label>
+            <label class="inline">
+              <span data-i18n="opt.filmFraction">分解率 (粒子体積の)</span>
+              <input id="filmFraction" type="number" value="1" min="0" max="100" step="any" /> %
+            </label>
+            <p class="hint" data-i18n="opt.filmHint">
+              球状粒子が表面から分解し、生成物が未反応のコアを覆う緻密な混合層になると仮定します。
+            </p>
+          </div>
         </fieldset>
       </form>
 
@@ -298,6 +317,21 @@
           <button id="dlJson" type="button" data-i18n="dl.json">結果 JSON</button>
           <button id="dlEntries" type="button" data-i18n="dl.entries">エントリ JSON</button>
         </div>
+        <section id="filmPanel" class="film-panel" aria-labelledby="filmTitle" hidden>
+          <h2 id="filmTitle" data-i18n="film.title">被膜モデル</h2>
+          <label class="inline">
+            <span data-i18n="film.region">電位区間</span>
+            <select id="filmRegion"></select>
+          </label>
+          <div class="film-view">
+            <canvas id="filmCanvas" width="320" height="320" tabindex="0"></canvas>
+            <div class="film-info">
+              <ul id="filmLegend" class="legend film-legend"></ul>
+              <p id="filmNote" class="hint"></p>
+              <p class="hint" data-i18n="film.drag">ドラッグ (または矢印キー) で回転</p>
+            </div>
+          </div>
+        </section>
         <h2 data-i18n="table.title">相平衡と反応</h2>
         <div class="table-wrap"><table id="regions"></table></div>
       </section>
