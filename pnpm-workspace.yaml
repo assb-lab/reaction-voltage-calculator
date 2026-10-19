@@ -3,6 +3,8 @@ catalog:
   vite-plus: 1.2.0
 overrides:
   vite@*: "catalog:"
+  # postcss 8.5.31 is younger than pnpm's minimumReleaseAge used in CI.
+  postcss: 8.5.30
 peerDependencyRules:
   allowAny:
     - vite
