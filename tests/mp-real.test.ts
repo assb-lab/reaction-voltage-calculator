@@ -37,10 +37,31 @@ describe("real MP data: Cl-Li-P-S, GGA_GGA+U_R2SCAN", () => {
       ion: "Li",
       stabilize: { enabled: true, delta: 0 },
     });
-    console.log(
-      s.window,
-      s.regions.map((r) => `${r.vMin.toFixed(3)}-${r.vMax.toFixed(3)} ${regionReaction(s, r)}`),
-    );
+    expect(s.window?.targetIsPhase).toBe(true);
+    expect(s.window?.low).toBeCloseTo(1.717, 3);
+    expect(s.window?.high).toBeCloseTo(2.14, 3);
+  });
+
+  it("gives identical energies and profiles when raw data spans multiple pages", () => {
+    const docs = (JSON.parse(raw) as { data: unknown[] }).data;
+    for (const pages of [
+      [docs.slice(0, 50), docs.slice(50)],
+      [docs.filter((_, i) => i % 2), docs.filter((_, i) => !(i % 2))],
+    ]) {
+      const { set: merged, warnings } = parseEntryFiles(
+        pages.map((data, i) => ({
+          name: `page-${i}.json`,
+          text: JSON.stringify({ data, meta: { total_doc: docs.length } }),
+        })),
+      );
+      expect(warnings).toEqual([]);
+      const energies = new Map(set.entries.map((e) => [e.id, e.energyPerAtom]));
+      for (const e of merged.entries)
+        expect(e.energyPerAtom, e.id).toBeCloseTo(energies.get(e.id)!, 9);
+      const p = computeProfile({ entries: merged.entries, formula: "Li6PS5Cl", ion: "Li" });
+      expect(p.eAboveHull).toBeCloseTo(0.0829463, 6);
+      expect(regionReaction(p, p.regions.at(-1)!)).toBe("Li6PS5Cl + 8 Li → 5 Li2S + Li3P + LiCl");
+    }
   });
 
   it("flags data built from energy_per_atom", () => {

@@ -1,6 +1,6 @@
 import type { Entry } from "../core/entries";
 import { formatFormula, numAtoms, reduceComposition, type Composition } from "../core/formula";
-import { docsToEntries, PER_PAGE, type EnergyBasis, type ThermoDoc } from "./mp";
+import { alignToMpHull, docsToEntries, PER_PAGE, type EnergyBasis, type ThermoDoc } from "./mp";
 
 export interface EntrySet {
   version: 1;
@@ -248,7 +248,9 @@ export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: s
       elements: [...new Set(parsed.flatMap((p) => p.set.elements))].sort(),
       fetchedAt: first.fetchedAt,
       energyBasis: first.energyBasis,
-      entries,
+      // Individual pages may omit elemental references or stable compounds. Re-align
+      // against the complete stable hull after merging, independent of page boundaries.
+      entries: first.energyBasis === "formation" ? alignToMpHull(entries) : entries,
     },
     warnings,
   };
