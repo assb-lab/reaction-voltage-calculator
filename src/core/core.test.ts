@@ -144,3 +144,51 @@ describe("computeProfile", () => {
     expect(p.window?.high).toBeCloseTo(10 / 3, 9);
   });
 });
+
+describe("review regressions", () => {
+  it("stabilizes an ion-free elemental target without removing its only reference", () => {
+    const p = computeProfile({
+      entries: LiS,
+      formula: "S",
+      ion: "Li",
+      stabilize: { enabled: true, delta: 0 },
+    });
+    expect(p.window?.high).toBe(Infinity);
+    expect(p.plateaus[0].voltage).toBeCloseTo(2.4, 9);
+  });
+
+  it("places even a stable target delta below the existing hull", () => {
+    const p = computeProfile({
+      entries: LiS,
+      formula: "LiS",
+      ion: "Li",
+      stabilize: { enabled: true, delta: 0.01 },
+    });
+    expect(p.window?.high).toBeCloseTo(2.42, 9);
+    expect(p.window?.low).toBeCloseTo(2.08, 9);
+  });
+
+  it("balances molecular elemental phase formulas in reactions", () => {
+    const p = computeProfile({
+      entries: [entry("Li", 0), entry("O2", 0), entry("Li2O", -1)],
+      formula: "Li2O",
+      ion: "Li",
+    });
+    expect(regionReaction(p, p.regions[0])).toBe("Li2O → 0.5 O2 + 2 Li");
+  });
+
+  it.each(["Li(OH]", "Li[OH)", "Li()S"])("rejects malformed grouping: %s", (f) => {
+    expect(() => parseFormula(f)).toThrow();
+  });
+});
+
+it("finds oxidation transitions beyond the former 50 eV scan limit", () => {
+  const p = computeProfile({
+    entries: [entry("Li", 0), entry("S", 0), entry("Li0.01S", -0.75)],
+    formula: "Li0.01S",
+    ion: "Li",
+  });
+  expect(p.regions[0].ionAmount).toBe(0);
+  expect(p.plateaus).toHaveLength(1);
+  expect(p.plateaus[0].voltage).toBeCloseTo(75.75, 8);
+});

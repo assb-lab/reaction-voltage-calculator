@@ -83,7 +83,13 @@ export async function fetchThermoEntries(opts: FetchOptions): Promise<Entry[]> {
       const hint = res.status === 401 || res.status === 403 ? " (API key を確認してください)" : "";
       throw new Error(`Materials Project API エラー: HTTP ${res.status}${hint}`);
     }
-    const body = (await res.json()) as { data?: ThermoDoc[]; meta?: { total_doc?: number } };
+    const body = (await res.json()) as {
+      data?: ThermoDoc[];
+      meta?: { total_doc?: number };
+      errors?: unknown[];
+    };
+    if (!Array.isArray(body.data) || body.errors?.length)
+      throw new Error("Materials Project API の応答が不完全です。再取得してください");
     const data = body.data ?? [];
     docs.push(...data);
     const total = body.meta?.total_doc ?? null;
