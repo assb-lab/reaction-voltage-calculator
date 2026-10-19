@@ -1,5 +1,6 @@
 import { prepareEntries, type Entry } from "../core/entries";
 import { hullEnergy } from "../core/profile";
+import { t } from "../i18n";
 
 export const MP_API_BASE = "https://api.materialsproject.org";
 /** Same-origin path proxied to MP_API_BASE by `vp dev` / `vp preview` (see vite.config.ts). */
@@ -175,7 +176,7 @@ export async function fetchThermoEntries(
   opts: FetchOptions,
 ): Promise<{ entries: Entry[]; energyBasis: EnergyBasis }> {
   const fetchFn = opts.fetchFn ?? fetch.bind(globalThis);
-  if (!opts.apiKey.trim()) throw new Error("Materials Project API key を入力してください");
+  if (!opts.apiKey.trim()) throw new Error(t("mp.noKey"));
   const docs: ThermoDoc[] = [];
   for (let page = 1; ; page++) {
     let res: Response;
@@ -187,21 +188,18 @@ export async function fetchThermoEntries(
     } catch (e) {
       if ((e as Error).name === "AbortError") throw e;
       // MP only sends CORS headers to materialsproject.org, so browsers block other origins.
-      throw new MpNetworkError(
-        "ブラウザから Materials Project API に接続できませんでした。MP API は materialsproject.org 以外からのブラウザ通信 (CORS) を許可していません。下の「コマンドで取得」で JSON を取得して読み込んでください。",
-      );
+      throw new MpNetworkError(t("mp.network"));
     }
     if (!res.ok) {
-      const hint = res.status === 401 || res.status === 403 ? " (API key を確認してください)" : "";
-      throw new MpHttpError(`Materials Project API エラー: HTTP ${res.status}${hint}`, res.status);
+      const hint = res.status === 401 || res.status === 403 ? t("mp.httpKeyHint") : "";
+      throw new MpHttpError(t("mp.http", { status: res.status, hint }), res.status);
     }
     const body = (await res.json()) as {
       data?: ThermoDoc[];
       meta?: { total_doc?: number };
       errors?: unknown[];
     };
-    if (!Array.isArray(body.data) || body.errors?.length)
-      throw new Error("Materials Project API の応答が不完全です。再取得してください");
+    if (!Array.isArray(body.data) || body.errors?.length) throw new Error(t("mp.incomplete"));
     const data = body.data ?? [];
     docs.push(...data);
     const total = body.meta?.total_doc ?? null;

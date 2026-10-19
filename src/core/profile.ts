@@ -1,6 +1,7 @@
 import { prepareEntries, type Entry, type PreparedEntry, type PreparedSet } from "./entries";
 import { formatNumber, numAtoms, parseFormula, type Composition } from "./formula";
 import { solveLp } from "./simplex";
+import { t } from "../i18n";
 
 /** Charge of the working ion used to convert chemical potential to voltage. */
 export const ION_CHARGE: Record<string, number> = {
@@ -197,7 +198,7 @@ export function computeProfile(input: ProfileInput): Profile {
   const target = parseFormula(input.formula);
   const charge = ION_CHARGE[ion] ?? 1;
   const elements = [...new Set([...Object.keys(target), ion])].sort();
-  if (elements.length < 2) throw new Error(`${ion} 以外の元素を含む組成を指定してください`);
+  if (elements.length < 2) throw new Error(t("profile.needOtherElements", { ion }));
   const base = prepareEntries(input.entries, elements);
 
   // Target phase: energy above hull, optional stabilisation.

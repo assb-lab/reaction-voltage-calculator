@@ -1,4 +1,5 @@
 import { numAtoms, parseFormula, reduceComposition, type Composition } from "./formula";
+import { t } from "../i18n";
 
 /** One computed phase: composition (any multiple) and corrected total energy per atom. */
 export interface Entry {
@@ -44,7 +45,7 @@ export function prepareEntries(entries: Entry[], elements: string[]): PreparedSe
     }
   }
   const missing = elements.filter((el) => !(el in refs));
-  if (missing.length) throw new Error(`単体の基準エントリがありません: ${missing.join(", ")}`);
+  if (missing.length) throw new Error(t("entries.missingRefs", { elements: missing.join(", ") }));
 
   const prepared = inside.map((entry): PreparedEntry => {
     const total = numAtoms(entry.composition);

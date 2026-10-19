@@ -2,6 +2,7 @@ import { formatNumber } from "../core/formula";
 import { atomicFractions, regionReaction, type PhaseAmount, type Profile } from "../core/profile";
 import { formulaHtml, escapeHtml } from "./html";
 import { LAYOUT, scales, type View } from "./plot";
+import { t } from "../i18n";
 
 /** What is under the pointer. */
 export type Hit =
@@ -72,8 +73,8 @@ export function tooltipHtml(profile: Profile, hit: Hit): string {
     const dx = p.xEnd - p.xStart;
     const side = (ph: PhaseAmount[]) =>
       ph.map((q) => `${formatNumber(q.amount)} ${formulaHtml(q.entry.name)}`).join(" + ");
-    return `<strong>プラトー ${p.voltage.toFixed(3)} V</strong>
-      <div>x: ${formatNumber(p.xStart)} → ${formatNumber(p.xEnd)} (${ion} ${formatNumber(dx)} 取込)</div>
+    return `<strong>${t("tip.plateau", { v: p.voltage.toFixed(3) })}</strong>
+      <div>${t("tip.uptake", { from: formatNumber(p.xStart), to: formatNumber(p.xEnd), ion, dx: formatNumber(dx) })}</div>
       <div class="rxn">${side(a.phases)} + ${formatNumber(dx)} ${ion} → ${side(b.phases)}</div>`;
   }
   const r = profile.regions[hit.region];
@@ -88,9 +89,9 @@ export function tooltipHtml(profile: Profile, hit: Hit): string {
         : `<div>E<sub>hull</sub> (MP): ${formatNumber(e.eAboveHull * 1000, 1)} meV/atom</div>`;
     return `<strong>${formulaHtml(e.name)}</strong> <span class="muted">${escapeHtml(e.id)}</span>
       <div>${formatNumber(fr[hit.phase] * 100, 1)} at.% / ${formatNumber(ph.amount)} per ${formulaHtml(profile.formula)}</div>
-      ${ehull}<div>電位範囲: ${range}</div>`;
+      ${ehull}<div>${t("tip.range", { range })}</div>`;
   }
-  return `<strong>${hit.voltage.toFixed(3)} V</strong> <span class="muted">(区間 ${range})</span>
+  return `<strong>${hit.voltage.toFixed(3)} V</strong> <span class="muted">${t("tip.interval", { range })}</span>
     <div>x = ${formatNumber(r.x)}</div>
     <ul>${phaseList(r.phases, fr)}</ul>
     <div class="rxn">${formulaHtml(regionReaction(profile, r))}</div>`;
