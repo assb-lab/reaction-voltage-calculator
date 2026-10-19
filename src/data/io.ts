@@ -1,6 +1,7 @@
 import type { Entry } from "../core/entries";
 import { formatFormula, numAtoms, reduceComposition, type Composition } from "../core/formula";
 import { alignToMpHull, docsToEntries, PER_PAGE, type EnergyBasis, type ThermoDoc } from "./mp";
+import { t } from "../i18n";
 
 export interface EntrySet {
   version: 1;
@@ -12,9 +13,6 @@ export interface EntrySet {
   energyBasis?: EnergyBasis;
   entries: Entry[];
 }
-
-const STALE_MP_ENERGY =
-  "Materials Project の energy_per_atom を使ったデータです。mixed scheme (GGA_GGA+U_R2SCAN) では値のスケールが揃っておらず、相図が正しくなりません。最新のコマンドまたは「MP から取得」で再取得してください。";
 
 export function serializeEntrySet(set: EntrySet): string {
   return JSON.stringify(set, null, 1);
@@ -45,10 +43,10 @@ function fromPymatgen(d: PymatgenEntryDict, i: number): Entry {
       !Array.isArray(d.energy_adjustments) ||
       d.energy_adjustments.some((a) => !a || !isNumber(a.value))
     )
-      throw new Error(`entries[${i}]: energy_adjustments に対応する correction が必要です`);
+      throw new Error(t("io.needCorrection", { i }));
     adjust = d.energy_adjustments.reduce((s, a) => s + a.value!, 0);
   }
-  if (!isNumber(adjust)) throw new Error(`entries[${i}].correction が数値ではありません`);
+  if (!isNumber(adjust)) throw new Error(t("io.correctionNaN", { i }));
   return {
     id: d.entry_id ?? d.data?.material_id ?? `entry-${i}`,
     name: formatFormula(reduceComposition(d.composition).reduced),
@@ -60,25 +58,23 @@ function fromPymatgen(d: PymatgenEntryDict, i: number): Entry {
 
 function validateComposition(comp: unknown, i: number): Composition {
   if (!comp || typeof comp !== "object" || Array.isArray(comp))
-    throw new Error(`entries[${i}].composition が不正です`);
+    throw new Error(t("io.badComposition", { i }));
   const out: Composition = {};
   for (const [el, n] of Object.entries(comp)) {
     if (!/^[A-Z][a-z]?$/.test(el) || !isNumber(n) || n < 0)
-      throw new Error(`entries[${i}].composition が不正です`);
+      throw new Error(t("io.badComposition", { i }));
     if (n > 0) out[el] = n;
   }
   if (!Object.keys(out).length || !Number.isFinite(numAtoms(out)))
-    throw new Error(`entries[${i}].composition が不正です`);
+    throw new Error(t("io.badComposition", { i }));
   return out;
 }
 
 function validateEntry(e: Entry, i: number): Entry {
-  if (!e || typeof e !== "object") throw new Error(`entries[${i}] がオブジェクトではありません`);
+  if (!e || typeof e !== "object") throw new Error(t("io.notObject", { i }));
   const composition = validateComposition(e.composition, i);
-  if (!isNumber(e.energyPerAtom))
-    throw new Error(`entries[${i}].energyPerAtom が数値ではありません`);
-  if (e.name != null && typeof e.name !== "string")
-    throw new Error(`entries[${i}].name が文字列ではありません`);
+  if (!isNumber(e.energyPerAtom)) throw new Error(t("io.energyNaN", { i }));
+  if (e.name != null && typeof e.name !== "string") throw new Error(t("io.nameNotString", { i }));
   return {
     ...e,
     composition,
@@ -99,7 +95,7 @@ function fromMpResponse(raw: { data: unknown[]; meta?: { total_doc?: unknown } }
   const docs = raw.data.map((item, i): ThermoDoc => {
     const doc = item as ThermoDoc;
     if (!doc || typeof doc !== "object" || !isNumber(doc.energy_per_atom))
-      throw new Error(`data[${i}] は Materials Project の thermo ドキュメントではありません`);
+      throw new Error(t("io.notThermoDoc", { i }));
     ids.push(`${doc.material_id}|${doc.thermo_type}`);
     return {
       ...doc,
@@ -122,7 +118,7 @@ function fromMpResponse(raw: { data: unknown[]; meta?: { total_doc?: unknown } }
       entries,
     },
     mp: { ids, total },
-    warnings: energyBasis === "total" && entries.length ? [STALE_MP_ENERGY] : [],
+    warnings: energyBasis === "total" && entries.length ? [t("io.staleMp")] : [],
   };
 }
 
@@ -131,7 +127,7 @@ function parseOne(text: string): ParsedFile {
   try {
     raw = JSON.parse(text);
   } catch {
-    throw new Error("JSON として読み込めません");
+    throw new Error(t("io.invalidJson"));
   }
   if (
     raw &&
@@ -150,7 +146,7 @@ function parseOne(text: string): ParsedFile {
     meta = raw as EntrySet;
     list = (raw as EntrySet).entries;
   } else {
-    throw new Error("entries 配列が見つかりません");
+    throw new Error(t("io.noEntries"));
   }
   const entries = list.map((item, i) => {
     const d = item as PymatgenEntryDict & Entry;
@@ -172,7 +168,7 @@ function parseOne(text: string): ParsedFile {
       energyBasis: meta.energyBasis,
       entries,
     },
-    warnings: staleMp ? [STALE_MP_ENERGY] : [],
+    warnings: staleMp ? [t("io.staleMp")] : [],
   };
 }
 
@@ -195,7 +191,7 @@ export interface FileText {
  * Duplicate entries are dropped; missing MP pages are reported as warnings.
  */
 export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: string[] } {
-  if (!files.length) throw new Error("ファイルが選択されていません");
+  if (!files.length) throw new Error(t("io.noFiles"));
   const parsed = files.map((f) => {
     try {
       return parseOne(f.text);
@@ -207,7 +203,7 @@ export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: s
     ...new Set(parsed.flatMap((p) => p.set.entries.map((e) => e.thermoType))),
   ].filter((t): t is string => !!t);
   if (thermoTypes.length > 1)
-    throw new Error(`thermo type が混在しています: ${thermoTypes.join(", ")}`);
+    throw new Error(t("io.mixedThermo", { types: thermoTypes.join(", ") }));
 
   const seen = new Set<string>();
   const entries: Entry[] = [];
@@ -221,10 +217,7 @@ export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: s
   }
 
   const bases = [...new Set(parsed.map((p) => p.set.energyBasis ?? "total"))];
-  if (bases.length > 1)
-    throw new Error(
-      "エネルギーの基準が異なるファイルが混在しています。同じ方法で取得し直してください",
-    );
+  if (bases.length > 1) throw new Error(t("io.mixedBasis"));
 
   const warnings = [...new Set(parsed.flatMap((p) => p.warnings))];
   const mpFiles = parsed.filter((p) => p.mp);
@@ -233,9 +226,7 @@ export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: s
     const total = Math.max(...mpFiles.map((p) => p.mp!.total ?? 0));
     if (total > docs) {
       const pages = Math.ceil(total / PER_PAGE);
-      warnings.push(
-        `MP のデータが ${total} 件中 ${docs} 件しかありません。_page=1〜${pages} の全ページを取得して、まとめて読み込んでください。`,
-      );
+      warnings.push(t("io.missingPages", { total, docs, pages }));
     }
   }
 

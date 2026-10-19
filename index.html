@@ -14,14 +14,20 @@
     </script>
   </head>
   <body>
+    <!-- Text is translated from src/i18n via data-i18n (textContent), data-i18n-html (markup)
+         and data-i18n-attr ("attr:key;…"). The Japanese below is only the initial content. -->
     <header class="page-header">
       <div class="title-row">
         <h1>Reaction Voltage Calculator</h1>
         <div class="header-tools">
-          <select id="theme" aria-label="テーマ">
-            <option value="auto">テーマ: 自動</option>
-            <option value="light">テーマ: ライト</option>
-            <option value="dark">テーマ: ダーク</option>
+          <select id="lang" aria-label="言語" data-i18n-attr="aria-label:header.lang">
+            <option value="ja">日本語</option>
+            <option value="en">English</option>
+          </select>
+          <select id="theme" aria-label="テーマ" data-i18n-attr="aria-label:header.theme">
+            <option value="auto" data-i18n="header.themeAuto">テーマ: 自動</option>
+            <option value="light" data-i18n="header.themeLight">テーマ: ライト</option>
+            <option value="dark" data-i18n="header.themeDark">テーマ: ダーク</option>
           </select>
           <button
             id="helpToggle"
@@ -29,12 +35,13 @@
             class="link-button"
             aria-controls="onboarding"
             aria-expanded="false"
+            data-i18n="header.help"
           >
             使い方
           </button>
         </div>
       </div>
-      <p class="lede">
+      <p class="lede" data-i18n="header.lede">
         Materials Project
         の計算エネルギーから、指定組成を作動イオンの開放系に置いたときの相平衡と反応電位
         (電気化学的安定性ウィンドウ) を計算します。計算はすべてブラウザ内で行われます。
@@ -44,53 +51,63 @@
     <main>
       <section id="onboarding" class="card onboarding" aria-labelledby="onboardingTitle" hidden>
         <div class="onboarding-head">
-          <h2 id="onboardingTitle">はじめに</h2>
-          <button id="onbClose" type="button" class="icon-button" aria-label="使い方を閉じる">
+          <h2 id="onboardingTitle" data-i18n="onb.title">はじめに</h2>
+          <button
+            id="onbClose"
+            type="button"
+            class="icon-button"
+            aria-label="使い方を閉じる"
+            data-i18n-attr="aria-label:onb.close"
+          >
             ×
           </button>
         </div>
         <ol class="steps">
           <li>
-            <strong>Materials Project の API key を用意</strong>
-            <p>
+            <strong data-i18n="onb.step1Title">Materials Project の API key を用意</strong>
+            <p data-i18n-html="onb.step1">
               <a href="https://materialsproject.org/" target="_blank" rel="noopener noreferrer"
                 >materialsproject.org</a
               >
               にログインし、アカウントメニューの API key をコピーします。key は MP API
               への問い合わせにだけ使われます。
             </p>
-            <button id="onbKey" type="button">API key 欄へ移動</button>
+            <button id="onbKey" type="button" data-i18n="onb.step1Button">API key 欄へ移動</button>
           </li>
           <li>
-            <strong>組成を入れて計算</strong>
-            <p>
+            <strong data-i18n="onb.step2Title">組成を入れて計算</strong>
+            <p data-i18n="onb.step2">
               組成 (例: Li6PS5Cl) と作動イオンを選び、「MP
               から取得して計算」を押します。取得済みの元素の範囲なら、組成を変えるだけで再計算されます。
             </p>
           </li>
           <li>
-            <strong>図を読む</strong>
-            <p>
+            <strong data-i18n="onb.step3Title">図を読む</strong>
+            <p data-i18n-html="onb.step3">
               横軸 x は対象 1 式量あたりのイオン取込量 (x &lt; 0 が酸化、x &gt; 0
               が還元)。灰色の帯が対象相の安定性ウィンドウ、右側は各電位で安定な相の組み合わせです。
             </p>
           </li>
         </ol>
         <div class="actions">
-          <button id="onbDemo" type="button" class="primary">デモデータで試す</button>
-          <button id="onbDone" type="button">閉じる</button>
+          <button id="onbDemo" type="button" class="primary" data-i18n="onb.demo">
+            デモデータで試す
+          </button>
+          <button id="onbDone" type="button" data-i18n="onb.done">閉じる</button>
         </div>
-        <p class="hint">デモデータは架空のエネルギーです。「使い方」からいつでも再表示できます。</p>
+        <p class="hint" data-i18n="onb.hint">
+          デモデータは架空のエネルギーです。「使い方」からいつでも再表示できます。
+        </p>
       </section>
 
       <form id="form" class="card" autocomplete="off">
         <div class="grid">
           <label>
-            組成
+            <span data-i18n="form.formula">組成</span>
             <input id="formula" name="formula" value="Li6PS5Cl" required spellcheck="false" />
           </label>
           <label>
-            作動イオン
+            <span data-i18n="form.ion">作動イオン</span>
             <select id="ion" name="ion">
               <option>Li</option>
               <option>Na</option>
@@ -112,7 +129,7 @@
         </div>
 
         <fieldset class="source">
-          <legend>データ</legend>
+          <legend data-i18n="form.data">データ</legend>
           <div class="grid">
             <label class="wide">
               Materials Project API key
@@ -120,28 +137,39 @@
                 id="apikey"
                 type="password"
                 placeholder="materialsproject.org の Dashboard で取得"
+                data-i18n-attr="placeholder:form.apiKeyPlaceholder"
                 spellcheck="false"
               />
             </label>
-            <label class="check"> <input id="savekey" type="checkbox" /> このブラウザに保存 </label>
+            <label class="check">
+              <input id="savekey" type="checkbox" />
+              <span data-i18n="form.saveKey">このブラウザに保存</span>
+            </label>
           </div>
           <div class="actions">
-            <button id="fetch" type="submit" class="primary">MP から取得して計算</button>
-            <button id="loadJson" type="button">JSON を読み込む</button>
+            <button id="fetch" type="submit" class="primary" data-i18n="form.fetch">
+              MP から取得して計算
+            </button>
+            <button id="loadJson" type="button" data-i18n="form.loadJson">JSON を読み込む</button>
             <input id="file" type="file" accept=".json,application/json" multiple hidden />
-            <button id="demo" type="button">デモデータ</button>
+            <button id="demo" type="button" data-i18n="form.demo">デモデータ</button>
           </div>
           <p id="dataStatus" class="status" role="status"></p>
 
           <details id="cliHelp" class="cli-help">
-            <summary>コマンドで取得 (公開サイトではこちら)</summary>
-            <p>
+            <summary data-i18n="cli.summary">コマンドで取得 (公開サイトではこちら)</summary>
+            <p data-i18n="cli.intro">
               Materials Project API はブラウザからの直接通信 (CORS) を materialsproject.org
               にしか許可していないため、公開サイトからは「MP
               から取得」できません。端末で次のコマンドを実行し、保存された JSON を「JSON
               を読み込む」で選んでください (複数ファイルをまとめて選択できます)。
             </p>
-            <div class="shell-tabs" role="radiogroup" aria-label="シェル">
+            <div
+              class="shell-tabs"
+              role="radiogroup"
+              aria-label="シェル"
+              data-i18n-attr="aria-label:cli.shell"
+            >
               <label class="check"
                 ><input type="radio" name="shell" value="bash" checked /> macOS / Linux</label
               >
@@ -151,17 +179,22 @@
             </div>
             <ol class="cli-steps">
               <li>
-                API key を環境変数に設定
+                <span data-i18n="cli.step1">API key を環境変数に設定</span>
                 <pre><code id="cmdEnv"></code></pre>
               </li>
               <li>
-                データを取得 (組成・作動イオン・thermo type に合わせて自動で更新されます)
+                <span data-i18n="cli.step2"
+                  >データを取得 (組成・作動イオン・thermo type に合わせて自動で更新されます)</span
+                >
                 <pre><code id="cmdFetch"></code></pre>
-                <button id="copyCmd" type="button">コマンドをコピー</button>
+                <button id="copyCmd" type="button" data-i18n="cli.copy">コマンドをコピー</button>
               </li>
-              <li>保存された <code id="cmdFile"></code> を「JSON を読み込む」で選択</li>
+              <li>
+                <span data-i18n="cli.step3Before">保存された</span> <code id="cmdFile"></code>
+                <span data-i18n="cli.step3After">を「JSON を読み込む」で選択</span>
+              </li>
             </ol>
-            <p class="hint">
+            <p class="hint" data-i18n-html="cli.hint">
               1 ファイルは最大 1000 件です。件数が足りない場合は読み込み時に警告が出るので、URL の
               <code>_page=1</code> を 2, 3… に変えて取得し、すべてのファイルを一緒に選んでください。
               <code>vp dev</code> /
@@ -172,31 +205,34 @@
         </fieldset>
 
         <fieldset>
-          <legend>オプション</legend>
+          <legend data-i18n="opt.legend">オプション</legend>
           <label class="check">
-            <input id="stabilize" type="checkbox" checked /> 対象相を hull 上に置く (既定)
+            <input id="stabilize" type="checkbox" checked />
+            <span data-i18n="opt.stabilize">対象相を hull 上に置く (既定)</span>
           </label>
-          <p class="hint">
+          <p class="hint" data-i18n="opt.stabilizeHint">
             準安定な対象相もプロットに含めて評価します。元のエネルギーでの平衡相を調べる場合は
             チェックを外してください。該当エントリがない組成の仮想相は作りません。
           </p>
           <label class="inline">
-            hull より
-            <input id="delta" type="number" value="0" min="0" step="1" /> meV/atom 下げる
+            <span data-i18n="opt.deltaBefore">hull より</span>
+            <input id="delta" type="number" value="0" min="0" step="1" />
+            <span data-i18n="opt.deltaAfter">meV/atom 下げる</span>
           </label>
           <label>
-            除外する相 (カンマ・改行区切り)
+            <span data-i18n="opt.exclude">除外する相 (カンマ・改行区切り)</span>
             <textarea
               id="exclude"
               name="exclude"
               rows="2"
               placeholder="例: Li3P7, mp-1234"
+              data-i18n-attr="placeholder:opt.excludePlaceholder"
               spellcheck="false"
               autocomplete="off"
               aria-describedby="excludeHint"
             ></textarea>
           </label>
-          <p id="excludeHint" class="hint">
+          <p id="excludeHint" class="hint" data-i18n="opt.excludeHint">
             化学式は同じ組成の全エントリ (多形を含む) を、material id
             はそのエントリだけを計算から除きます。
             不自然な組成や信頼できない計算の相を外すときに使います。
@@ -210,38 +246,64 @@
           id="figure"
           aria-describedby="legend figureHelp"
           aria-label="電位プロファイルと相平衡の図 (拡大・移動可能)"
+          data-i18n-attr="aria-label:fig.label"
         ></figure>
         <div class="view-controls">
           <label class="inline">
-            電位範囲
-            <input id="vMin" type="number" step="0.1" aria-label="電位の下限 (V)" /> –
-            <input id="vMax" type="number" step="0.1" aria-label="電位の上限 (V)" /> V
+            <span data-i18n="fig.range">電位範囲</span>
+            <input
+              id="vMin"
+              type="number"
+              step="0.1"
+              aria-label="電位の下限 (V)"
+              data-i18n-attr="aria-label:fig.vMin"
+            />
+            –
+            <input
+              id="vMax"
+              type="number"
+              step="0.1"
+              aria-label="電位の上限 (V)"
+              data-i18n-attr="aria-label:fig.vMax"
+            />
+            V
           </label>
-          <button id="resetView" type="button">表示をリセット</button>
-          <p id="figureHelp" class="hint">
+          <button id="resetView" type="button" data-i18n="fig.reset">表示をリセット</button>
+          <p id="figureHelp" class="hint" data-i18n="fig.help">
             ホイール: 電位を拡大縮小 / Shift+ホイール・x 軸上のホイール: x を拡大縮小 / ドラッグ:
             移動 / ピンチ: 拡大縮小 / ダブルクリック: リセット / ホバー・タップ: 詳細 / キーボード:
             + − 矢印 0、[ ] で区間を選択、Shift+[ ] で相の詳細
           </p>
         </div>
         <ul id="legend" class="legend">
-          <li><span class="swatch ox"></span>酸化側 (x &lt; 0, イオン脱離)</li>
-          <li><span class="swatch red"></span>還元側 (x &gt; 0, イオン挿入)</li>
-          <li><span class="swatch window"></span>安定性ウィンドウ</li>
-          <li>x: 対象 1 式量あたりの作動イオン取込量 / 水平線: 二相共存の電位</li>
+          <li>
+            <span class="swatch ox"></span
+            ><span data-i18n-html="legend.ox">酸化側 (x &lt; 0, イオン脱離)</span>
+          </li>
+          <li>
+            <span class="swatch red"></span
+            ><span data-i18n-html="legend.red">還元側 (x &gt; 0, イオン挿入)</span>
+          </li>
+          <li>
+            <span class="swatch window"></span
+            ><span data-i18n="legend.window">安定性ウィンドウ</span>
+          </li>
+          <li data-i18n="legend.axes">
+            x: 対象 1 式量あたりの作動イオン取込量 / 水平線: 二相共存の電位
+          </li>
         </ul>
         <div class="actions">
           <button id="dlSvg" type="button">SVG</button>
           <button id="dlCsv" type="button">CSV</button>
-          <button id="dlJson" type="button">結果 JSON</button>
-          <button id="dlEntries" type="button">エントリ JSON</button>
+          <button id="dlJson" type="button" data-i18n="dl.json">結果 JSON</button>
+          <button id="dlEntries" type="button" data-i18n="dl.entries">エントリ JSON</button>
         </div>
-        <h2>相平衡と反応</h2>
+        <h2 data-i18n="table.title">相平衡と反応</h2>
         <div class="table-wrap"><table id="regions"></table></div>
       </section>
       <p id="error" class="error" role="alert" hidden></p>
     </main>
-    <footer>
+    <footer data-i18n-html="footer">
       電位は V = −(μ − μ<sub>metal</sub>)/z。Ong et al., Chem. Mater. 20, 1798 (2008); Zhu, He &amp;
       Mo, ACS Appl. Mater. Interfaces 7, 23685 (2015) の手法に基づく grand potential
       相図による評価です。

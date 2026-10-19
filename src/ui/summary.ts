@@ -1,10 +1,11 @@
 import type { Profile } from "../core/profile";
+import { t } from "../i18n";
 
 export function stabilityWindowText(profile: Profile): string {
-  if (!profile.targetEntry) return "評価不可 (該当エントリなし)";
+  if (!profile.targetEntry) return t("summary.notEvaluable");
   const w = profile.window;
-  if (!w) return `${profile.ion} 金属と反応 (0 V 以下)`;
-  if (!w.targetIsPhase) return "なし (分解生成物が安定)";
-  if (w.high - w.low < 1e-9) return `なし (${w.low.toFixed(3)} V で分解)`;
+  if (!w) return t("summary.reactsWithMetal", { ion: profile.ion });
+  if (!w.targetIsPhase) return t("summary.noneDecomposed");
+  if (w.high - w.low < 1e-9) return t("summary.noneAt", { v: w.low.toFixed(3) });
   return `${w.low.toFixed(3)} – ${w.high === Infinity ? "∞" : w.high.toFixed(3)} V`;
 }

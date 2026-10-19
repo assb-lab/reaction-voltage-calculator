@@ -1,5 +1,6 @@
 import { formatNumber } from "../core/formula";
 import { atomicFractions, type Profile } from "../core/profile";
+import { t } from "../i18n";
 
 /** Figure geometry in SVG user units (shared with the interaction layer). */
 export const LAYOUT = (() => {
@@ -151,7 +152,7 @@ export function renderProfileSvg(
   const parts: string[] = [];
   parts.push(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${L.W} ${L.H}" class="profile-svg" role="img" aria-label="${esc(
-      `${profile.formula} の ${profile.ion} 電位プロファイルと相平衡`,
+      t("plot.aria", { formula: profile.formula, ion: profile.ion }),
     )}">`,
   );
   parts.push(`<style>
@@ -191,9 +192,9 @@ export function renderProfileSvg(
   if (profile.stabilized) {
     const source =
       profile.eAboveHull === null
-        ? "仮想相"
-        : `元の E_hull: ${formatNumber(profile.eAboveHull * 1000, 1)} meV/atom`;
-    parts.push(`<text class="muted" x="60" y="13">対象相を hull 補正 (${source})</text>`);
+        ? t("plot.virtual")
+        : t("plot.originalEhull", { v: formatNumber(profile.eAboveHull * 1000, 1) });
+    parts.push(`<text class="muted" x="60" y="13">${esc(t("plot.stabilized", { source }))}</text>`);
   }
 
   // Stability window band across both panels.

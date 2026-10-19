@@ -21,6 +21,7 @@ import { escapeHtml, formulaHtml } from "./ui/html";
 import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
+import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -47,6 +48,8 @@ let data: EntrySet | null = null;
 let profile: Profile | null = null;
 let chart: Chart | null = null;
 let exclusion: ExcludeResult | null = null;
+/** Current data status line, rebuilt when the language changes. */
+let statusText: (() => string) | null = null;
 
 function storageGet(key: string): string | null {
   try {
@@ -105,10 +108,17 @@ function requiredElements(): string[] {
   return [...new Set([...Object.keys(parseFormula(formulaInput.value)), ionSelect.value])].sort();
 }
 
-function setData(set: EntrySet): void {
+function setData(set: EntrySet, demo = false): void {
   data = set;
   const tt = set.thermoType ? ` / ${set.thermoType}` : "";
-  dataStatus.textContent = `${set.source}${tt}: ${set.elements.join("-")} 系 ${set.entries.length} エントリ`;
+  statusText = () =>
+    t("status.loaded", {
+      source: set.source,
+      thermo: tt,
+      system: set.elements.join("-"),
+      n: set.entries.length,
+    }) + (demo ? t("status.demo") : "");
+  dataStatus.textContent = statusText();
 }
 
 function recompute(): void {
@@ -118,9 +128,7 @@ function recompute(): void {
     const need = requiredElements();
     const missing = need.filter((el) => !data!.elements.includes(el));
     if (missing.length) {
-      throw new Error(
-        `読み込んだデータに ${missing.join(", ")} が含まれていません。MP から再取得してください。`,
-      );
+      throw new Error(t("err.missingElements", { elements: missing.join(", ") }));
     }
     exclusion = excludeEntries(data.entries, parseExcludeList(excludeInput.value));
     const lostRefs = need.filter(
@@ -129,9 +137,7 @@ function recompute(): void {
         !exclusion!.entries.some((e) => isElemental(e, el)),
     );
     if (lostRefs.length) {
-      throw new Error(
-        `除外により ${lostRefs.join(", ")} の単体エントリがなくなりました。単体は生成エネルギーの基準なので除外できません。除外する相を見直してください。`,
-      );
+      throw new Error(t("err.lostRefs", { elements: lostRefs.join(", ") }));
     }
     profile = computeProfile({
       entries: exclusion.entries,
@@ -159,10 +165,10 @@ function excludeNote(): string {
   if (!exclusion || (!exclusion.excluded.length && !exclusion.unmatched.length)) return "";
   const ids = exclusion.excluded.map((e) => `${e.name} (${e.id})`).join(", ");
   const removed = exclusion.excluded.length
-    ? `${exclusion.excluded.length} エントリを除外しています: ${escapeHtml(ids)}。`
+    ? t("note.excluded", { n: exclusion.excluded.length, ids: escapeHtml(ids) })
     : "";
   const unmatched = exclusion.unmatched.length
-    ? `一致するエントリがない項目: ${escapeHtml(exclusion.unmatched.join(", "))}。`
+    ? t("note.unmatched", { items: escapeHtml(exclusion.unmatched.join(", ")) })
     : "";
   return `<p class="note">${removed}${unmatched}</p>`;
 }
@@ -176,16 +182,18 @@ function render(p: Profile): void {
   const w = p.window;
   const windowText = stabilityWindowText(p);
   const hull =
-    p.eAboveHull === null ? "該当エントリなし" : `${formatNumber(p.eAboveHull * 1000, 1)} meV/atom`;
+    p.eAboveHull === null
+      ? t("summary.noEntry")
+      : `${formatNumber(p.eAboveHull * 1000, 1)} meV/atom`;
   $("summary").innerHTML = `
-    <div><span>安定性ウィンドウ${p.stabilized ? " (hull 補正)" : ""}</span><strong>${windowText}</strong></div>
+    <div><span>${t("summary.window")}${p.stabilized ? t("summary.hullCorrected") : ""}</span><strong>${windowText}</strong></div>
     <div><span>E<sub>hull</sub> (${formulaHtml(p.formula)})</span><strong>${hull}</strong></div>
-    <div><span>平衡領域 / プラトー</span><strong>${p.regions.length} / ${p.plateaus.length}</strong></div>
-    <div><span>使用エントリ</span><strong>${p.nEntries}</strong></div>
-    ${p.stabilized ? `<p class="note">${formulaHtml(p.formula)} を hull 上${Number(delta.value) > 0 ? `から ${formatNumber(Number(delta.value))} meV/atom 下` : ""}に補正して評価しています。上の E<sub>hull</sub> は補正前の値です。このウィンドウは補正した対象相の評価です。</p>` : ""}
-    ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">対象相は hull 上にありません。x = 0 の平衡相は分解生成物です。「対象相を hull 上に置く」を有効にすると対象相を含むプロファイルを評価できます。</p>` : ""}
+    <div><span>${t("summary.regions")}</span><strong>${p.regions.length} / ${p.plateaus.length}</strong></div>
+    <div><span>${t("summary.entries")}</span><strong>${p.nEntries}</strong></div>
+    ${p.stabilized ? `<p class="note">${Number(delta.value) > 0 ? t("note.stabilizedBelow", { formula: formulaHtml(p.formula), delta: formatNumber(Number(delta.value)) }) : t("note.stabilizedOn", { formula: formulaHtml(p.formula) })}</p>` : ""}
+    ${w && !w.targetIsPhase && p.eAboveHull !== null && !p.stabilized ? `<p class="note">${t("note.notOnHull")}</p>` : ""}
     ${excludeNote()}
-    ${!p.targetEntry ? `<p class="note">${formulaHtml(p.formula)} の該当エントリがありません。仮想相は作らず、分解生成物の平衡のみを表示しています。</p>` : ""}`;
+    ${!p.targetEntry ? `<p class="note">${t("note.noTarget", { formula: formulaHtml(p.formula) })}</p>` : ""}`;
   chart?.destroy();
   chart = mountChart($("figure"), p, (view) => {
     const fmt = (v: number) => String(Number(v.toFixed(3)));
@@ -211,10 +219,12 @@ function render(p: Profile): void {
       </tr>`;
     })
     .join("");
-  $("regions").innerHTML =
-    `<thead><tr><th>電位範囲 (V)</th><th>Δx (${p.ion})</th><th>平衡相 (per ${formulaHtml(
-      p.formula,
-    )})</th><th>反応</th></tr></thead><tbody>${rows}</tbody>`;
+  $("regions").innerHTML = `<thead><tr><th>${t("table.range")}</th><th>Δx (${p.ion})</th><th>${t(
+    "table.phases",
+    {
+      formula: formulaHtml(p.formula),
+    },
+  )}</th><th>${t("table.reaction")}</th></tr></thead><tbody>${rows}</tbody>`;
 }
 
 async function fetchFromMp(): Promise<void> {
@@ -228,7 +238,7 @@ async function fetchFromMp(): Promise<void> {
     return;
   }
   fetchButton.disabled = true;
-  dataStatus.textContent = `${elements.join("-")} 系を取得中…`;
+  dataStatus.textContent = t("status.fetching", { system: elements.join("-") });
   try {
     const thermoType = thermoSelect.value as ThermoType;
     const fetchFrom = (baseUrl: string) =>
@@ -238,7 +248,7 @@ async function fetchFromMp(): Promise<void> {
         elements,
         thermoType,
         onProgress: (n, total) =>
-          (dataStatus.textContent = `取得中… ${n}${total ? ` / ${total}` : ""}`),
+          (dataStatus.textContent = t("status.progress", { n, total: total ? ` / ${total}` : "" })),
       });
     let fetched;
     try {
@@ -260,6 +270,7 @@ async function fetchFromMp(): Promise<void> {
     recompute();
   } catch (e) {
     dataStatus.textContent = "";
+    statusText = null;
     showError((e as Error).message);
     if (e instanceof MpNetworkError) {
       cliHelp.open = true;
@@ -287,7 +298,7 @@ function updateCommands(): void {
   try {
     elements = requiredElements();
   } catch {
-    $("cmdFetch").textContent = "(組成を正しく入力してください)";
+    $("cmdFetch").textContent = t("cli.invalidFormula");
     return;
   }
   const shell = selectedShell();
@@ -302,11 +313,11 @@ $("copyCmd").addEventListener("click", async () => {
   const button = $<HTMLButtonElement>("copyCmd");
   try {
     await navigator.clipboard.writeText($("cmdFetch").textContent ?? "");
-    button.textContent = "コピーしました";
+    button.textContent = t("cli.copied");
   } catch {
-    button.textContent = "コピーできませんでした";
+    button.textContent = t("cli.copyFailed");
   }
-  setTimeout(() => (button.textContent = "コマンドをコピー"), 2000);
+  setTimeout(() => (button.textContent = t("cli.copy")), 2000);
 });
 for (const el of [
   formulaInput,
@@ -345,8 +356,7 @@ $("loadJson").addEventListener("click", () => fileInput.click());
 demoButton.addEventListener("click", () => {
   formulaInput.value = "Li6PS5Cl";
   ionSelect.value = "Li";
-  setData(demoEntrySet());
-  dataStatus.textContent += " — 架空のエネルギーです。実データは MP から取得してください。";
+  setData(demoEntrySet(), true);
   recompute();
 });
 
@@ -438,6 +448,28 @@ onboarding.addEventListener("keydown", (ev) => {
   }
 });
 
+// Language: saved choice, else the browser's (ja-* -> Japanese, otherwise English).
+const langSelect = $<HTMLSelectElement>("lang");
+
+function applyLanguage(lang: Lang): void {
+  setLang(lang);
+  langSelect.value = lang;
+  document.documentElement.lang = lang;
+  translateDom(document);
+  updateCommands();
+  if (statusText) dataStatus.textContent = statusText();
+  // Re-render the result in the new language, keeping the zoomed view.
+  const view = chart?.view();
+  if (data) recompute();
+  if (view) chart?.setView(view);
+}
+
+langSelect.addEventListener("change", () => {
+  const lang = langSelect.value as Lang;
+  saveLang(browserStorage, lang);
+  applyLanguage(lang);
+});
+
 // Theme: auto (OS setting) / light / dark. index.html applies the saved choice before first paint.
 const themeSelect = $<HTMLSelectElement>("theme");
 themeSelect.value = loadTheme(browserStorage);
@@ -453,4 +485,4 @@ if (shouldShowOnboarding(browserStorage)) {
   helpToggle.setAttribute("aria-expanded", "true");
 }
 restore();
-updateCommands();
+applyLanguage(loadLang(browserStorage, navigator.languages ?? [navigator.language]));

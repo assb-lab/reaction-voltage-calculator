@@ -1,3 +1,4 @@
+import { t } from "../i18n";
 /** Element symbol -> amount. */
 export type Composition = Record<string, number>;
 
@@ -15,7 +16,7 @@ export function parseFormula(formula: string): Composition {
   TOKEN.lastIndex = 0;
   let pos = 0;
   const src = formula.trim();
-  if (!src) throw new Error("空の化学式です");
+  if (!src) throw new Error(t("formula.empty"));
 
   const flushGroup = (mult: number) => {
     if (!pendingGroup) return;
@@ -27,7 +28,7 @@ export function parseFormula(formula: string): Composition {
   while (pos < src.length) {
     TOKEN.lastIndex = pos;
     const m = TOKEN.exec(src);
-    if (!m) throw new Error(`化学式を解釈できません: "${formula}" (位置 ${pos + 1})`);
+    if (!m) throw new Error(t("formula.unparsable", { formula, pos: pos + 1 }));
     pos = TOKEN.lastIndex;
     const [, el, num, open, close] = m;
     if (el) {
@@ -43,7 +44,7 @@ export function parseFormula(formula: string): Composition {
         const top = stack[stack.length - 1];
         top[lastElement] += n - 1;
       } else {
-        throw new Error(`化学式の数字の位置が不正です: "${formula}"`);
+        throw new Error(t("formula.number", { formula }));
       }
       lastElement = null;
     } else if (open) {
@@ -54,17 +55,17 @@ export function parseFormula(formula: string): Composition {
     } else if (close) {
       flushGroup(1);
       if (stack.length < 2 || "([{".indexOf(brackets.pop()!) !== ")]}".indexOf(close))
-        throw new Error(`括弧の対応が不正です: "${formula}"`);
+        throw new Error(t("formula.brackets", { formula }));
       pendingGroup = stack.pop()!;
-      if (!Object.keys(pendingGroup).length) throw new Error(`空の括弧です: "${formula}"`);
+      if (!Object.keys(pendingGroup).length) throw new Error(t("formula.emptyGroup", { formula }));
       lastElement = null;
     }
   }
   flushGroup(1);
-  if (stack.length !== 1) throw new Error(`括弧の対応が不正です: "${formula}"`);
+  if (stack.length !== 1) throw new Error(t("formula.brackets", { formula }));
   const comp = stack[0];
   for (const [el, n] of Object.entries(comp)) if (!(n > 0)) delete comp[el];
-  if (Object.keys(comp).length === 0) throw new Error(`元素がありません: "${formula}"`);
+  if (Object.keys(comp).length === 0) throw new Error(t("formula.noElements", { formula }));
   return comp;
 }
 
