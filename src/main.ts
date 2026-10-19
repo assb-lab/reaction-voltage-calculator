@@ -193,13 +193,13 @@ async function fetchFromMp(): Promise<void> {
         onProgress: (n, total) =>
           (dataStatus.textContent = `取得中… ${n}${total ? ` / ${total}` : ""}`),
       });
-    let entries;
+    let fetched;
     try {
       // `vp dev` / `vp preview` proxy the API on localhost; other servers return 404 there.
-      entries = await fetchFrom(isLocalHost() ? MP_DEV_PROXY : MP_API_BASE);
+      fetched = await fetchFrom(isLocalHost() ? MP_DEV_PROXY : MP_API_BASE);
     } catch (e) {
       if (!(isLocalHost() && e instanceof MpHttpError && e.status === 404)) throw e;
-      entries = await fetchFrom(MP_API_BASE);
+      fetched = await fetchFrom(MP_API_BASE);
     }
     setData({
       version: 1,
@@ -207,7 +207,8 @@ async function fetchFromMp(): Promise<void> {
       thermoType,
       elements,
       fetchedAt: new Date().toISOString(),
-      entries,
+      energyBasis: fetched.energyBasis,
+      entries: fetched.entries,
     });
     recompute();
   } catch (e) {
