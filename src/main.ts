@@ -1,8 +1,17 @@
 import "./style.css";
 import { formatNumber, parseFormula } from "./core/formula";
 import { computeProfile, regionReaction, type Profile } from "./core/profile";
-import { parseEntrySet, serializeEntrySet, type EntrySet } from "./data/io";
-import { fetchThermoEntries, type ThermoType } from "./data/mp";
+import { parseEntryFiles, serializeEntrySet, type EntrySet } from "./data/io";
+import {
+  curlCommand,
+  fetchThermoEntries,
+  MP_API_BASE,
+  MP_DEV_PROXY,
+  MpHttpError,
+  MpNetworkError,
+  type Shell,
+  type ThermoType,
+} from "./data/mp";
 import { demoEntrySet } from "./ui/demo";
 import { download, profileToCsv, profileToJson } from "./ui/export";
 import { renderProfileSvg } from "./ui/plot";
@@ -175,13 +184,23 @@ async function fetchFromMp(): Promise<void> {
   dataStatus.textContent = `${elements.join("-")} 系を取得中…`;
   try {
     const thermoType = thermoSelect.value as ThermoType;
-    const entries = await fetchThermoEntries({
-      apiKey: apiKeyInput.value,
-      elements,
-      thermoType,
-      onProgress: (n, total) =>
-        (dataStatus.textContent = `取得中… ${n}${total ? ` / ${total}` : ""}`),
-    });
+    const fetchFrom = (baseUrl: string) =>
+      fetchThermoEntries({
+        apiKey: apiKeyInput.value,
+        baseUrl,
+        elements,
+        thermoType,
+        onProgress: (n, total) =>
+          (dataStatus.textContent = `取得中… ${n}${total ? ` / ${total}` : ""}`),
+      });
+    let entries;
+    try {
+      // `vp dev` / `vp preview` proxy the API on localhost; other servers return 404 there.
+      entries = await fetchFrom(isLocalHost() ? MP_DEV_PROXY : MP_API_BASE);
+    } catch (e) {
+      if (!(isLocalHost() && e instanceof MpHttpError && e.status === 404)) throw e;
+      entries = await fetchFrom(MP_API_BASE);
+    }
     setData({
       version: 1,
       source: "Materials Project",
@@ -194,10 +213,62 @@ async function fetchFromMp(): Promise<void> {
   } catch (e) {
     dataStatus.textContent = "";
     showError((e as Error).message);
+    if (e instanceof MpNetworkError) {
+      cliHelp.open = true;
+      cliHelp.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   } finally {
     fetchButton.disabled = false;
   }
 }
+
+function isLocalHost(): boolean {
+  return ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+}
+
+// Terminal commands for downloading MP data outside the browser.
+const cliHelp = $<HTMLDetailsElement>("cliHelp");
+
+function selectedShell(): Shell {
+  return (document.querySelector<HTMLInputElement>('input[name="shell"]:checked')?.value ??
+    "bash") as Shell;
+}
+
+function updateCommands(): void {
+  let elements: string[];
+  try {
+    elements = requiredElements();
+  } catch {
+    $("cmdFetch").textContent = "(組成を正しく入力してください)";
+    return;
+  }
+  const shell = selectedShell();
+  const cmd = curlCommand(elements, thermoSelect.value as ThermoType, shell);
+  $("cmdEnv").textContent =
+    shell === "powershell" ? '$env:MP_API_KEY = "<API key>"' : 'export MP_API_KEY="<API key>"';
+  $("cmdFetch").textContent = cmd;
+  $("cmdFile").textContent = cmd.match(/-o (\S+)/)?.[1] ?? "";
+}
+
+$("copyCmd").addEventListener("click", async () => {
+  const button = $<HTMLButtonElement>("copyCmd");
+  try {
+    await navigator.clipboard.writeText($("cmdFetch").textContent ?? "");
+    button.textContent = "コピーしました";
+  } catch {
+    button.textContent = "コピーできませんでした";
+  }
+  setTimeout(() => (button.textContent = "コマンドをコピー"), 2000);
+});
+for (const el of [
+  formulaInput,
+  ionSelect,
+  thermoSelect,
+  ...document.querySelectorAll<HTMLInputElement>('input[name="shell"]'),
+]) {
+  el.addEventListener("change", updateCommands);
+}
+formulaInput.addEventListener("input", updateCommands);
 
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
@@ -205,13 +276,17 @@ form.addEventListener("submit", (ev) => {
 });
 
 fileInput.addEventListener("change", async () => {
-  const file = fileInput.files?.[0];
-  if (!file) return;
+  const files = [...(fileInput.files ?? [])];
+  if (!files.length) return;
   try {
-    setData(parseEntrySet(await file.text()));
+    const { set, warnings } = parseEntryFiles(
+      await Promise.all(files.map(async (f) => ({ name: f.name, text: await f.text() }))),
+    );
+    setData(set);
     recompute();
+    if (warnings.length) showError(warnings.join("\n"));
   } catch (e) {
-    showError(`${file.name}: ${(e as Error).message}`);
+    showError((e as Error).message);
   } finally {
     fileInput.value = "";
   }
@@ -303,3 +378,4 @@ if (shouldShowOnboarding(browserStorage)) {
   helpToggle.setAttribute("aria-expanded", "true");
 }
 restore();
+updateCommands();

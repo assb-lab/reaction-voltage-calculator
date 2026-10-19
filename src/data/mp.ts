@@ -1,6 +1,8 @@
 import type { Entry } from "../core/entries";
 
 export const MP_API_BASE = "https://api.materialsproject.org";
+/** Same-origin path proxied to MP_API_BASE by `vp dev` / `vp preview` (see vite.config.ts). */
+export const MP_DEV_PROXY = "/mp-api";
 
 export const THERMO_TYPES = ["GGA_GGA+U_R2SCAN", "GGA_GGA+U", "R2SCAN"] as const;
 export type ThermoType = (typeof THERMO_TYPES)[number];
@@ -16,7 +18,7 @@ const FIELDS = [
   "nsites",
   "deprecated",
 ];
-const PER_PAGE = 1000;
+export const PER_PAGE = 1000;
 
 export interface ThermoDoc {
   material_id: string;
@@ -53,8 +55,57 @@ export function docToEntry(doc: ThermoDoc): Entry {
   };
 }
 
+/** Thermo endpoint URL for one page of the chemical system and all its sub-systems. */
+export function thermoUrl(
+  elements: string[],
+  thermoType: ThermoType,
+  page = 1,
+  base: string = MP_API_BASE,
+): string {
+  const params = new URLSearchParams({
+    chemsys: subChemsys(elements).join(","),
+    thermo_types: thermoType,
+    _fields: FIELDS.join(","),
+    _per_page: String(PER_PAGE),
+    _page: String(page),
+  });
+  return `${base}/materials/thermo/?${params}`;
+}
+
+export type Shell = "bash" | "powershell";
+
+/**
+ * Terminal command that downloads page `page` of the thermo data with the key
+ * taken from the MP_API_KEY environment variable (the key never appears in the command).
+ */
+export function curlCommand(
+  elements: string[],
+  thermoType: ThermoType,
+  shell: Shell,
+  page = 1,
+): string {
+  const url = thermoUrl(elements, thermoType, page);
+  const file = `mp_${[...elements].sort().join("-")}_${thermoType}_p${page}.json`;
+  return shell === "powershell"
+    ? `curl.exe -fsS -H "X-API-KEY: $env:MP_API_KEY" -o ${file} "${url}"`
+    : `curl -fsS -H "X-API-KEY: $MP_API_KEY" -o ${file} "${url}"`;
+}
+
+/** The browser refused the request (CORS / network), as opposed to an HTTP error from MP. */
+export class MpNetworkError extends Error {}
+
+export class MpHttpError extends Error {
+  readonly status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 export interface FetchOptions {
   apiKey: string;
+  /** API base URL; MP_DEV_PROXY when served by the local Vite server. */
+  baseUrl?: string;
   elements: string[];
   thermoType: ThermoType;
   fetchFn?: typeof fetch;
@@ -68,20 +119,22 @@ export async function fetchThermoEntries(opts: FetchOptions): Promise<Entry[]> {
   if (!opts.apiKey.trim()) throw new Error("Materials Project API key を入力してください");
   const docs: ThermoDoc[] = [];
   for (let page = 1; ; page++) {
-    const params = new URLSearchParams({
-      chemsys: subChemsys(opts.elements).join(","),
-      thermo_types: opts.thermoType,
-      _fields: FIELDS.join(","),
-      _per_page: String(PER_PAGE),
-      _page: String(page),
-    });
-    const res = await fetchFn(`${MP_API_BASE}/materials/thermo/?${params}`, {
-      headers: { "X-API-KEY": opts.apiKey.trim(), Accept: "application/json" },
-      signal: opts.signal,
-    });
+    let res: Response;
+    try {
+      res = await fetchFn(thermoUrl(opts.elements, opts.thermoType, page, opts.baseUrl), {
+        headers: { "X-API-KEY": opts.apiKey.trim(), Accept: "application/json" },
+        signal: opts.signal,
+      });
+    } catch (e) {
+      if ((e as Error).name === "AbortError") throw e;
+      // MP only sends CORS headers to materialsproject.org, so browsers block other origins.
+      throw new MpNetworkError(
+        "ブラウザから Materials Project API に接続できませんでした。MP API は materialsproject.org 以外からのブラウザ通信 (CORS) を許可していません。下の「コマンドで取得」で JSON を取得して読み込んでください。",
+      );
+    }
     if (!res.ok) {
       const hint = res.status === 401 || res.status === 403 ? " (API key を確認してください)" : "";
-      throw new Error(`Materials Project API エラー: HTTP ${res.status}${hint}`);
+      throw new MpHttpError(`Materials Project API エラー: HTTP ${res.status}${hint}`, res.status);
     }
     const body = (await res.json()) as {
       data?: ThermoDoc[];

@@ -1,5 +1,6 @@
 import type { Entry } from "../core/entries";
 import { formatFormula, numAtoms, reduceComposition, type Composition } from "../core/formula";
+import { docToEntry, PER_PAGE, type ThermoDoc } from "./mp";
 
 export interface EntrySet {
   version: 1;
@@ -81,16 +82,57 @@ function validateEntry(e: Entry, i: number): Entry {
   };
 }
 
-/**
- * Parse entries from JSON: this app's EntrySet, a bare Entry[], or a list of
- * pymatgen ComputedEntry / ComputedStructureEntry dicts (`entry.as_dict()`).
- */
-export function parseEntrySet(text: string): EntrySet {
+interface ParsedFile {
+  set: EntrySet;
+  /** Raw Materials Project API response: document ids in this file and the reported total. */
+  mp?: { ids: string[]; total: number | null };
+}
+
+function fromMpResponse(raw: { data: unknown[]; meta?: { total_doc?: unknown } }): ParsedFile {
+  const ids: string[] = [];
+  const entries: Entry[] = [];
+  raw.data.forEach((item, i) => {
+    const doc = item as ThermoDoc;
+    if (!doc || typeof doc !== "object" || !isNumber(doc.energy_per_atom))
+      throw new Error(`data[${i}] は Materials Project の thermo ドキュメントではありません`);
+    ids.push(`${doc.material_id}|${doc.thermo_type}`);
+    if (doc.deprecated) return;
+    const entry = docToEntry({
+      ...doc,
+      composition: validateComposition(doc.composition, i),
+      formula_pretty:
+        doc.formula_pretty ?? formatFormula(reduceComposition(doc.composition).reduced),
+    });
+    entries.push(validateEntry(entry, i));
+  });
+  const total = isNumber(raw.meta?.total_doc) ? raw.meta.total_doc : null;
+  return {
+    set: {
+      version: 1,
+      source: "Materials Project",
+      thermoType: entries.find((e) => e.thermoType)?.thermoType,
+      elements: [...new Set(entries.flatMap((e) => Object.keys(e.composition)))].sort(),
+      entries,
+    },
+    mp: { ids, total },
+  };
+}
+
+function parseOne(text: string): ParsedFile {
   let raw: unknown;
   try {
     raw = JSON.parse(text);
   } catch {
     throw new Error("JSON として読み込めません");
+  }
+  if (
+    raw &&
+    typeof raw === "object" &&
+    !Array.isArray(raw) &&
+    Array.isArray((raw as { data?: unknown }).data) &&
+    !("entries" in raw)
+  ) {
+    return fromMpResponse(raw as { data: unknown[] });
   }
   let list: unknown[];
   let meta: Partial<EntrySet> = {};
@@ -111,11 +153,84 @@ export function parseEntrySet(text: string): EntrySet {
   const elements =
     meta.elements ?? [...new Set(entries.flatMap((e) => Object.keys(e.composition)))].sort();
   return {
-    version: 1,
-    source: meta.source ?? (Array.isArray(raw) ? "imported" : "file"),
-    thermoType: meta.thermoType ?? entries.find((e) => e.thermoType)?.thermoType,
-    elements,
-    fetchedAt: meta.fetchedAt,
-    entries,
+    set: {
+      version: 1,
+      source: meta.source ?? (Array.isArray(raw) ? "imported" : "file"),
+      thermoType: meta.thermoType ?? entries.find((e) => e.thermoType)?.thermoType,
+      elements,
+      fetchedAt: meta.fetchedAt,
+      entries,
+    },
+  };
+}
+
+/**
+ * Parse entries from JSON: this app's EntrySet, a bare Entry[], a list of
+ * pymatgen ComputedEntry / ComputedStructureEntry dicts (`entry.as_dict()`),
+ * or a raw Materials Project `/materials/thermo/` response.
+ */
+export function parseEntrySet(text: string): EntrySet {
+  return parseOne(text).set;
+}
+
+export interface FileText {
+  name: string;
+  text: string;
+}
+
+/**
+ * Parse and merge several files (e.g. the pages of an MP API download).
+ * Duplicate entries are dropped; missing MP pages are reported as warnings.
+ */
+export function parseEntryFiles(files: FileText[]): { set: EntrySet; warnings: string[] } {
+  if (!files.length) throw new Error("ファイルが選択されていません");
+  const parsed = files.map((f) => {
+    try {
+      return parseOne(f.text);
+    } catch (e) {
+      throw new Error(`${f.name}: ${(e as Error).message}`);
+    }
+  });
+  const thermoTypes = [
+    ...new Set(parsed.flatMap((p) => p.set.entries.map((e) => e.thermoType))),
+  ].filter((t): t is string => !!t);
+  if (thermoTypes.length > 1)
+    throw new Error(`thermo type が混在しています: ${thermoTypes.join(", ")}`);
+
+  const seen = new Set<string>();
+  const entries: Entry[] = [];
+  for (const p of parsed) {
+    for (const e of p.set.entries) {
+      const key = `${e.id}|${e.thermoType ?? ""}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      entries.push(e);
+    }
+  }
+
+  const warnings: string[] = [];
+  const mpFiles = parsed.filter((p) => p.mp);
+  if (mpFiles.length) {
+    const docs = new Set(mpFiles.flatMap((p) => p.mp!.ids)).size;
+    const total = Math.max(...mpFiles.map((p) => p.mp!.total ?? 0));
+    if (total > docs) {
+      const pages = Math.ceil(total / PER_PAGE);
+      warnings.push(
+        `MP のデータが ${total} 件中 ${docs} 件しかありません。_page=1〜${pages} の全ページを取得して、まとめて読み込んでください。`,
+      );
+    }
+  }
+
+  const first = parsed[0].set;
+  return {
+    set: {
+      version: 1,
+      source: parsed.length > 1 ? `${first.source} (${parsed.length} files)` : first.source,
+      thermoType: thermoTypes[0] ?? first.thermoType,
+      elements: [...new Set(parsed.flatMap((p) => p.set.elements))].sort(),
+      fetchedAt: first.fetchedAt,
+      entries,
+    },
+    warnings,
   };
 }
