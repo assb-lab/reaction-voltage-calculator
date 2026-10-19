@@ -1,0 +1,1496 @@
+{
+  "name": "random-6-Li-Ti-P-S-O",
+  "ion": "Li",
+  "entries": [
+    {
+      "id": "r0",
+      "name": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energyPerAtom": -2.446619413668359
+    },
+    {
+      "id": "r1",
+      "name": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energyPerAtom": -2.2444020304320667
+    },
+    {
+      "id": "r2",
+      "name": "Ti",
+      "composition": {
+        "Ti": 1.0
+      },
+      "energyPerAtom": -2.2463217037619128
+    },
+    {
+      "id": "r3",
+      "name": "Ti",
+      "composition": {
+        "Ti": 1.0
+      },
+      "energyPerAtom": -2.0999479692132237
+    },
+    {
+      "id": "r4",
+      "name": "P",
+      "composition": {
+        "P": 1.0
+      },
+      "energyPerAtom": -4.604757604483383
+    },
+    {
+      "id": "r5",
+      "name": "P",
+      "composition": {
+        "P": 1.0
+      },
+      "energyPerAtom": -4.3744357203049935
+    },
+    {
+      "id": "r6",
+      "name": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energyPerAtom": -6.168649619387395
+    },
+    {
+      "id": "r7",
+      "name": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energyPerAtom": -6.050433111485981
+    },
+    {
+      "id": "r8",
+      "name": "O2",
+      "composition": {
+        "O": 1.0
+      },
+      "energyPerAtom": -7.996837995804503
+    },
+    {
+      "id": "r9",
+      "name": "O2",
+      "composition": {
+        "O": 1.0
+      },
+      "energyPerAtom": -7.7634974433824855
+    },
+    {
+      "id": "r10",
+      "name": "Li2Ti",
+      "composition": {
+        "Li": 4.0,
+        "Ti": 2.0
+      },
+      "energyPerAtom": -2.7931863283843796
+    },
+    {
+      "id": "r11",
+      "name": "Li4Ti5",
+      "composition": {
+        "Li": 4.0,
+        "Ti": 5.0
+      },
+      "energyPerAtom": -3.1107670749641274
+    },
+    {
+      "id": "r12",
+      "name": "LiTi2",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 2.0
+      },
+      "energyPerAtom": -3.0425932558866315
+    },
+    {
+      "id": "r13",
+      "name": "LiTi",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 6.0
+      },
+      "energyPerAtom": -3.641980555281982
+    },
+    {
+      "id": "r14",
+      "name": "Li6P",
+      "composition": {
+        "Li": 6.0,
+        "P": 1.0
+      },
+      "energyPerAtom": -2.9507884523863632
+    },
+    {
+      "id": "r15",
+      "name": "Li3P",
+      "composition": {
+        "Li": 3.0,
+        "P": 1.0
+      },
+      "energyPerAtom": -4.0980868461208635
+    },
+    {
+      "id": "r16",
+      "name": "Li4P3",
+      "composition": {
+        "Li": 4.0,
+        "P": 3.0
+      },
+      "energyPerAtom": -4.32563219434611
+    },
+    {
+      "id": "r17",
+      "name": "LiP2",
+      "composition": {
+        "Li": 1.0,
+        "P": 2.0
+      },
+      "energyPerAtom": -4.353958533935712
+    },
+    {
+      "id": "r18",
+      "name": "Li3P",
+      "composition": {
+        "Li": 3.0,
+        "P": 1.0
+      },
+      "energyPerAtom": -2.881402805008562
+    },
+    {
+      "id": "r19",
+      "name": "LiP3",
+      "composition": {
+        "Li": 2.0,
+        "P": 6.0
+      },
+      "energyPerAtom": -4.13113896481287
+    },
+    {
+      "id": "r20",
+      "name": "Li2S5",
+      "composition": {
+        "Li": 2.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -5.811035102930365
+    },
+    {
+      "id": "r21",
+      "name": "Li6S5",
+      "composition": {
+        "Li": 6.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -4.083338814879156
+    },
+    {
+      "id": "r22",
+      "name": "LiS6",
+      "composition": {
+        "Li": 1.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -6.750315817743106
+    },
+    {
+      "id": "r23",
+      "name": "Li5S4",
+      "composition": {
+        "Li": 5.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -5.322638689125634
+    },
+    {
+      "id": "r24",
+      "name": "Li5S",
+      "composition": {
+        "Li": 5.0,
+        "S": 1.0
+      },
+      "energyPerAtom": -4.6965516017833675
+    },
+    {
+      "id": "r25",
+      "name": "Li2O",
+      "composition": {
+        "Li": 2.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -4.941096327627321
+    },
+    {
+      "id": "r26",
+      "name": "Li2O2",
+      "composition": {
+        "Li": 3.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -5.6556223661398946
+    },
+    {
+      "id": "r27",
+      "name": "Li2O2",
+      "composition": {
+        "Li": 4.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -6.499189321452639
+    },
+    {
+      "id": "r28",
+      "name": "Li6O5",
+      "composition": {
+        "Li": 6.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -6.745652914087556
+    },
+    {
+      "id": "r29",
+      "name": "Li2O",
+      "composition": {
+        "Li": 2.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -4.776080126120511
+    },
+    {
+      "id": "r30",
+      "name": "Li6O5",
+      "composition": {
+        "Li": 6.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -5.550413154721571
+    },
+    {
+      "id": "r31",
+      "name": "Ti4P3",
+      "composition": {
+        "Ti": 4.0,
+        "P": 3.0
+      },
+      "energyPerAtom": -4.816093968611099
+    },
+    {
+      "id": "r32",
+      "name": "Ti4P",
+      "composition": {
+        "Ti": 4.0,
+        "P": 1.0
+      },
+      "energyPerAtom": -4.165845900611717
+    },
+    {
+      "id": "r33",
+      "name": "Ti5P6",
+      "composition": {
+        "Ti": 5.0,
+        "P": 6.0
+      },
+      "energyPerAtom": -3.435918943281664
+    },
+    {
+      "id": "r34",
+      "name": "TiP4",
+      "composition": {
+        "Ti": 1.0,
+        "P": 4.0
+      },
+      "energyPerAtom": -5.466979443192669
+    },
+    {
+      "id": "r35",
+      "name": "TiP5",
+      "composition": {
+        "Ti": 1.0,
+        "P": 5.0
+      },
+      "energyPerAtom": -4.738272443953912
+    },
+    {
+      "id": "r36",
+      "name": "TiP",
+      "composition": {
+        "Ti": 4.0,
+        "P": 4.0
+      },
+      "energyPerAtom": -3.736113971254636
+    },
+    {
+      "id": "r37",
+      "name": "TiS5",
+      "composition": {
+        "Ti": 1.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -6.504728815181327
+    },
+    {
+      "id": "r38",
+      "name": "TiS2",
+      "composition": {
+        "Ti": 3.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -5.109795380604345
+    },
+    {
+      "id": "r39",
+      "name": "TiS2",
+      "composition": {
+        "Ti": 1.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -5.226371860516449
+    },
+    {
+      "id": "r40",
+      "name": "Ti2S3",
+      "composition": {
+        "Ti": 4.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -4.910062830791691
+    },
+    {
+      "id": "r41",
+      "name": "Ti2S",
+      "composition": {
+        "Ti": 2.0,
+        "S": 1.0
+      },
+      "energyPerAtom": -5.312204960356146
+    },
+    {
+      "id": "r42",
+      "name": "Ti3O5",
+      "composition": {
+        "Ti": 3.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -6.1170160469830615
+    },
+    {
+      "id": "r43",
+      "name": "Ti2O3",
+      "composition": {
+        "Ti": 2.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -6.5414320491631655
+    },
+    {
+      "id": "r44",
+      "name": "P5S3",
+      "composition": {
+        "P": 5.0,
+        "S": 3.0
+      },
+      "energyPerAtom": -5.126250769857732
+    },
+    {
+      "id": "r45",
+      "name": "P4S5",
+      "composition": {
+        "P": 4.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -6.351317794279424
+    },
+    {
+      "id": "r46",
+      "name": "P5S4",
+      "composition": {
+        "P": 5.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -5.852874368684455
+    },
+    {
+      "id": "r47",
+      "name": "P2S",
+      "composition": {
+        "P": 4.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -5.555632646430482
+    },
+    {
+      "id": "r48",
+      "name": "PO2",
+      "composition": {
+        "P": 3.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -7.137136662907901
+    },
+    {
+      "id": "r49",
+      "name": "PO",
+      "composition": {
+        "P": 3.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -6.8482358098995615
+    },
+    {
+      "id": "r50",
+      "name": "P5O4",
+      "composition": {
+        "P": 5.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -6.592889481397461
+    },
+    {
+      "id": "r51",
+      "name": "PO",
+      "composition": {
+        "P": 3.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -6.679456036493059
+    },
+    {
+      "id": "r52",
+      "name": "P3O",
+      "composition": {
+        "P": 6.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -5.473214206255889
+    },
+    {
+      "id": "r53",
+      "name": "S5O",
+      "composition": {
+        "S": 5.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -7.08815810751106
+    },
+    {
+      "id": "r54",
+      "name": "SO2",
+      "composition": {
+        "S": 1.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -9.13022781915309
+    },
+    {
+      "id": "r55",
+      "name": "S5O",
+      "composition": {
+        "S": 5.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -6.934639245219726
+    },
+    {
+      "id": "r56",
+      "name": "S4O5",
+      "composition": {
+        "S": 4.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -8.865987612931391
+    },
+    {
+      "id": "r57",
+      "name": "Li2Ti3P5",
+      "composition": {
+        "Li": 2.0,
+        "Ti": 3.0,
+        "P": 5.0
+      },
+      "energyPerAtom": -5.237434278113282
+    },
+    {
+      "id": "r58",
+      "name": "Li5Ti4P",
+      "composition": {
+        "Li": 5.0,
+        "Ti": 4.0,
+        "P": 1.0
+      },
+      "energyPerAtom": -3.491405811097895
+    },
+    {
+      "id": "r59",
+      "name": "Li(TiP)3",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 3.0,
+        "P": 3.0
+      },
+      "energyPerAtom": -3.2579651558577964
+    },
+    {
+      "id": "r60",
+      "name": "Li5Ti3S2",
+      "composition": {
+        "Li": 5.0,
+        "Ti": 3.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -4.859343509954718
+    },
+    {
+      "id": "r61",
+      "name": "Li6TiS6",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 1.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -5.7487522039682615
+    },
+    {
+      "id": "r62",
+      "name": "Li3(TiS)2",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 4.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -3.87704843680965
+    },
+    {
+      "id": "r63",
+      "name": "Li6TiO6",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 1.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -5.745139786993214
+    },
+    {
+      "id": "r64",
+      "name": "Li5TiO2",
+      "composition": {
+        "Li": 5.0,
+        "Ti": 1.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -4.434705566913178
+    },
+    {
+      "id": "r65",
+      "name": "Li3(PS)2",
+      "composition": {
+        "Li": 6.0,
+        "P": 4.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -4.608446786119959
+    },
+    {
+      "id": "r66",
+      "name": "Li3PS",
+      "composition": {
+        "Li": 6.0,
+        "P": 2.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -3.695981864604901
+    },
+    {
+      "id": "r67",
+      "name": "LiPS",
+      "composition": {
+        "Li": 4.0,
+        "P": 4.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -5.3572260836909695
+    },
+    {
+      "id": "r68",
+      "name": "Li3(P2S3)2",
+      "composition": {
+        "Li": 3.0,
+        "P": 4.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -5.527815488661998
+    },
+    {
+      "id": "r69",
+      "name": "LiPO",
+      "composition": {
+        "Li": 3.0,
+        "P": 3.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -5.030696072766301
+    },
+    {
+      "id": "r70",
+      "name": "LiP5O3",
+      "composition": {
+        "Li": 1.0,
+        "P": 5.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -6.7640228882938365
+    },
+    {
+      "id": "r71",
+      "name": "LiPO",
+      "composition": {
+        "Li": 4.0,
+        "P": 4.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -5.105983681420646
+    },
+    {
+      "id": "r72",
+      "name": "LiP2O5",
+      "composition": {
+        "Li": 1.0,
+        "P": 2.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -7.041752554469304
+    },
+    {
+      "id": "r73",
+      "name": "Li6SO6",
+      "composition": {
+        "Li": 6.0,
+        "S": 1.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -6.7653117835056955
+    },
+    {
+      "id": "r74",
+      "name": "Li3SO",
+      "composition": {
+        "Li": 3.0,
+        "S": 1.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -4.292468787340956
+    },
+    {
+      "id": "r75",
+      "name": "Li3SO3",
+      "composition": {
+        "Li": 6.0,
+        "S": 2.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -6.3342394877402075
+    },
+    {
+      "id": "r76",
+      "name": "Li(SO3)2",
+      "composition": {
+        "Li": 1.0,
+        "S": 2.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -7.489825182576532
+    },
+    {
+      "id": "r77",
+      "name": "Li4S5O2",
+      "composition": {
+        "Li": 4.0,
+        "S": 5.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -6.065885008043197
+    },
+    {
+      "id": "r78",
+      "name": "Li4S6O",
+      "composition": {
+        "Li": 4.0,
+        "S": 6.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -6.538085428572135
+    },
+    {
+      "id": "r79",
+      "name": "Ti5PS2",
+      "composition": {
+        "Ti": 5.0,
+        "P": 1.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -4.323404393686094
+    },
+    {
+      "id": "r80",
+      "name": "Ti2P2S3",
+      "composition": {
+        "Ti": 2.0,
+        "P": 2.0,
+        "S": 3.0
+      },
+      "energyPerAtom": -4.997066206612108
+    },
+    {
+      "id": "r81",
+      "name": "Ti5P5S4",
+      "composition": {
+        "Ti": 5.0,
+        "P": 5.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -4.495599067922922
+    },
+    {
+      "id": "r82",
+      "name": "Ti2P6S5",
+      "composition": {
+        "Ti": 2.0,
+        "P": 6.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -5.28450746770019
+    },
+    {
+      "id": "r83",
+      "name": "Ti2P3O",
+      "composition": {
+        "Ti": 4.0,
+        "P": 6.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -4.745106053151614
+    },
+    {
+      "id": "r84",
+      "name": "Ti2(PO)5",
+      "composition": {
+        "Ti": 2.0,
+        "P": 5.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -7.415999327208148
+    },
+    {
+      "id": "r85",
+      "name": "Ti5(P2O)2",
+      "composition": {
+        "Ti": 5.0,
+        "P": 4.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -4.505030646515097
+    },
+    {
+      "id": "r86",
+      "name": "Ti5S4O",
+      "composition": {
+        "Ti": 5.0,
+        "S": 4.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -5.43503319477845
+    },
+    {
+      "id": "r87",
+      "name": "Ti5S5O6",
+      "composition": {
+        "Ti": 5.0,
+        "S": 5.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -7.169595204013992
+    },
+    {
+      "id": "r88",
+      "name": "Ti2S6O5",
+      "composition": {
+        "Ti": 2.0,
+        "S": 6.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -6.538374034934968
+    },
+    {
+      "id": "r89",
+      "name": "TiSO2",
+      "composition": {
+        "Ti": 3.0,
+        "S": 3.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -7.550377739870051
+    },
+    {
+      "id": "r90",
+      "name": "TiSO3",
+      "composition": {
+        "Ti": 2.0,
+        "S": 2.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -7.09271455458546
+    },
+    {
+      "id": "r91",
+      "name": "PSO",
+      "composition": {
+        "P": 1.0,
+        "S": 1.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -7.980992665132149
+    },
+    {
+      "id": "r92",
+      "name": "PSO6",
+      "composition": {
+        "P": 1.0,
+        "S": 1.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -7.793319152742856
+    },
+    {
+      "id": "r93",
+      "name": "P(S2O)3",
+      "composition": {
+        "P": 1.0,
+        "S": 6.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -7.229039597846086
+    },
+    {
+      "id": "r94",
+      "name": "PS5O2",
+      "composition": {
+        "P": 1.0,
+        "S": 5.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -6.736035402820969
+    },
+    {
+      "id": "r95",
+      "name": "P2S5O6",
+      "composition": {
+        "P": 2.0,
+        "S": 5.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -6.819500295952027
+    },
+    {
+      "id": "r96",
+      "name": "LiTi4PS6",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 4.0,
+        "P": 1.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -5.131243431034781
+    },
+    {
+      "id": "r97",
+      "name": "LiTi2(P3S2)2",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 2.0,
+        "P": 6.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -6.12899727520294
+    },
+    {
+      "id": "r98",
+      "name": "LiTi6P2S",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 6.0,
+        "P": 2.0,
+        "S": 1.0
+      },
+      "energyPerAtom": -3.630748427804058
+    },
+    {
+      "id": "r99",
+      "name": "LiTi6(P3S2)2",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 6.0,
+        "P": 6.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -4.576560866647075
+    },
+    {
+      "id": "r100",
+      "name": "Li3Ti4(PO)2",
+      "composition": {
+        "Li": 3.0,
+        "Ti": 4.0,
+        "P": 2.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -4.025254285149927
+    },
+    {
+      "id": "r101",
+      "name": "Li6Ti5(P3O)2",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 5.0,
+        "P": 6.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -4.931808104267873
+    },
+    {
+      "id": "r102",
+      "name": "LiTi3P5O6",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 3.0,
+        "P": 5.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -5.730954447758893
+    },
+    {
+      "id": "r103",
+      "name": "Li6Ti6P3O5",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 6.0,
+        "P": 3.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -5.7198155865775355
+    },
+    {
+      "id": "r104",
+      "name": "Li6Ti(SO)3",
+      "composition": {
+        "Li": 6.0,
+        "Ti": 1.0,
+        "S": 3.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -5.057497963259029
+    },
+    {
+      "id": "r105",
+      "name": "Li2Ti(SO2)3",
+      "composition": {
+        "Li": 2.0,
+        "Ti": 1.0,
+        "S": 3.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -6.1345665895375525
+    },
+    {
+      "id": "r106",
+      "name": "Li4Ti6SO3",
+      "composition": {
+        "Li": 4.0,
+        "Ti": 6.0,
+        "S": 1.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -5.351110641033334
+    },
+    {
+      "id": "r107",
+      "name": "LiTi3SO4",
+      "composition": {
+        "Li": 1.0,
+        "Ti": 3.0,
+        "S": 1.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -7.055273603258266
+    },
+    {
+      "id": "r108",
+      "name": "Li3TiS6O5",
+      "composition": {
+        "Li": 3.0,
+        "Ti": 1.0,
+        "S": 6.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -6.401354071476545
+    },
+    {
+      "id": "r109",
+      "name": "LiTiSO2",
+      "composition": {
+        "Li": 2.0,
+        "Ti": 2.0,
+        "S": 2.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -6.134090985947719
+    },
+    {
+      "id": "r110",
+      "name": "Li6P4S5O4",
+      "composition": {
+        "Li": 6.0,
+        "P": 4.0,
+        "S": 5.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -5.778179565859569
+    },
+    {
+      "id": "r111",
+      "name": "Li6P4(SO)3",
+      "composition": {
+        "Li": 6.0,
+        "P": 4.0,
+        "S": 3.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -6.264831583684192
+    },
+    {
+      "id": "r112",
+      "name": "LiP2S4O",
+      "composition": {
+        "Li": 1.0,
+        "P": 2.0,
+        "S": 4.0,
+        "O": 1.0
+      },
+      "energyPerAtom": -5.805042404668049
+    },
+    {
+      "id": "r113",
+      "name": "TiPS5O2",
+      "composition": {
+        "Ti": 1.0,
+        "P": 1.0,
+        "S": 5.0,
+        "O": 2.0
+      },
+      "energyPerAtom": -7.537501293648119
+    },
+    {
+      "id": "r114",
+      "name": "Ti5P4(SO)4",
+      "composition": {
+        "Ti": 5.0,
+        "P": 4.0,
+        "S": 4.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -5.239873361387664
+    },
+    {
+      "id": "r115",
+      "name": "Ti5P6S5O4",
+      "composition": {
+        "Ti": 5.0,
+        "P": 6.0,
+        "S": 5.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -6.47529885724558
+    },
+    {
+      "id": "r116",
+      "name": "Ti3P2SO2",
+      "composition": {
+        "Ti": 6.0,
+        "P": 4.0,
+        "S": 2.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -4.911337208097901
+    },
+    {
+      "id": "r117",
+      "name": "TiP3S4O3",
+      "composition": {
+        "Ti": 1.0,
+        "P": 3.0,
+        "S": 4.0,
+        "O": 3.0
+      },
+      "energyPerAtom": -7.077367945262737
+    },
+    {
+      "id": "r118",
+      "name": "Ti3P3S5O6",
+      "composition": {
+        "Ti": 3.0,
+        "P": 3.0,
+        "S": 5.0,
+        "O": 6.0
+      },
+      "energyPerAtom": -6.956256740884607
+    },
+    {
+      "id": "r119",
+      "name": "Li3Ti2PS4O5",
+      "composition": {
+        "Li": 3.0,
+        "Ti": 2.0,
+        "P": 1.0,
+        "S": 4.0,
+        "O": 5.0
+      },
+      "energyPerAtom": -6.027767112833901
+    },
+    {
+      "id": "r120",
+      "name": "Li2Ti6P(SO2)2",
+      "composition": {
+        "Li": 2.0,
+        "Ti": 6.0,
+        "P": 1.0,
+        "S": 2.0,
+        "O": 4.0
+      },
+      "energyPerAtom": -5.504213367436509
+    }
+  ],
+  "cases": [
+    {
+      "formula": "Li2Ti3P5",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -2.0000000000000013,
+          "chempot": -5.545922396814848,
+          "mu": -3.0993029831464884,
+          "phases": ["Ti4P3", "TiP4"]
+        },
+        {
+          "x": -2.5257573810222323e-15,
+          "chempot": -3.214954842061021,
+          "mu": -0.7683354283926618,
+          "phases": ["Li2Ti3P5"]
+        },
+        {
+          "x": 15.999999999999996,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li3P", "LiTi"]
+        }
+      ]
+    },
+    {
+      "formula": "Li3P",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -3.0000000000000013,
+          "chempot": -4.116288136743155,
+          "mu": -1.6696687230747962,
+          "phases": ["P"]
+        },
+        {
+          "x": -1.6666666666666665,
+          "chempot": -3.7795233586055166,
+          "mu": -1.3329039449371574,
+          "phases": ["Li4P3"]
+        },
+        {
+          "x": 9.436895709313833e-16,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li3P"]
+        }
+      ]
+    },
+    {
+      "formula": "Li4P3",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -3.9999999999999996,
+          "chempot": -4.116288136743155,
+          "mu": -1.6696687230747962,
+          "phases": ["P"]
+        },
+        {
+          "x": 2.2204460492503126e-16,
+          "chempot": -3.7795233586055166,
+          "mu": -1.3329039449371574,
+          "phases": ["Li4P3"]
+        },
+        {
+          "x": 5.0,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li3P"]
+        }
+      ]
+    },
+    {
+      "formula": "Li4S6O",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -3.999999999999999,
+          "chempot": -10.240313007877372,
+          "mu": -7.793693594209013,
+          "phases": ["S", "S5O"]
+        },
+        {
+          "x": -3.833333333333334,
+          "chempot": -9.294823664501953,
+          "mu": -6.848204250833594,
+          "phases": ["LiS6", "S5O"]
+        },
+        {
+          "x": -3.1333333333333346,
+          "chempot": -4.789865760651743,
+          "mu": -2.343246346983384,
+          "phases": ["LiS6", "S4O5"]
+        },
+        {
+          "x": 7.216449660063516e-16,
+          "chempot": -4.117557654182437,
+          "mu": -1.6709382405140776,
+          "phases": ["Li4S6O"]
+        },
+        {
+          "x": 23.50000000000001,
+          "chempot": -4.117499861517051,
+          "mu": -1.6708804478486918,
+          "phases": ["Li5S", "SO2"]
+        },
+        {
+          "x": 27.200000000000024,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li5S", "Li6O5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li(SO3)2",
+      "eAboveHull": 1.007734993629131,
+      "profile": [
+        {
+          "x": -0.9999999999999996,
+          "chempot": -5.702998679323435,
+          "mu": -3.2563792656550756,
+          "phases": ["O2", "SO2"]
+        },
+        {
+          "x": 1.4000000000000012,
+          "chempot": -4.117499861517051,
+          "mu": -1.6708804478486918,
+          "phases": ["Li6O5", "SO2"]
+        },
+        {
+          "x": 16.19999999999997,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li5S", "Li6O5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li(TiP)3",
+      "eAboveHull": 1.7139415186478546,
+      "profile": [
+        {
+          "x": -0.9999999999999982,
+          "chempot": -5.545922396814848,
+          "mu": -3.0993029831464884,
+          "phases": ["Ti4P3", "TiP4"]
+        },
+        {
+          "x": -0.4545454545454537,
+          "chempot": -4.687567782374133,
+          "mu": -2.240948368705774,
+          "phases": ["Li2Ti3P5", "Ti4P3"]
+        },
+        {
+          "x": 0.05882352941176554,
+          "chempot": -3.7923965339698573,
+          "mu": -1.345777120301498,
+          "phases": ["Li2Ti3P5", "Ti4P"]
+        },
+        {
+          "x": 1.3999999999999995,
+          "chempot": -3.214954842061021,
+          "mu": -0.7683354283926618,
+          "phases": ["Li2Ti3P5", "LiTi"]
+        },
+        {
+          "x": 10.999999999999998,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li3P", "LiTi"]
+        }
+      ]
+    },
+    {
+      "formula": "Li2O",
+      "eAboveHull": 0.6581476530151162,
+      "profile": [
+        {
+          "x": -2.0000000000000004,
+          "chempot": -5.702998679323435,
+          "mu": -3.2563792656550756,
+          "phases": ["O2"]
+        },
+        {
+          "x": -0.7999999999999999,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li6O5"]
+        }
+      ]
+    },
+    {
+      "formula": "Ti2PS4O3",
+      "eAboveHull": null,
+      "profile": [
+        {
+          "x": -1.3141932382133969e-15,
+          "chempot": -4.3760838158232565,
+          "mu": -1.9294644021548972,
+          "phases": ["PSO", "S4O5", "Ti2S", "TiPS5O2"]
+        },
+        {
+          "x": 0.3076923076923068,
+          "chempot": -4.282560786617732,
+          "mu": -1.8359413729493728,
+          "phases": ["Li4S6O", "PSO", "S4O5", "Ti2S"]
+        },
+        {
+          "x": 0.43636363636363656,
+          "chempot": -4.21152416850454,
+          "mu": -1.7649047548361807,
+          "phases": ["Li6TiS6", "PSO", "S4O5", "Ti2S"]
+        },
+        {
+          "x": 1.0909090909090902,
+          "chempot": -4.179758558088503,
+          "mu": -1.7331391444201438,
+          "phases": ["Li6TiS6", "PSO", "SO2", "Ti2S"]
+        },
+        {
+          "x": 3.874999999999997,
+          "chempot": -4.129395538669858,
+          "mu": -1.6827761250014985,
+          "phases": ["Li5Ti3S2", "Li6TiS6", "PSO", "SO2"]
+        },
+        {
+          "x": 7.087499999999999,
+          "chempot": -4.108373924119228,
+          "mu": -1.6617545104508684,
+          "phases": ["Li5Ti3S2", "Li6O5", "Li6TiS6", "PSO"]
+        },
+        {
+          "x": 14.06666666666666,
+          "chempot": -4.092720185117578,
+          "mu": -1.6461007714492188,
+          "phases": ["Li5S", "Li5Ti3S2", "Li6O5", "PSO"]
+        },
+        {
+          "x": 21.666666666666647,
+          "chempot": -3.70213343169314,
+          "mu": -1.2555140180247806,
+          "phases": ["Li2Ti3P5", "Li5S", "Li5Ti3S2", "Li6O5"]
+        },
+        {
+          "x": 25.400000000000116,
+          "chempot": -3.214954842061021,
+          "mu": -0.7683354283926618,
+          "phases": ["Li2Ti3P5", "Li5S", "Li6O5", "LiTi"]
+        },
+        {
+          "x": 28.60000000000002,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li3P", "Li5S", "Li6O5", "LiTi"]
+        }
+      ]
+    },
+    {
+      "formula": "Ti3P4S3O",
+      "eAboveHull": null,
+      "profile": [
+        {
+          "x": -4.615413828997641e-16,
+          "chempot": -8.124840314431511,
+          "mu": -5.678220900763152,
+          "phases": ["PSO", "Ti2S", "TiP4", "TiPS5O2"]
+        },
+        {
+          "x": 0.23333333333333375,
+          "chempot": -5.532369439422319,
+          "mu": -3.08575002575396,
+          "phases": ["LiTi2(P3S2)2", "PSO", "Ti2S", "TiP4"]
+        },
+        {
+          "x": 0.7916666666666672,
+          "chempot": -4.32330174013207,
+          "mu": -1.876682326463711,
+          "phases": ["Li2Ti3P5", "LiTi2(P3S2)2", "PSO", "Ti2S"]
+        },
+        {
+          "x": 2.727272727272725,
+          "chempot": -4.179758558088503,
+          "mu": -1.7331391444201438,
+          "phases": ["Li2Ti3P5", "Li6TiS6", "PSO", "Ti2S"]
+        },
+        {
+          "x": 4.174999999999997,
+          "chempot": -4.108373924119228,
+          "mu": -1.6617545104508684,
+          "phases": ["Li2Ti3P5", "Li5Ti3S2", "Li6TiS6", "PSO"]
+        },
+        {
+          "x": 9.200000000000012,
+          "chempot": -4.092720185117578,
+          "mu": -1.6461007714492188,
+          "phases": ["Li2Ti3P5", "Li5S", "Li5Ti3S2", "PSO"]
+        },
+        {
+          "x": 16.799999999999983,
+          "chempot": -3.70213343169314,
+          "mu": -1.2555140180247806,
+          "phases": ["Li2Ti3P5", "Li5S", "Li5Ti3S2", "Li6O5"]
+        },
+        {
+          "x": 18.40000000000001,
+          "chempot": -3.214954842061021,
+          "mu": -0.7683354283926618,
+          "phases": ["Li2Ti3P5", "Li5S", "Li6O5", "LiTi"]
+        },
+        {
+          "x": 31.199999999999992,
+          "chempot": -2.446619413668359,
+          "mu": 0.0,
+          "phases": ["Li3P", "Li5S", "Li6O5", "LiTi"]
+        }
+      ]
+    }
+  ]
+}
