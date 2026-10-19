@@ -175,6 +175,10 @@ describe("volume change display", () => {
           ? { kind: "none" }
           : {
               kind: "film",
+              fraction: 0.1,
+              fullChargeMAhG: null,
+              fromCharge: false,
+              capped: false,
               thicknessNm: 10,
               coreDiameterUm: 0.9,
               outerDiameterUm: 1,

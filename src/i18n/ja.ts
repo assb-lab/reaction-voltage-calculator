@@ -123,10 +123,18 @@ export const ja = {
   "film.none": "—",
   "film.unavailable": "計算不可 (有効な体積データなし: {phases})",
   "film.capacity": "{q} mAh/g",
+  "film.fromCharge": "分解率 {f} % (全分解に {full} mAh/g)",
+  "film.noteCharge": "反応電荷量 {q} mAh/g から: ",
+  "film.capped": "全分解 (電荷が全分解に必要な {full} mAh/g を超えています)",
+  "film.chargeless": "電荷を伴わない分解のため、電荷量からは決まりません",
   "film.gas": "放出ガス: {list}",
   "film.noSolid": "被膜なし (生成物はすべてガス)",
   "film.noteGasOnly":
     "生成物はすべてガスとして放出されるため、被膜はできません。粒子径 {d} µm、分解率 {f} % で、粒子は直径 {core} µm のコアだけになります。",
+  "opt.filmMode": "分解量の指定",
+  "opt.filmModeFraction": "分解率で指定",
+  "opt.filmModeCharge": "反応電荷量で指定",
+  "opt.filmCharge": "反応電荷量 (対象相 1 g あたり)",
   "opt.filmGas": "ガスとして放出する相 (カンマ・改行区切り)",
   "opt.filmGasPlaceholder": "例: CO2, SO2, PCl3",
   "opt.filmGasHint":
@@ -141,7 +149,8 @@ export const ja = {
   "film.chartHint":
     "分解した部分の体積変化 (V_生成物 / V_対象相 − 1) を電位区間ごとに示します。粒子全体の変化はこれに分解率を掛けた値です。線をクリックすると、その区間を 3D モデルに表示します。",
   "film.tooltip": "被膜 {t}",
-  "film.invalid": "被膜: 粒子径 (> 0 µm) と分解率 (0–100 %) を正しく入力してください。",
+  "film.invalid":
+    "被膜: 粒子径 (> 0 µm) と、分解率 (0–100 %) または反応電荷量 (0 mAh/g 以上) を正しく入力してください。",
   "film.noRegion":
     "被膜を計算できる電位区間がありません (体積データのある分解生成物がありません)。",
   "film.core": "未反応の {formula}",

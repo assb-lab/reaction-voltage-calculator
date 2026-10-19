@@ -125,10 +125,18 @@ export const en: Record<MessageKey, string> = {
   "film.none": "—",
   "film.unavailable": "Not available (no valid volume data: {phases})",
   "film.capacity": "{q} mAh/g",
+  "film.fromCharge": "{f} % decomposed (full decomposition takes {full} mAh/g)",
+  "film.noteCharge": "From the reacted charge of {q} mAh/g: ",
+  "film.capped": "Fully decomposed (the charge exceeds the {full} mAh/g needed)",
+  "film.chargeless": "Decomposition without charge transfer: not set by the charge",
   "film.gas": "Gas released: {list}",
   "film.noSolid": "No film (all products are gases)",
   "film.noteGasOnly":
     "All products are released as gas, so no film forms. With a {d} µm particle and {f} % decomposed, only the {core} µm core remains.",
+  "opt.filmMode": "How the decomposed amount is given",
+  "opt.filmModeFraction": "By decomposed fraction",
+  "opt.filmModeCharge": "By reacted charge",
+  "opt.filmCharge": "Reacted charge (per gram of target)",
   "opt.filmGas": "Phases released as gas (comma or newline separated)",
   "opt.filmGasPlaceholder": "e.g. CO2, SO2, PCl3",
   "opt.filmGasHint":
@@ -143,7 +151,8 @@ export const en: Record<MessageKey, string> = {
   "film.chartHint":
     "Volume change of the decomposed part (V_products / V_target − 1) for each voltage region; the whole particle changes by this times the decomposed fraction. Click a line to show that region in the 3D model.",
   "film.tooltip": "Film {t}",
-  "film.invalid": "Film: enter a particle diameter (> 0 µm) and a decomposed fraction (0–100 %).",
+  "film.invalid":
+    "Film: enter a particle diameter (> 0 µm) and either a decomposed fraction (0–100 %) or a reacted charge (≥ 0 mAh/g).",
   "film.noRegion":
     "No voltage region has a film to compute (no decomposition products with volume data).",
   "film.core": "Unreacted {formula}",
