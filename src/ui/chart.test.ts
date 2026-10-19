@@ -32,6 +32,9 @@ describe("view math", () => {
     expect(voltageRange(1.5, 2.5)).toEqual([1.5, 2.5]);
     expect(voltageRange(2, 1)).toBeNull();
     expect(voltageRange(Number.NaN, 1)).toBeNull();
+    expect(voltageRange(-1e308, 1e308)).toBeNull();
+    expect(voltageRange(0, 101)).toBeNull();
+    expect(voltageRange(1e20, 1e20 + 16384)).toBeNull();
   });
 
   it("maps data to SVG and back", () => {
@@ -45,6 +48,18 @@ describe("view math", () => {
 });
 
 describe("rendering a view", () => {
+  it("bounds tick generation when floating-point additions cannot advance", () => {
+    const large = ticks(1e20, 1e20 + 16384, 6);
+    expect(large.length).toBeGreaterThan(0);
+    expect(large.length).toBeLessThanOrEqual(102);
+    expect(new Set(large).size).toBe(large.length);
+    expect(ticks(0, 1, Infinity)).toEqual([]);
+    expect(ticks(0, 1, 0)).toEqual([]);
+    expect(ticks(0, Infinity, 6)).toEqual([]);
+    expect(ticks(1, 1, 6)).toEqual([]);
+    expect(ticks(0, 1, 1e9).length).toBeLessThanOrEqual(102);
+    expect(ticks(0, 0.6, 6)).toEqual([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]);
+  });
   it("mirrors inward ticks on all four sides", () => {
     const view = defaultView(profile);
     const svg = renderProfileSvg(profile, view);
