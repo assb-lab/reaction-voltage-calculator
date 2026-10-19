@@ -1,0 +1,18 @@
+[project]
+name = "reaction-voltage-calculator"
+version = "0.1.0"
+description = "pymatgen reference fixtures for the reaction voltage calculator web app"
+readme = "README.md"
+authors = [{ name = "ks25026", email = "shimizu.k.ak@gmail.com" }]
+requires-python = ">=3.14"
+dependencies = ["pymatgen>=2026.9.24"]
+
+[project.scripts]
+reaction-voltage-calculator = "reaction_voltage_calculator:main"
+
+[project.optional-dependencies]
+mp = ["mp-api>=0.46.5"]
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"

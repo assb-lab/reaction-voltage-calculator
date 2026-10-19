@@ -1,0 +1,774 @@
+{
+  "name": "random-7-Li-In-Cl-Br",
+  "ion": "Li",
+  "entries": [
+    {
+      "id": "r0",
+      "name": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energyPerAtom": -5.7331706461678635
+    },
+    {
+      "id": "r1",
+      "name": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energyPerAtom": -5.5677648649189235
+    },
+    {
+      "id": "r2",
+      "name": "In",
+      "composition": {
+        "In": 1.0
+      },
+      "energyPerAtom": -6.944055782528487
+    },
+    {
+      "id": "r3",
+      "name": "In",
+      "composition": {
+        "In": 1.0
+      },
+      "energyPerAtom": -6.828005996623837
+    },
+    {
+      "id": "r4",
+      "name": "Cl2",
+      "composition": {
+        "Cl": 1.0
+      },
+      "energyPerAtom": -3.443458688721024
+    },
+    {
+      "id": "r5",
+      "name": "Cl2",
+      "composition": {
+        "Cl": 1.0
+      },
+      "energyPerAtom": -3.416639000536359
+    },
+    {
+      "id": "r6",
+      "name": "Br",
+      "composition": {
+        "Br": 1.0
+      },
+      "energyPerAtom": -7.492945993327201
+    },
+    {
+      "id": "r7",
+      "name": "Br",
+      "composition": {
+        "Br": 1.0
+      },
+      "energyPerAtom": -7.335789630702269
+    },
+    {
+      "id": "r8",
+      "name": "LiIn4",
+      "composition": {
+        "Li": 1.0,
+        "In": 4.0
+      },
+      "energyPerAtom": -7.7073516676519205
+    },
+    {
+      "id": "r9",
+      "name": "Li2In",
+      "composition": {
+        "Li": 2.0,
+        "In": 1.0
+      },
+      "energyPerAtom": -6.889809242751105
+    },
+    {
+      "id": "r10",
+      "name": "Li5Cl",
+      "composition": {
+        "Li": 5.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -5.351397555249164
+    },
+    {
+      "id": "r11",
+      "name": "LiCl",
+      "composition": {
+        "Li": 6.0,
+        "Cl": 6.0
+      },
+      "energyPerAtom": -5.28062054896967
+    },
+    {
+      "id": "r12",
+      "name": "LiBr",
+      "composition": {
+        "Li": 5.0,
+        "Br": 5.0
+      },
+      "energyPerAtom": -7.65936541791105
+    },
+    {
+      "id": "r13",
+      "name": "Li2Br",
+      "composition": {
+        "Li": 2.0,
+        "Br": 1.0
+      },
+      "energyPerAtom": -7.062099122473834
+    },
+    {
+      "id": "r14",
+      "name": "In3Cl4",
+      "composition": {
+        "In": 3.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -6.469629927687948
+    },
+    {
+      "id": "r15",
+      "name": "InCl5",
+      "composition": {
+        "In": 1.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.240776071895259
+    },
+    {
+      "id": "r16",
+      "name": "In3Cl",
+      "composition": {
+        "In": 6.0,
+        "Cl": 2.0
+      },
+      "energyPerAtom": -7.673100655433798
+    },
+    {
+      "id": "r17",
+      "name": "In3Br",
+      "composition": {
+        "In": 6.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -8.173723004049275
+    },
+    {
+      "id": "r18",
+      "name": "In5Br6",
+      "composition": {
+        "In": 5.0,
+        "Br": 6.0
+      },
+      "energyPerAtom": -8.924151390514835
+    },
+    {
+      "id": "r19",
+      "name": "InBr5",
+      "composition": {
+        "In": 1.0,
+        "Br": 5.0
+      },
+      "energyPerAtom": -8.810142737170695
+    },
+    {
+      "id": "r20",
+      "name": "In6Br5",
+      "composition": {
+        "In": 6.0,
+        "Br": 5.0
+      },
+      "energyPerAtom": -8.181125952119672
+    },
+    {
+      "id": "r21",
+      "name": "In3Br4",
+      "composition": {
+        "In": 3.0,
+        "Br": 4.0
+      },
+      "energyPerAtom": -7.945139790891809
+    },
+    {
+      "id": "r22",
+      "name": "In4Br3",
+      "composition": {
+        "In": 4.0,
+        "Br": 3.0
+      },
+      "energyPerAtom": -8.409737150258367
+    },
+    {
+      "id": "r23",
+      "name": "BrCl3",
+      "composition": {
+        "Cl": 6.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -6.100305994360606
+    },
+    {
+      "id": "r24",
+      "name": "Br5Cl3",
+      "composition": {
+        "Cl": 3.0,
+        "Br": 5.0
+      },
+      "energyPerAtom": -6.833667170944898
+    },
+    {
+      "id": "r25",
+      "name": "Br2Cl",
+      "composition": {
+        "Cl": 3.0,
+        "Br": 6.0
+      },
+      "energyPerAtom": -7.090331929979
+    },
+    {
+      "id": "r26",
+      "name": "LiInCl5",
+      "composition": {
+        "Li": 1.0,
+        "In": 1.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.2762123346511345
+    },
+    {
+      "id": "r27",
+      "name": "Li3(InCl2)2",
+      "composition": {
+        "Li": 3.0,
+        "In": 2.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -5.983379599654703
+    },
+    {
+      "id": "r28",
+      "name": "Li6InCl5",
+      "composition": {
+        "Li": 6.0,
+        "In": 1.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.591281805401369
+    },
+    {
+      "id": "r29",
+      "name": "LiInCl2",
+      "composition": {
+        "Li": 3.0,
+        "In": 3.0,
+        "Cl": 6.0
+      },
+      "energyPerAtom": -6.025697014868179
+    },
+    {
+      "id": "r30",
+      "name": "Li4In5Cl4",
+      "composition": {
+        "Li": 4.0,
+        "In": 5.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -7.163719338603733
+    },
+    {
+      "id": "r31",
+      "name": "LiIn3Cl4",
+      "composition": {
+        "Li": 1.0,
+        "In": 3.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -5.518016664708514
+    },
+    {
+      "id": "r32",
+      "name": "Li(InBr)6",
+      "composition": {
+        "Li": 1.0,
+        "In": 6.0,
+        "Br": 6.0
+      },
+      "energyPerAtom": -8.315990700116956
+    },
+    {
+      "id": "r33",
+      "name": "Li5(In3Br2)2",
+      "composition": {
+        "Li": 5.0,
+        "In": 6.0,
+        "Br": 4.0
+      },
+      "energyPerAtom": -7.946066615642386
+    },
+    {
+      "id": "r34",
+      "name": "Li6BrCl3",
+      "composition": {
+        "Li": 6.0,
+        "Cl": 3.0,
+        "Br": 1.0
+      },
+      "energyPerAtom": -5.235002317022167
+    },
+    {
+      "id": "r35",
+      "name": "Li3Br5Cl2",
+      "composition": {
+        "Li": 3.0,
+        "Cl": 2.0,
+        "Br": 5.0
+      },
+      "energyPerAtom": -7.732633918742874
+    },
+    {
+      "id": "r36",
+      "name": "LiBr3Cl2",
+      "composition": {
+        "Li": 1.0,
+        "Cl": 2.0,
+        "Br": 3.0
+      },
+      "energyPerAtom": -7.404074578763085
+    },
+    {
+      "id": "r37",
+      "name": "Li(BrCl)2",
+      "composition": {
+        "Li": 2.0,
+        "Cl": 4.0,
+        "Br": 4.0
+      },
+      "energyPerAtom": -5.5792451723107455
+    },
+    {
+      "id": "r38",
+      "name": "Li4Br2Cl",
+      "composition": {
+        "Li": 4.0,
+        "Cl": 1.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -6.855405832488682
+    },
+    {
+      "id": "r39",
+      "name": "In3(Br2Cl)2",
+      "composition": {
+        "In": 3.0,
+        "Cl": 2.0,
+        "Br": 4.0
+      },
+      "energyPerAtom": -6.568526029610189
+    },
+    {
+      "id": "r40",
+      "name": "In3(Br2Cl3)2",
+      "composition": {
+        "In": 3.0,
+        "Cl": 6.0,
+        "Br": 4.0
+      },
+      "energyPerAtom": -5.422997427114701
+    },
+    {
+      "id": "r41",
+      "name": "In3BrCl2",
+      "composition": {
+        "In": 6.0,
+        "Cl": 4.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -7.381922065389345
+    },
+    {
+      "id": "r42",
+      "name": "InBrCl",
+      "composition": {
+        "In": 2.0,
+        "Cl": 2.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -6.50897180194481
+    },
+    {
+      "id": "r43",
+      "name": "InBr5Cl4",
+      "composition": {
+        "In": 1.0,
+        "Cl": 4.0,
+        "Br": 5.0
+      },
+      "energyPerAtom": -7.271810589840584
+    },
+    {
+      "id": "r44",
+      "name": "In3Br2Cl",
+      "composition": {
+        "In": 3.0,
+        "Cl": 1.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -7.547587985022024
+    },
+    {
+      "id": "r45",
+      "name": "Li5In5Br2Cl3",
+      "composition": {
+        "Li": 5.0,
+        "In": 5.0,
+        "Cl": 3.0,
+        "Br": 2.0
+      },
+      "energyPerAtom": -6.40155539786159
+    },
+    {
+      "id": "r46",
+      "name": "Li5In5(BrCl)6",
+      "composition": {
+        "Li": 5.0,
+        "In": 5.0,
+        "Cl": 6.0,
+        "Br": 6.0
+      },
+      "energyPerAtom": -6.258252626328115
+    },
+    {
+      "id": "r47",
+      "name": "Li4In6Br4Cl5",
+      "composition": {
+        "Li": 4.0,
+        "In": 6.0,
+        "Cl": 5.0,
+        "Br": 4.0
+      },
+      "energyPerAtom": -6.927146370194595
+    },
+    {
+      "id": "r48",
+      "name": "Li4In(Br3Cl2)2",
+      "composition": {
+        "Li": 4.0,
+        "In": 1.0,
+        "Cl": 4.0,
+        "Br": 6.0
+      },
+      "energyPerAtom": -6.946375607488754
+    }
+  ],
+  "cases": [
+    {
+      "formula": "Li2Br",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -2.0000000000000004,
+          "chempot": -7.825784842494899,
+          "mu": -2.0926141963270357,
+          "phases": ["Br"]
+        },
+        {
+          "x": -1.0000000000000002,
+          "chempot": -5.867566531599404,
+          "mu": -0.13439588543154013,
+          "phases": ["LiBr"]
+        },
+        {
+          "x": 5.55111512312578e-17,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li2Br"]
+        }
+      ]
+    },
+    {
+      "formula": "Li2In",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -2.0000000000000004,
+          "chempot": -10.760535208145654,
+          "mu": -5.027364561977791,
+          "phases": ["In"]
+        },
+        {
+          "x": -1.75,
+          "chempot": -6.305850367821952,
+          "mu": -0.5726797216540884,
+          "phases": ["LiIn4"]
+        },
+        {
+          "x": 5.55111512312578e-17,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li2In"]
+        }
+      ]
+    },
+    {
+      "formula": "Li3Br5Cl2",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -2.9999999999999973,
+          "chempot": -9.375401886031701,
+          "mu": -3.642231239863838,
+          "phases": ["Br", "Br2Cl"]
+        },
+        {
+          "x": -1.9999999999999991,
+          "chempot": -8.957999864097921,
+          "mu": -3.2248292179300577,
+          "phases": ["Br", "LiBr3Cl2"]
+        },
+        {
+          "x": 8.32667268468867e-16,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li3Br5Cl2"]
+        }
+      ]
+    },
+    {
+      "formula": "Li4Br2Cl",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -4.000000000000001,
+          "chempot": -9.375401886031701,
+          "mu": -3.642231239863838,
+          "phases": ["Br2Cl"]
+        },
+        {
+          "x": -3.499999999999999,
+          "chempot": -8.957999864097921,
+          "mu": -3.2248292179300577,
+          "phases": ["Br", "LiBr3Cl2"]
+        },
+        {
+          "x": -3.0000000000000075,
+          "chempot": -7.671431634781296,
+          "mu": -1.9382609886134325,
+          "phases": ["Li3Br5Cl2", "LiBr3Cl2"]
+        },
+        {
+          "x": -2.846153846153844,
+          "chempot": -5.788522098339253,
+          "mu": -0.05535145217138915,
+          "phases": ["BrCl3", "Li3Br5Cl2"]
+        },
+        {
+          "x": -2.6,
+          "chempot": -5.748098820331308,
+          "mu": -0.01492817416344483,
+          "phases": ["Li3Br5Cl2", "LiCl"]
+        },
+        {
+          "x": 7.216449660063522e-16,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li4Br2Cl"]
+        }
+      ]
+    },
+    {
+      "formula": "Li(BrCl)2",
+      "eAboveHull": 1.5207736386540045,
+      "profile": [
+        {
+          "x": -1.0000000000000002,
+          "chempot": -9.764808571178218,
+          "mu": -4.0316379250103545,
+          "phases": ["Br2Cl", "BrCl3"]
+        },
+        {
+          "x": -0.42857142857142855,
+          "chempot": -7.671431634781296,
+          "mu": -1.9382609886134325,
+          "phases": ["BrCl3", "LiBr3Cl2"]
+        },
+        {
+          "x": -0.07692307692307705,
+          "chempot": -5.788522098339253,
+          "mu": -0.05535145217138915,
+          "phases": ["BrCl3", "Li3Br5Cl2"]
+        },
+        {
+          "x": 1.3999999999999997,
+          "chempot": -5.748098820331308,
+          "mu": -0.01492817416344483,
+          "phases": ["Li3Br5Cl2", "LiCl"]
+        },
+        {
+          "x": 3.9999999999999973,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li4Br2Cl", "LiCl"]
+        }
+      ]
+    },
+    {
+      "formula": "Li(InBr)6",
+      "eAboveHull": 0.3498331239659578,
+      "profile": [
+        {
+          "x": -0.9999999999999989,
+          "chempot": -8.381777783945934,
+          "mu": -2.64860713777807,
+          "phases": ["In3Br", "In5Br6"]
+        },
+        {
+          "x": -0.7499999999999991,
+          "chempot": -6.47447311046629,
+          "mu": -0.7413024642984265,
+          "phases": ["In5Br6", "LiIn4"]
+        },
+        {
+          "x": 0.8749999999999983,
+          "chempot": -6.147821896886667,
+          "mu": -0.41465125071880315,
+          "phases": ["In5Br6", "Li5(In3Br2)2"]
+        },
+        {
+          "x": 6.000000000000003,
+          "chempot": -6.009135498015684,
+          "mu": -0.2759648518478208,
+          "phases": ["Li5(In3Br2)2", "LiBr"]
+        },
+        {
+          "x": 17.00000000000014,
+          "chempot": -5.867566531599404,
+          "mu": -0.13439588543154013,
+          "phases": ["Li2In", "LiBr"]
+        },
+        {
+          "x": 23.0,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li2Br", "Li2In"]
+        }
+      ]
+    },
+    {
+      "formula": "Li3(InCl2)2",
+      "eAboveHull": 0.27113972298142297,
+      "profile": [
+        {
+          "x": -3.000000000000003,
+          "chempot": -7.384852670481313,
+          "mu": -1.6516820243134491,
+          "phases": ["In3Cl4", "InCl5"]
+        },
+        {
+          "x": -1.8571428571428583,
+          "chempot": -6.307645292068675,
+          "mu": -0.5744746459008114,
+          "phases": ["InCl5", "Li4In5Cl4"]
+        },
+        {
+          "x": 0.9999999999999998,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li4In5Cl4", "LiCl"]
+        }
+      ]
+    },
+    {
+      "formula": "In2Br2Cl",
+      "eAboveHull": null,
+      "profile": [
+        {
+          "x": -3.2927363763977753e-16,
+          "chempot": -7.545409721759547,
+          "mu": -1.812239075591683,
+          "phases": ["BrCl3", "In3Cl", "In5Br6"]
+        },
+        {
+          "x": 0.3999999999999992,
+          "chempot": -7.244535713776982,
+          "mu": -1.5113650676091188,
+          "phases": ["BrCl3", "In5Br6", "Li4In5Cl4"]
+        },
+        {
+          "x": 1.1374999999999995,
+          "chempot": -6.17225913584711,
+          "mu": -0.4390884896792464,
+          "phases": ["In5Br6", "Li3Br5Cl2", "Li4In5Cl4"]
+        },
+        {
+          "x": 2.318750000000001,
+          "chempot": -6.055756019872909,
+          "mu": -0.3225853737050457,
+          "phases": ["Li3Br5Cl2", "Li4In5Cl4", "Li5(In3Br2)2"]
+        },
+        {
+          "x": 3.125000000000002,
+          "chempot": -6.009135498015684,
+          "mu": -0.2759648518478208,
+          "phases": ["Li4In5Cl4", "Li5(In3Br2)2", "LiBr"]
+        },
+        {
+          "x": 4.500000000000001,
+          "chempot": -5.867566531599404,
+          "mu": -0.13439588543154013,
+          "phases": ["Li2In", "Li4In5Cl4", "LiBr"]
+        },
+        {
+          "x": 6.500000000000007,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li2Br", "Li2In", "Li4In5Cl4"]
+        }
+      ]
+    },
+    {
+      "formula": "In4BrCl2",
+      "eAboveHull": null,
+      "profile": [
+        {
+          "x": 6.644136153675417e-16,
+          "chempot": -7.545409721759547,
+          "mu": -1.812239075591683,
+          "phases": ["BrCl3", "In3Cl", "In5Br6"]
+        },
+        {
+          "x": 1.6190476190476193,
+          "chempot": -6.573577044671661,
+          "mu": -0.8404063985037977,
+          "phases": ["In3Cl", "In5Br6", "Li4In5Cl4"]
+        },
+        {
+          "x": 2.166666666666668,
+          "chempot": -6.47447311046629,
+          "mu": -0.7413024642984265,
+          "phases": ["In5Br6", "Li4In5Cl4", "LiIn4"]
+        },
+        {
+          "x": 3.250000000000001,
+          "chempot": -6.009135498015684,
+          "mu": -0.2759648518478208,
+          "phases": ["Li4In5Cl4", "Li5(In3Br2)2"]
+        },
+        {
+          "x": 6.000000000000005,
+          "chempot": -5.867566531599404,
+          "mu": -0.13439588543154013,
+          "phases": ["Li2In", "Li4In5Cl4", "LiBr"]
+        },
+        {
+          "x": 6.999999999999995,
+          "chempot": -5.7331706461678635,
+          "mu": 0.0,
+          "phases": ["Li2Br", "Li2In", "Li4In5Cl4"]
+        }
+      ]
+    }
+  ]
+}

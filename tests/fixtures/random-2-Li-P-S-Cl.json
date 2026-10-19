@@ -1,0 +1,760 @@
+{
+  "name": "random-2-Li-P-S-Cl",
+  "ion": "Li",
+  "entries": [
+    {
+      "id": "r0",
+      "name": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energyPerAtom": -1.3077600967752545
+    },
+    {
+      "id": "r1",
+      "name": "Li",
+      "composition": {
+        "Li": 1.0
+      },
+      "energyPerAtom": -1.0554654221177142
+    },
+    {
+      "id": "r2",
+      "name": "P",
+      "composition": {
+        "P": 1.0
+      },
+      "energyPerAtom": -1.3652075905845544
+    },
+    {
+      "id": "r3",
+      "name": "P",
+      "composition": {
+        "P": 1.0
+      },
+      "energyPerAtom": -1.1417762937546827
+    },
+    {
+      "id": "r4",
+      "name": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energyPerAtom": -7.604140425912339
+    },
+    {
+      "id": "r5",
+      "name": "S",
+      "composition": {
+        "S": 1.0
+      },
+      "energyPerAtom": -7.399918609494676
+    },
+    {
+      "id": "r6",
+      "name": "Cl2",
+      "composition": {
+        "Cl": 1.0
+      },
+      "energyPerAtom": -7.405896033887549
+    },
+    {
+      "id": "r7",
+      "name": "Cl2",
+      "composition": {
+        "Cl": 1.0
+      },
+      "energyPerAtom": -7.306536461186697
+    },
+    {
+      "id": "r8",
+      "name": "Li2P5",
+      "composition": {
+        "Li": 2.0,
+        "P": 5.0
+      },
+      "energyPerAtom": -3.0808985816256507
+    },
+    {
+      "id": "r9",
+      "name": "Li3P",
+      "composition": {
+        "Li": 6.0,
+        "P": 2.0
+      },
+      "energyPerAtom": -1.222656257931568
+    },
+    {
+      "id": "r10",
+      "name": "Li3P2",
+      "composition": {
+        "Li": 6.0,
+        "P": 4.0
+      },
+      "energyPerAtom": -1.6037671523083983
+    },
+    {
+      "id": "r11",
+      "name": "Li5P3",
+      "composition": {
+        "Li": 5.0,
+        "P": 3.0
+      },
+      "energyPerAtom": -2.095366516838032
+    },
+    {
+      "id": "r12",
+      "name": "Li4P5",
+      "composition": {
+        "Li": 4.0,
+        "P": 5.0
+      },
+      "energyPerAtom": -2.6300179619800312
+    },
+    {
+      "id": "r13",
+      "name": "LiP",
+      "composition": {
+        "Li": 1.0,
+        "P": 1.0
+      },
+      "energyPerAtom": -2.4448564307699026
+    },
+    {
+      "id": "r14",
+      "name": "LiS",
+      "composition": {
+        "Li": 4.0,
+        "S": 4.0
+      },
+      "energyPerAtom": -4.56155029147005
+    },
+    {
+      "id": "r15",
+      "name": "Li5S2",
+      "composition": {
+        "Li": 5.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -3.8417562191497883
+    },
+    {
+      "id": "r16",
+      "name": "LiS",
+      "composition": {
+        "Li": 2.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -6.1793341787860205
+    },
+    {
+      "id": "r17",
+      "name": "Li2S5",
+      "composition": {
+        "Li": 2.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -6.635749310496776
+    },
+    {
+      "id": "r18",
+      "name": "Li6Cl5",
+      "composition": {
+        "Li": 6.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.53413742422596
+    },
+    {
+      "id": "r19",
+      "name": "LiCl",
+      "composition": {
+        "Li": 4.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -4.761464850732844
+    },
+    {
+      "id": "r20",
+      "name": "Li3Cl5",
+      "composition": {
+        "Li": 3.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -6.246899799571392
+    },
+    {
+      "id": "r21",
+      "name": "Li2Cl",
+      "composition": {
+        "Li": 4.0,
+        "Cl": 2.0
+      },
+      "energyPerAtom": -3.326099147874227
+    },
+    {
+      "id": "r22",
+      "name": "Li2Cl3",
+      "composition": {
+        "Li": 4.0,
+        "Cl": 6.0
+      },
+      "energyPerAtom": -5.36332023807004
+    },
+    {
+      "id": "r23",
+      "name": "Li6Cl5",
+      "composition": {
+        "Li": 6.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.385051148742315
+    },
+    {
+      "id": "r24",
+      "name": "PS",
+      "composition": {
+        "P": 5.0,
+        "S": 5.0
+      },
+      "energyPerAtom": -4.704777477644004
+    },
+    {
+      "id": "r25",
+      "name": "PS2",
+      "composition": {
+        "P": 3.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -5.647079402165363
+    },
+    {
+      "id": "r26",
+      "name": "P4S3",
+      "composition": {
+        "P": 4.0,
+        "S": 3.0
+      },
+      "energyPerAtom": -4.760396314783712
+    },
+    {
+      "id": "r27",
+      "name": "P5S6",
+      "composition": {
+        "P": 5.0,
+        "S": 6.0
+      },
+      "energyPerAtom": -5.700814744265504
+    },
+    {
+      "id": "r28",
+      "name": "P3S",
+      "composition": {
+        "P": 6.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -2.9378074192652006
+    },
+    {
+      "id": "r29",
+      "name": "P5Cl3",
+      "composition": {
+        "P": 5.0,
+        "Cl": 3.0
+      },
+      "energyPerAtom": -3.9617960485144663
+    },
+    {
+      "id": "r30",
+      "name": "P4Cl3",
+      "composition": {
+        "P": 4.0,
+        "Cl": 3.0
+      },
+      "energyPerAtom": -5.177810251724864
+    },
+    {
+      "id": "r31",
+      "name": "P6Cl5",
+      "composition": {
+        "P": 6.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -4.8428165277850495
+    },
+    {
+      "id": "r32",
+      "name": "S6Cl5",
+      "composition": {
+        "S": 6.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -8.196934386218823
+    },
+    {
+      "id": "r33",
+      "name": "SCl2",
+      "composition": {
+        "S": 3.0,
+        "Cl": 6.0
+      },
+      "energyPerAtom": -8.877122396273752
+    },
+    {
+      "id": "r34",
+      "name": "S5Cl3",
+      "composition": {
+        "S": 5.0,
+        "Cl": 3.0
+      },
+      "energyPerAtom": -7.554905496548863
+    },
+    {
+      "id": "r35",
+      "name": "S5Cl",
+      "composition": {
+        "S": 5.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -7.880967975550108
+    },
+    {
+      "id": "r36",
+      "name": "SCl2",
+      "composition": {
+        "S": 3.0,
+        "Cl": 6.0
+      },
+      "energyPerAtom": -9.10221116365722
+    },
+    {
+      "id": "r37",
+      "name": "S6Cl",
+      "composition": {
+        "S": 6.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -9.26417789532278
+    },
+    {
+      "id": "r38",
+      "name": "Li3P5S2",
+      "composition": {
+        "Li": 3.0,
+        "P": 5.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -3.099052342207172
+    },
+    {
+      "id": "r39",
+      "name": "LiP5S2",
+      "composition": {
+        "Li": 1.0,
+        "P": 5.0,
+        "S": 2.0
+      },
+      "energyPerAtom": -3.0952681490390814
+    },
+    {
+      "id": "r40",
+      "name": "Li2PCl4",
+      "composition": {
+        "Li": 2.0,
+        "P": 1.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -4.894477030025945
+    },
+    {
+      "id": "r41",
+      "name": "LiPCl3",
+      "composition": {
+        "Li": 1.0,
+        "P": 1.0,
+        "Cl": 3.0
+      },
+      "energyPerAtom": -6.093716042935509
+    },
+    {
+      "id": "r42",
+      "name": "Li2P6Cl",
+      "composition": {
+        "Li": 2.0,
+        "P": 6.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -3.666113048591905
+    },
+    {
+      "id": "r43",
+      "name": "LiSCl6",
+      "composition": {
+        "Li": 1.0,
+        "S": 1.0,
+        "Cl": 6.0
+      },
+      "energyPerAtom": -6.723012526362506
+    },
+    {
+      "id": "r44",
+      "name": "Li3S3Cl2",
+      "composition": {
+        "Li": 3.0,
+        "S": 3.0,
+        "Cl": 2.0
+      },
+      "energyPerAtom": -5.448063368415411
+    },
+    {
+      "id": "r45",
+      "name": "P6S2Cl5",
+      "composition": {
+        "P": 6.0,
+        "S": 2.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.134543810941082
+    },
+    {
+      "id": "r46",
+      "name": "P4S5Cl",
+      "composition": {
+        "P": 4.0,
+        "S": 5.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -5.379842800411249
+    },
+    {
+      "id": "r47",
+      "name": "P2S2Cl",
+      "composition": {
+        "P": 2.0,
+        "S": 2.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -6.860945804467391
+    },
+    {
+      "id": "r48",
+      "name": "Li6P6S6Cl",
+      "composition": {
+        "Li": 6.0,
+        "P": 6.0,
+        "S": 6.0,
+        "Cl": 1.0
+      },
+      "energyPerAtom": -4.8917359539716285
+    },
+    {
+      "id": "r49",
+      "name": "Li4PS3Cl4",
+      "composition": {
+        "Li": 4.0,
+        "P": 1.0,
+        "S": 3.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -5.671498124669336
+    },
+    {
+      "id": "r50",
+      "name": "Li5P6SCl3",
+      "composition": {
+        "Li": 5.0,
+        "P": 6.0,
+        "S": 1.0,
+        "Cl": 3.0
+      },
+      "energyPerAtom": -3.33436687834795
+    },
+    {
+      "id": "r51",
+      "name": "Li5P6(SCl2)2",
+      "composition": {
+        "Li": 5.0,
+        "P": 6.0,
+        "S": 2.0,
+        "Cl": 4.0
+      },
+      "energyPerAtom": -3.481952138006037
+    },
+    {
+      "id": "r52",
+      "name": "LiP6(S2Cl)3",
+      "composition": {
+        "Li": 1.0,
+        "P": 6.0,
+        "S": 6.0,
+        "Cl": 3.0
+      },
+      "energyPerAtom": -5.040883301369311
+    },
+    {
+      "id": "r53",
+      "name": "LiP4S2Cl5",
+      "composition": {
+        "Li": 1.0,
+        "P": 4.0,
+        "S": 2.0,
+        "Cl": 5.0
+      },
+      "energyPerAtom": -5.605780130287838
+    }
+  ],
+  "cases": [
+    {
+      "formula": "Li2P5",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -1.9999999999999998,
+          "chempot": -7.370126059228392,
+          "mu": -6.062365962453137,
+          "phases": ["P"]
+        },
+        {
+          "x": -3.053113317719181e-16,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li2P5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li2P6Cl",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -1.999999999999982,
+          "chempot": -7.370126059228392,
+          "mu": -6.062365962453137,
+          "phases": ["P", "P4Cl3"]
+        },
+        {
+          "x": -0.13333333333333247,
+          "chempot": -5.8869208751115885,
+          "mu": -4.579160778336334,
+          "phases": ["Li2P5", "P4Cl3"]
+        },
+        {
+          "x": -6.12704331715008e-15,
+          "chempot": -3.162270613515895,
+          "mu": -1.8545105167406404,
+          "phases": ["Li2P6Cl"]
+        },
+        {
+          "x": 1.6000000000000005,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li2P5", "Li6Cl5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li3Cl5",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -2.999999999999998,
+          "chempot": -4.315239409044464,
+          "mu": -3.0074793122692096,
+          "phases": ["Cl2"]
+        },
+        {
+          "x": 1.6098233857064762e-15,
+          "chempot": -3.6334377566381395,
+          "mu": -2.325677659862885,
+          "phases": ["Li3Cl5"]
+        },
+        {
+          "x": 3.0000000000000004,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li6Cl5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li6Cl5",
+      "eAboveHull": 0.0,
+      "profile": [
+        {
+          "x": -6.000000000000002,
+          "chempot": -4.315239409044464,
+          "mu": -3.0074793122692096,
+          "phases": ["Cl2"]
+        },
+        {
+          "x": -3.000000000000056,
+          "chempot": -3.6334377566381395,
+          "mu": -2.325677659862885,
+          "phases": ["Li3Cl5"]
+        },
+        {
+          "x": -2.0539125955565392e-15,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li6Cl5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li2Cl",
+      "eAboveHull": 1.0810043223648784,
+      "profile": [
+        {
+          "x": -2.0000000000000004,
+          "chempot": -4.315239409044464,
+          "mu": -3.0074793122692096,
+          "phases": ["Cl2"]
+        },
+        {
+          "x": -1.4000000000000004,
+          "chempot": -3.6334377566381395,
+          "mu": -2.325677659862885,
+          "phases": ["Li3Cl5"]
+        },
+        {
+          "x": -0.7999999999999999,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li6Cl5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li2Cl3",
+      "eAboveHull": 0.7790410797840224,
+      "profile": [
+        {
+          "x": -2.0000000000000013,
+          "chempot": -4.315239409044464,
+          "mu": -3.0074793122692096,
+          "phases": ["Cl2"]
+        },
+        {
+          "x": -0.20000000000000082,
+          "chempot": -3.6334377566381395,
+          "mu": -2.325677659862885,
+          "phases": ["Li3Cl5"]
+        },
+        {
+          "x": 1.5999999999999983,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li6Cl5"]
+        }
+      ]
+    },
+    {
+      "formula": "Li2PCl4",
+      "eAboveHull": 1.0936651123522036,
+      "profile": [
+        {
+          "x": -2.000000000000001,
+          "chempot": -4.744146197912048,
+          "mu": -3.4363861011367938,
+          "phases": ["Cl2", "P4Cl3"]
+        },
+        {
+          "x": -1.0,
+          "chempot": -4.315239409044464,
+          "mu": -3.0074793122692096,
+          "phases": ["Cl2", "LiPCl3"]
+        },
+        {
+          "x": -0.4000000000000011,
+          "chempot": -3.6334377566381395,
+          "mu": -2.325677659862885,
+          "phases": ["Li3Cl5", "LiPCl3"]
+        },
+        {
+          "x": 0.19999999999999918,
+          "chempot": -3.5215105739761565,
+          "mu": -2.213750477200902,
+          "phases": ["Li6Cl5", "LiPCl3"]
+        },
+        {
+          "x": 1.8999999999999995,
+          "chempot": -3.425946445283219,
+          "mu": -2.1181863485079644,
+          "phases": ["Li6Cl5", "P4Cl3"]
+        },
+        {
+          "x": 2.9333333333333336,
+          "chempot": -3.162270613515895,
+          "mu": -1.8545105167406404,
+          "phases": ["Li2P6Cl", "Li6Cl5"]
+        },
+        {
+          "x": 3.1999999999999975,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li2P5", "Li6Cl5"]
+        }
+      ]
+    },
+    {
+      "formula": "P2(SCl)3",
+      "eAboveHull": null,
+      "profile": [
+        {
+          "x": -1.2357983508779509e-15,
+          "chempot": -2.8317853426342445,
+          "mu": -1.52402524585899,
+          "phases": ["P2S2Cl", "SCl2"]
+        },
+        {
+          "x": 2.299999999999998,
+          "chempot": -2.7653645685866497,
+          "mu": -1.4576044718113952,
+          "phases": ["Li2P5", "LiS", "SCl2"]
+        },
+        {
+          "x": 7.400000000000077,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li2P5", "Li6Cl5", "LiS"]
+        }
+      ]
+    },
+    {
+      "formula": "P4S4Cl3",
+      "eAboveHull": null,
+      "profile": [
+        {
+          "x": 1.103685573481724e-15,
+          "chempot": -4.25934472402491,
+          "mu": -2.9515846272496553,
+          "phases": ["P2S2Cl", "P4Cl3", "SCl2"]
+        },
+        {
+          "x": 0.200000000000001,
+          "chempot": -3.7943229665715705,
+          "mu": -2.486562869796316,
+          "phases": ["Li2P6Cl", "P2S2Cl", "SCl2"]
+        },
+        {
+          "x": 0.26666666666666433,
+          "chempot": -2.8317853426342445,
+          "mu": -1.52402524585899,
+          "phases": ["Li2P5", "P2S2Cl", "SCl2"]
+        },
+        {
+          "x": 4.100000000000001,
+          "chempot": -2.7653645685866497,
+          "mu": -1.4576044718113952,
+          "phases": ["Li2P5", "LiS", "SCl2"]
+        },
+        {
+          "x": 9.200000000000003,
+          "chempot": -1.3077600967752545,
+          "mu": 0.0,
+          "phases": ["Li2P5", "Li6Cl5", "LiS"]
+        }
+      ]
+    }
+  ]
+}
