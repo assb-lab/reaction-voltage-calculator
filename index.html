@@ -238,6 +238,10 @@
             不自然な組成や信頼できない計算の相を外すときに使います。
           </p>
           <label class="check">
+            <input id="volume" type="checkbox" />
+            <span data-i18n="volume.toggle">体積膨張率を計算 (初期組成の体積基準)</span>
+          </label>
+          <label class="check">
             <input id="film" type="checkbox" />
             <span data-i18n="opt.film"
               >被膜厚みを計算 (分解生成物が粒子表面に形成されると仮定)</span
@@ -274,6 +278,8 @@
             <p class="hint" data-i18n="opt.filmHint">
               球状粒子が表面から分解し、生成物が未反応のコアを覆う緻密な混合層になると仮定します。
             </p>
+          </div>
+          <div id="gasOptions" class="film-options" hidden>
             <label class="film-gas">
               <span data-i18n="opt.filmGas">ガスとして放出する相 (カンマ・改行区切り)</span>
               <textarea
@@ -286,7 +292,7 @@
                 aria-describedby="filmGasHint"
               ></textarea>
             </label>
-            <p id="filmGasHint" class="hint" data-i18n="opt.filmGasHint">
+            <p id="filmGasHint" class="hint" data-i18n="volume.gasHint">
               O₂・Cl₂ などの気体の単体は常にガスとして被膜から除き、放出量を表示します。
             </p>
           </div>
@@ -351,6 +357,13 @@
           <button id="dlJson" type="button" data-i18n="dl.json">結果 JSON</button>
           <button id="dlEntries" type="button" data-i18n="dl.entries">エントリ JSON</button>
         </div>
+        <section id="volumePanel" class="film-panel" aria-labelledby="volumeTitle" hidden>
+          <h2 id="volumeTitle" data-i18n="volume.title">体積膨張率</h2>
+          <p class="hint" data-i18n="volume.hint"></p>
+          <div id="expansionChart" class="volume-chart"></div>
+          <p id="volumeNote" class="hint"></p>
+          <button id="dlVolumeSvg" type="button" data-i18n="volume.download">体積膨張率 SVG</button>
+        </section>
         <section id="filmPanel" class="film-panel" aria-labelledby="filmTitle" hidden>
           <h2 id="filmTitle" data-i18n="film.title">被膜モデル</h2>
           <label class="inline">

@@ -1,15 +1,30 @@
+import type { VolumeResult } from "../core/volume";
 import type { FilmResult } from "../core/film";
 import type { Profile } from "../core/profile";
 import { escapeHtml } from "./html";
 import { formatChange } from "./film";
-import { ticks, voltageTop } from "./plot";
+import { LAYOUT, ticks, voltageTop } from "./plot";
 
-const W = 560;
-const H = 250;
-const M = { left: 60, right: 16, top: 14, bottom: 44 };
+export const VOLUME_LAYOUT = {
+  W: LAYOUT.W,
+  H: LAYOUT.H,
+  left: 76,
+  right: 16,
+  top: 20,
+  bottom: 52,
+};
+const { W, H, ...M } = VOLUME_LAYOUT;
+
+/** Keep 0% visible and add 10% of the data span on both sides; use ±5 for a flat zero. */
+export function volumeRange(values: number[]): [number, number] {
+  const lo = Math.min(0, ...values);
+  const hi = Math.max(0, ...values);
+  const pad = hi > lo ? (hi - lo) * 0.1 : 5;
+  return [lo - pad, hi + pad];
+}
 
 /** Film result of each region, in region order. */
-export type RegionFilms = { region: number; film: FilmResult }[];
+export type RegionFilms = { region: number; film: FilmResult | VolumeResult }[];
 
 /**
  * Step chart of the volume change of the decomposed part (V_products / V_target − 1) against the
@@ -20,6 +35,8 @@ export function renderVolumeChartSvg(
   films: RegionFilms,
   selected: number | null,
   ariaLabel: string,
+  labels?: { voltage: string; change: string },
+  titles = true,
 ): string {
   const vTop = voltageTop(profile);
   const levels = films.flatMap(({ region, film }) => {
@@ -28,23 +45,32 @@ export function renderVolumeChartSvg(
     const hi = Math.min(vTop, r.vMax);
     if (hi <= lo) return [];
     if (film.kind === "none") return [{ region, lo, hi, dv: 0, side: "neutral" }];
-    if (film.kind !== "film") return [];
+    if (film.kind !== "film" && film.kind !== "volume") return [];
     return [{ region, lo, hi, dv: film.volumeChange * 100, side: r.x < 0 ? "ox" : "red" }];
   });
 
-  const dvs = [0, ...levels.map((l) => l.dv)];
-  let yMin = Math.min(...dvs);
-  let yMax = Math.max(...dvs);
-  const pad = Math.max(5, (yMax - yMin) * 0.1);
-  yMin -= yMin < 0 ? pad : 0;
-  yMax += pad;
+  const [yMin, yMax] = volumeRange(levels.map((l) => l.dv));
   const X = (v: number) => M.left + (v / vTop) * (W - M.left - M.right);
   const Y = (dv: number) => M.top + ((yMax - dv) / (yMax - yMin)) * (H - M.top - M.bottom);
   const bottom = H - M.bottom;
 
   const parts: string[] = [
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="volume-svg" role="img" aria-label="${escapeHtml(ariaLabel)}">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="volume-svg" data-y-min="${yMin}" data-y-max="${yMax}" role="img" aria-label="${escapeHtml(ariaLabel)}">`,
   ];
+  parts.push(`<style>
+    .volume-svg { font: 12px system-ui, sans-serif; }
+    .volume-svg text { fill: var(--fg, #202938); }
+    .volume-svg .grid { stroke: var(--grid, #e1e5eb); }
+    .volume-svg .grid.zero, .volume-svg .connector { stroke: var(--muted, #707b8b); }
+    .volume-svg .connector { stroke-dasharray: 2 3; }
+    .volume-svg .axis { fill: none; stroke: var(--fg, #202938); }
+    .volume-svg .level line { stroke-width: 2.5; }
+    .volume-svg .level .hit { stroke: transparent; stroke-width: 14; }
+    .volume-svg .ox { stroke: var(--ox, #c14545); }
+    .volume-svg .red { stroke: var(--red, #2874b5); }
+    .volume-svg .neutral { stroke: var(--fg, #202938); }
+    .volume-svg .level.hovered line:not(.hit), .volume-svg .level .selected { stroke-width: 5; }
+  </style>`);
   for (const v of ticks(0, vTop, 8)) {
     parts.push(
       `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${M.top}" y2="${bottom}"/>`,
@@ -71,15 +97,15 @@ export function renderVolumeChartSvg(
     const sel = l.region === selected ? " selected" : "";
     const label = `${l.lo.toFixed(3)} – ${profile.regions[l.region].vMax === Infinity ? "∞" : l.hi.toFixed(3)} V: ${formatChange(l.dv / 100)}`;
     parts.push(
-      `<g class="level" data-region="${l.region}"><title>${escapeHtml(label)}</title>`,
+      `<g class="level" data-region="${l.region}">${titles ? `<title>${escapeHtml(label)}</title>` : ""}`,
       `<line class="hit" x1="${X(l.lo)}" x2="${X(l.hi)}" y1="${Y(l.dv)}" y2="${Y(l.dv)}"/>`,
       `<line class="${l.side}${sel}" x1="${X(l.lo)}" x2="${X(l.hi)}" y1="${Y(l.dv)}" y2="${Y(l.dv)}"/></g>`,
     );
   }
   parts.push(
     `<rect class="axis" x="${M.left}" y="${M.top}" width="${W - M.left - M.right}" height="${bottom - M.top}"/>`,
-    `<text x="${(M.left + W - M.right) / 2}" y="${H - 6}" text-anchor="middle">Voltage (V) vs ${escapeHtml(profile.ion)}/${escapeHtml(profile.ion)}${profile.charge > 1 ? profile.charge : ""}+</text>`,
-    `<text transform="translate(14 ${(M.top + bottom) / 2}) rotate(-90)" text-anchor="middle">ΔV of decomposed part (%)</text>`,
+    `<text x="${(M.left + W - M.right) / 2}" y="${H - 6}" text-anchor="middle">${escapeHtml(labels?.voltage ?? "Voltage (V)")} vs ${escapeHtml(profile.ion)}/${escapeHtml(profile.ion)}${profile.charge > 1 ? profile.charge : ""}+</text>`,
+    `<text transform="translate(14 ${(M.top + bottom) / 2}) rotate(-90)" text-anchor="middle">${escapeHtml(labels?.change ?? "ΔV of decomposed part (%)")}</text>`,
     `</svg>`,
   );
   return parts.join("");

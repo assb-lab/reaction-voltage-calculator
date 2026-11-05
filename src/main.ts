@@ -22,6 +22,9 @@ import { stabilityWindowText } from "./ui/summary";
 import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
+import { volumeForRegion } from "./core/volume";
+import { mountVolumeInteraction } from "./ui/volumeInteraction";
+import { volumeCellHtml } from "./ui/volume";
 import { filmForRegion, type FilmOptions } from "./core/film";
 import {
   filmCellHtml,
@@ -54,6 +57,7 @@ const dataStatus = $<HTMLParagraphElement>("dataStatus");
 const stabilize = $<HTMLInputElement>("stabilize");
 const delta = $<HTMLInputElement>("delta");
 const excludeInput = $<HTMLTextAreaElement>("exclude");
+const volumeToggle = $<HTMLInputElement>("volume");
 const filmToggle = $<HTMLInputElement>("film");
 const filmOptionsBox = $<HTMLDivElement>("filmOptions");
 const filmDiameter = $<HTMLInputElement>("filmDiameter");
@@ -103,6 +107,7 @@ function restore(): void {
       ionSelect.value = f.ion ?? ionSelect.value;
       thermoSelect.value = f.thermo ?? thermoSelect.value;
       excludeInput.value = f.exclude ?? "";
+      volumeToggle.checked = f.volume === true;
       filmToggle.checked = !!f.film;
       filmDiameter.value = f.filmDiameter ?? filmDiameter.value;
       filmFraction.value = f.filmFraction ?? filmFraction.value;
@@ -110,7 +115,7 @@ function restore(): void {
       for (const r of filmModeInputs) r.checked = r.value === (f.filmMode ?? "fraction");
       showFilmMode();
       filmGas.value = f.filmGas ?? "";
-      filmOptionsBox.hidden = !filmToggle.checked;
+      showVolumeOptions();
     }
   } catch {
     /* ignore */
@@ -125,6 +130,7 @@ function persist(): void {
       ion: ionSelect.value,
       thermo: thermoSelect.value,
       exclude: excludeInput.value,
+      volume: volumeToggle.checked,
       film: filmToggle.checked,
       filmDiameter: filmDiameter.value,
       filmFraction: filmFraction.value,
@@ -188,6 +194,8 @@ function recompute(): void {
     });
     render(profile);
   } catch (e) {
+    clearExpansionInteraction?.();
+    clearFilmInteraction?.();
     result.hidden = true;
     showError((e as Error).message);
   }
@@ -257,6 +265,7 @@ function render(p: Profile): void {
         <td>${formatNumber(r.x)}</td>
         <td>${phases}</td>
         <td class="rxn">${formulaHtml(regionReaction(p, r))}</td>
+        ${volumeToggle.checked ? `<td class="film">${volumeCellHtml(volumeForRegion(p, r, parseExcludeList(filmGas.value)))}</td>` : ""}
         ${film ? `<td class="film">${filmCellHtml(filmForRegion(p, r, film))}</td>` : ""}
       </tr>`;
     })
@@ -266,8 +275,43 @@ function render(p: Profile): void {
     {
       formula: formulaHtml(p.formula),
     },
-  )}</th><th>${t("table.reaction")}</th>${film ? `<th>${t("film.column")}</th>` : ""}</tr></thead><tbody>${rows}</tbody>`;
+  )}</th><th>${t("table.reaction")}</th>${volumeToggle.checked ? `<th>${t("volume.column")}</th>` : ""}${film ? `<th>${t("film.column")}</th>` : ""}</tr></thead><tbody>${rows}</tbody>`;
+  renderExpansionPanel(p);
   renderFilmPanel(p, film);
+}
+
+function showVolumeOptions(): void {
+  filmOptionsBox.hidden = !filmToggle.checked;
+  $("gasOptions").hidden = !filmToggle.checked && !volumeToggle.checked;
+}
+
+let clearExpansionInteraction: (() => void) | null = null;
+let clearFilmInteraction: (() => void) | null = null;
+
+function renderExpansionPanel(p: Profile): void {
+  clearExpansionInteraction?.();
+  clearExpansionInteraction = null;
+  $("volumePanel").hidden = !volumeToggle.checked;
+  if (!volumeToggle.checked) return;
+  const volumes = p.regions.map((r, region) => ({
+    region,
+    film: volumeForRegion(p, r, parseExcludeList(filmGas.value)),
+  }));
+  $("expansionChart").innerHTML = renderVolumeChartSvg(
+    p,
+    volumes,
+    null,
+    t("volume.aria"),
+    {
+      voltage: t("volume.voltage"),
+      change: t("volume.axis"),
+    },
+    false,
+  );
+  clearExpansionInteraction = mountVolumeInteraction($("expansionChart"), p, volumes);
+  $("volumeNote").textContent = volumes.some((v) => v.film.kind === "unavailable")
+    ? t("volume.missing")
+    : "";
 }
 
 /** Film options from the form; null when the mode is off or the inputs are invalid. */
@@ -310,6 +354,8 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
     filmContext?.p.formula === p.formula && filmContext.p.regions.length === p.regions.length;
   filmContext = opts ? { p, opts } : null;
   filmPanel.hidden = !opts;
+  clearFilmInteraction?.();
+  clearFilmInteraction = null;
   if (!opts) return;
   const previous = sameSystem && filmRegion.value !== "" ? Number(filmRegion.value) : -1;
   const all = p.regions.map((r, i) => ({ r, i, film: filmForRegion(p, r, opts) }));
@@ -346,13 +392,18 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
 let regionFilms: RegionFilms = [];
 
 function renderVolumeChart(selected: number | null): void {
+  clearFilmInteraction?.();
+  clearFilmInteraction = null;
   if (!filmContext) return;
   volumeChart.innerHTML = renderVolumeChartSvg(
     filmContext.p,
     regionFilms,
     selected,
     t("film.chartAria"),
+    undefined,
+    false,
   );
+  clearFilmInteraction = mountVolumeInteraction(volumeChart, filmContext.p, regionFilms);
 }
 
 volumeChart.addEventListener("click", (ev) => {
@@ -569,7 +620,8 @@ demoButton.addEventListener("click", () => {
   recompute();
 });
 
-filmToggle.addEventListener("change", () => (filmOptionsBox.hidden = !filmToggle.checked));
+filmToggle.addEventListener("change", showVolumeOptions);
+volumeToggle.addEventListener("change", showVolumeOptions);
 for (const r of filmModeInputs) r.addEventListener("change", showFilmMode);
 for (const el of [
   formulaInput,
@@ -577,6 +629,7 @@ for (const el of [
   stabilize,
   delta,
   excludeInput,
+  volumeToggle,
   filmToggle,
   filmDiameter,
   filmFraction,
@@ -608,15 +661,25 @@ for (const input of [vMinInput, vMaxInput]) {
 }
 $("resetView").addEventListener("click", () => chart?.reset());
 
+function exportOptions() {
+  return volumeToggle.checked ? { gasPhases: parseExcludeList(filmGas.value) } : undefined;
+}
+
+$("dlVolumeSvg").addEventListener("click", () => {
+  const svg = $("expansionChart").querySelector("svg");
+  if (svg) download(`${stem()}_volume.svg`, svg.outerHTML, "image/svg+xml");
+});
+
 const stem = () => (profile ? `${profile.formula}_${profile.ion}` : "profile");
 $("dlSvg").addEventListener("click", () => {
   if (profile) download(`${stem()}.svg`, renderProfileSvg(profile, chart?.view()), "image/svg+xml");
 });
 $("dlCsv").addEventListener("click", () => {
-  if (profile) download(`${stem()}.csv`, profileToCsv(profile), "text/csv");
+  if (profile) download(`${stem()}.csv`, profileToCsv(profile, exportOptions()), "text/csv");
 });
 $("dlJson").addEventListener("click", () => {
-  if (profile) download(`${stem()}.json`, profileToJson(profile), "application/json");
+  if (profile)
+    download(`${stem()}.json`, profileToJson(profile, exportOptions()), "application/json");
 });
 $("dlEntries").addEventListener("click", () => {
   if (data)

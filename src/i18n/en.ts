@@ -118,6 +118,22 @@ export const en: Record<MessageKey, string> = {
   "opt.filmFraction": "Decomposed fraction (of particle volume)",
   "opt.filmHint":
     "Assumes a spherical particle that decomposes from the surface, its products forming a dense mixed layer around the unreacted core. Product volumes come from MP volumes per atom, so the volume change is included.",
+  "volume.toggle": "Calculate volume expansion (relative to the initial target)",
+  "volume.title": "Volume expansion",
+  "volume.column": "Volume expansion (initial target reference)",
+  "volume.hint":
+    "Complete conversion of one target formula to each region’s equilibrium products: (V_products / V_initial target − 1) × 100%. Negative values mean contraction. This estimates dense solid volumes, excluding working-ion metal and released gases; porosity and gas-pressure swelling are not included. It is independent of particle size, reacted fraction and charge. Hover, tap, or focus the chart and use the left/right arrows for details.",
+  "volume.gasHint":
+    "Elemental gases such as O₂ and Cl₂, plus the phases listed here, are excluded from solid product volumes. This setting is shared by film thickness and volume expansion.",
+  "volume.values": "Initial {initial} → products {products} Å³/target formula",
+  "volume.gases": "Gases excluded from volume: {list}",
+  "volume.aria": "Solid volume expansion relative to the initial target for each voltage region",
+  "volume.voltage": "Voltage (V)",
+  "volume.axis": "Volume expansion from initial target (%)",
+  "volume.missing":
+    "Regions with missing volume data are omitted from the chart. See the reaction table for missing phases.",
+  "volume.download": "Volume expansion SVG",
+
   "film.title": "Film model",
   "film.region": "Voltage region",
   "film.drag": "Drag (or use the arrow keys) to rotate",
