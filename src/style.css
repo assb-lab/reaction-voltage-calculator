@@ -557,9 +557,8 @@ figure.interactive:focus-visible {
 .volume-chart svg {
   display: block;
   width: 100%;
-  max-width: 560px;
   height: auto;
-  font-size: 11px;
+  font-size: 12px;
 }
 .volume-svg text {
   fill: var(--fg);
@@ -597,6 +596,11 @@ figure.interactive:focus-visible {
 .volume-svg .neutral {
   stroke: var(--fg);
 }
+.volume-chart:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.volume-svg .level.hovered line:not(.hit),
 .volume-svg .level .selected {
   stroke-width: 5;
 }

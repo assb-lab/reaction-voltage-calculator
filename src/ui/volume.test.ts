@@ -4,7 +4,8 @@ import { volumeForRegion } from "../core/volume";
 import { demoEntrySet } from "./demo";
 import { volumeCellHtml } from "./volume";
 import { profileToCsv, profileToJson } from "./export";
-import { renderVolumeChartSvg } from "./volumeChart";
+import { volumeTooltipHtml } from "./volumeInteraction";
+import { renderVolumeChartSvg, volumeRange } from "./volumeChart";
 
 const p = computeProfile({
   entries: demoEntrySet().entries.map((e) => ({ ...e, volumePerAtom: 15 })),
@@ -60,6 +61,31 @@ describe("volume expansion output", () => {
     expect(html).toContain("LiCl (1 mol/mol)");
   });
 
+  it("pads both sides by 10%, including below zero for expansion-only data", () => {
+    expect(volumeRange([0, 20])).toEqual([-2, 22]);
+    expect(volumeRange([-40, 20])).toEqual([-46, 26]);
+    expect(volumeRange([-100])).toEqual([-110, 10]);
+    expect(volumeRange([0])).toEqual([-5, 5]);
+    expect(volumeRange([])).toEqual([-5, 5]);
+  });
+
+  it("shows volume, phases and the reaction in the same tooltip as the voltage chart", () => {
+    const region = p.regions.length - 1;
+    const html = volumeTooltipHtml(
+      p,
+      region,
+      volumeForRegion(p, p.regions[region], opts.gasPhases),
+      0.3,
+    );
+    expect(html).toContain("0.300 V");
+    expect(html).toContain("+46.2 %");
+    expect(html).toContain("195");
+    expect(html).toContain("285");
+    expect(html).toContain("LiCl (1 mol/mol)");
+    expect(html).toContain('class="rxn"');
+    expect(html).toContain("Li<sub>2</sub>S");
+  });
+
   it("charts standalone volume results, leaves gaps for missing regions and embeds export styles", () => {
     const levels = p.regions.map((r, region) => ({ region, film: volumeForRegion(p, r) }));
     levels[0].film = { kind: "unavailable", missing: ["S"] };
@@ -67,6 +93,7 @@ describe("volume expansion output", () => {
       voltage: "電位 (V)",
       change: "膨張率 (%)",
     });
+    expect(svg).toContain('viewBox="0 0 780 460"');
     expect(svg).not.toContain('data-region="0"');
     expect(svg).toContain('aria-label="volume &quot;plot&quot;"');
     expect(svg).toContain("膨張率 (%)");

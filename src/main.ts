@@ -23,6 +23,7 @@ import { markOnboarded, shouldShowOnboarding } from "./ui/onboarding";
 import { applyTheme, loadTheme, saveTheme, type Theme } from "./ui/theme";
 import { loadLang, saveLang, setLang, t, translateDom, type Lang } from "./i18n";
 import { volumeForRegion } from "./core/volume";
+import { mountVolumeInteraction } from "./ui/volumeInteraction";
 import { volumeCellHtml } from "./ui/volume";
 import { filmForRegion, type FilmOptions } from "./core/film";
 import {
@@ -193,6 +194,8 @@ function recompute(): void {
     });
     render(profile);
   } catch (e) {
+    clearExpansionInteraction?.();
+    clearFilmInteraction?.();
     result.hidden = true;
     showError((e as Error).message);
   }
@@ -282,17 +285,30 @@ function showVolumeOptions(): void {
   $("gasOptions").hidden = !filmToggle.checked && !volumeToggle.checked;
 }
 
+let clearExpansionInteraction: (() => void) | null = null;
+let clearFilmInteraction: (() => void) | null = null;
+
 function renderExpansionPanel(p: Profile): void {
+  clearExpansionInteraction?.();
+  clearExpansionInteraction = null;
   $("volumePanel").hidden = !volumeToggle.checked;
   if (!volumeToggle.checked) return;
   const volumes = p.regions.map((r, region) => ({
     region,
     film: volumeForRegion(p, r, parseExcludeList(filmGas.value)),
   }));
-  $("expansionChart").innerHTML = renderVolumeChartSvg(p, volumes, null, t("volume.aria"), {
-    voltage: t("volume.voltage"),
-    change: t("volume.axis"),
-  });
+  $("expansionChart").innerHTML = renderVolumeChartSvg(
+    p,
+    volumes,
+    null,
+    t("volume.aria"),
+    {
+      voltage: t("volume.voltage"),
+      change: t("volume.axis"),
+    },
+    false,
+  );
+  clearExpansionInteraction = mountVolumeInteraction($("expansionChart"), p, volumes);
   $("volumeNote").textContent = volumes.some((v) => v.film.kind === "unavailable")
     ? t("volume.missing")
     : "";
@@ -338,6 +354,8 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
     filmContext?.p.formula === p.formula && filmContext.p.regions.length === p.regions.length;
   filmContext = opts ? { p, opts } : null;
   filmPanel.hidden = !opts;
+  clearFilmInteraction?.();
+  clearFilmInteraction = null;
   if (!opts) return;
   const previous = sameSystem && filmRegion.value !== "" ? Number(filmRegion.value) : -1;
   const all = p.regions.map((r, i) => ({ r, i, film: filmForRegion(p, r, opts) }));
@@ -374,13 +392,18 @@ function renderFilmPanel(p: Profile, opts: FilmOptions | null): void {
 let regionFilms: RegionFilms = [];
 
 function renderVolumeChart(selected: number | null): void {
+  clearFilmInteraction?.();
+  clearFilmInteraction = null;
   if (!filmContext) return;
   volumeChart.innerHTML = renderVolumeChartSvg(
     filmContext.p,
     regionFilms,
     selected,
     t("film.chartAria"),
+    undefined,
+    false,
   );
+  clearFilmInteraction = mountVolumeInteraction(volumeChart, filmContext.p, regionFilms);
 }
 
 volumeChart.addEventListener("click", (ev) => {
