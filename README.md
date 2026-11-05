@@ -342,7 +342,9 @@ pymatgen で生成した 2〜5 元系の参照データ (78 ケース) と、x�
 
 ### 必要なもの
 
-- [Vite+](https://viteplus.dev/) (`vp`): Node.js とパッケージマネージャ (pnpm) を管理します
+- [Vite+](https://viteplus.dev/) (`vp` 1.5.0 以降): Node.js とパッケージマネージャ (pnpm) を管理します
+- Node.js **26.13.0** / pnpm **12.16.1**: `package.json` の `devEngines` で指定し、Vite+ が自動で選択・取得します
+- プロジェクトの Vite+ **1.5.0** (Vite core も同版) / TypeScript **7.0.2**: ロックファイルで固定します
 - Python 3.14 と [uv](https://docs.astral.sh/uv/): pymatgen 参照データを作り直すときだけ
 
 ### コマンド
@@ -350,7 +352,14 @@ pymatgen で生成した 2〜5 元系の参照データ (78 ケース) と、x�
 依存関係のインストール:
 
 ```bash
-vp install
+vp install --frozen-lockfile
+```
+
+既存の Vite+ 設定で pnpm を system-first モードにしている場合は、`vp env current` で実際の版を確認してください。
+プロジェクト指定の版で確実にインストールするには次のコマンドを使えます:
+
+```bash
+vp env exec --package-manager pnpm@12.16.1 pnpm install --frozen-lockfile
 ```
 
 開発サーバ (http://localhost:5173):
@@ -412,9 +421,15 @@ uv run --extra mp reaction-voltage-calculator --mp Li6PS5Cl --out tests/fixtures
 
 ### 依存関係のポリシー
 
+Node.js と pnpm のバージョンは `package.json` の `devEngines` で管理します。
+`pnpm-workspace.yaml` の `runtimeOnFail: ignore` / `pmOnFail: ignore` は、環境の選択・取得を Vite+ に揃えるための設定です。
+依存関係を更新するときは Vite+ と `@voidzero-dev/vite-plus-core` の catalog を同じ版に揃え、
+`vp install` でロックファイルを更新してください。通常のセットアップでは `vp install --frozen-lockfile` を使います。
+
 pnpm (12 系) は公開から 1 日未満のパッケージを拒否します (`minimumReleaseAge`)。
-新しすぎるバージョンがロックファイルに入って `vp install` が失敗する場合は、`pnpm-workspace.yaml` の
-`overrides` で一つ前のバージョンに固定してください。
+今回の更新時点で公開から 1 日未満だった Vite+ 1.5.0 の本体・core・各 OS のバイナリだけは、
+`minimumReleaseAgeExclude` に正確なバージョンを指定しています。他の依存関係は 1 日の制限を維持します。
+一時的な `overrides` は不要になった時点で削除します。
 
 ## ディレクトリ構成
 
