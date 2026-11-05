@@ -1,12 +1,27 @@
 catalog:
-  vite: npm:@voidzero-dev/vite-plus-core@1.2.0
-  vite-plus: 1.2.0
+  vite: npm:@voidzero-dev/vite-plus-core@1.5.0
+  vite-plus: 1.5.0
 overrides:
   vite@*: "catalog:"
-  # postcss 8.5.31 was younger than pnpm's minimumReleaseAge when the lockfile was created.
-  postcss: 8.5.30
+# Vite+ manages both components declared in package.json#devEngines.
+runtimeOnFail: ignore
+pmOnFail: ignore
 peerDependencyRules:
   allowAny:
     - vite
   allowedVersions:
     vite: "*"
+minimumReleaseAge: 1440
+# Vite+ 1.5.0 was published less than 24 hours before this update.
+# Keep the exception limited to these exact Vite+ release artifacts.
+minimumReleaseAgeExclude:
+  - "@voidzero-dev/vite-plus-core@1.5.0"
+  - "@voidzero-dev/vite-plus-darwin-arm64@1.5.0"
+  - "@voidzero-dev/vite-plus-darwin-x64@1.5.0"
+  - "@voidzero-dev/vite-plus-linux-arm64-gnu@1.5.0"
+  - "@voidzero-dev/vite-plus-linux-arm64-musl@1.5.0"
+  - "@voidzero-dev/vite-plus-linux-x64-gnu@1.5.0"
+  - "@voidzero-dev/vite-plus-linux-x64-musl@1.5.0"
+  - "@voidzero-dev/vite-plus-win32-arm64-msvc@1.5.0"
+  - "@voidzero-dev/vite-plus-win32-x64-msvc@1.5.0"
+  - vite-plus@1.5.0
