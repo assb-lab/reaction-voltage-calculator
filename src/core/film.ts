@@ -1,14 +1,12 @@
 import { ATOMIC_MASS } from "./elements";
-import { entryMatcher, type Entry } from "./entries";
-import { numAtoms } from "./formula";
+import type { Entry } from "./entries";
+import { volumeForRegion } from "./volume";
 import type { Profile, Region } from "./profile";
+
+export { GAS_ELEMENTS, gasMatcher } from "./volume";
 
 /** Faraday constant (C/mol). */
 const FARADAY = 96485.33212;
-
-/** Imported optional volumes must be positive, finite numbers before using them in geometry. */
-const validVolume = (v: unknown): v is number =>
-  typeof v === "number" && Number.isFinite(v) && v > 0;
 
 export interface FilmOptions {
   /** Particle diameter (µm). */
@@ -27,24 +25,12 @@ export interface FilmOptions {
   gasPhases?: string[];
 }
 
-/** Elements that are gases at room temperature: their elemental phases leave the particle. */
-export const GAS_ELEMENTS = new Set(["H", "N", "O", "F", "Cl", "He", "Ne", "Ar", "Kr", "Xe", "Rn"]);
-
 export interface FilmGas {
   entry: Entry;
   /** Units of the displayed formula (e.g. O2) per formula unit of the target. */
   amount: number;
   /** Gas released by the decomposed fraction per gram of target (mmol/g); null if a mass is unknown. */
   mmolPerGram: number | null;
-}
-
-/** Whether a phase is released as gas: an elemental gas, or one named in `gasPhases`. */
-export function gasMatcher(gasPhases: string[] = []): (e: Entry) => boolean {
-  const extra = gasPhases.map(entryMatcher);
-  return (e) => {
-    const els = Object.keys(e.composition);
-    return (els.length === 1 && GAS_ELEMENTS.has(els[0])) || extra.some((m) => m(e));
-  };
 }
 
 export interface FilmPhase {
@@ -119,19 +105,9 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
     f = Math.min(1, Math.max(0, opts.fraction));
   }
 
-  const isGas = gasMatcher(opts.gasPhases);
-  const solids = region.phases.filter((p) => !isGas(p.entry));
-  const gases = region.phases.filter((p) => isGas(p.entry));
-  const missing = [
-    ...(target && validVolume(target.volumePerAtom) ? [] : [target?.name ?? profile.formula]),
-    ...solids.filter((p) => !validVolume(p.entry.volumePerAtom)).map((p) => p.entry.name),
-  ];
-  if (missing.length) return { kind: "unavailable", missing: [...new Set(missing)] };
-
-  const targetVolume = numAtoms(profile.target) * target!.volumePerAtom!;
-  const volumes = solids.map((p) => p.atoms * p.entry.volumePerAtom!);
-  const productVolume = volumes.reduce((a, b) => a + b, 0);
-  const volumeRatio = productVolume / targetVolume;
+  const volume = volumeForRegion(profile, region, opts.gasPhases);
+  if (volume.kind !== "volume") return volume;
+  const { volumeRatio } = volume;
 
   const R = opts.diameterUm / 2;
   // Solve in units of the original radius: cubing the dimensional radius can overflow/underflow.
@@ -157,11 +133,8 @@ export function filmForRegion(profile: Profile, region: Region, opts: FilmOption
     particleVolumeChange: f * (volumeRatio - 1),
     diameterChange: outerScale - 1,
     fullyDecomposed: f >= 1,
-    phases: solids.map((p, i) => ({
-      entry: p.entry,
-      volFraction: volumes[i] / productVolume,
-    })),
-    gases: gases.map((p) => {
+    phases: volume.phases,
+    gases: volume.gases.map((p) => {
       const m = molarMass(profile);
       return {
         entry: p.entry,

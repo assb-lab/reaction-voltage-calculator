@@ -1,3 +1,4 @@
+import type { VolumeResult } from "../core/volume";
 import type { FilmResult } from "../core/film";
 import type { Profile } from "../core/profile";
 import { escapeHtml } from "./html";
@@ -9,7 +10,7 @@ const H = 250;
 const M = { left: 60, right: 16, top: 14, bottom: 44 };
 
 /** Film result of each region, in region order. */
-export type RegionFilms = { region: number; film: FilmResult }[];
+export type RegionFilms = { region: number; film: FilmResult | VolumeResult }[];
 
 /**
  * Step chart of the volume change of the decomposed part (V_products / V_target − 1) against the
@@ -20,6 +21,7 @@ export function renderVolumeChartSvg(
   films: RegionFilms,
   selected: number | null,
   ariaLabel: string,
+  labels?: { voltage: string; change: string },
 ): string {
   const vTop = voltageTop(profile);
   const levels = films.flatMap(({ region, film }) => {
@@ -28,7 +30,7 @@ export function renderVolumeChartSvg(
     const hi = Math.min(vTop, r.vMax);
     if (hi <= lo) return [];
     if (film.kind === "none") return [{ region, lo, hi, dv: 0, side: "neutral" }];
-    if (film.kind !== "film") return [];
+    if (film.kind !== "film" && film.kind !== "volume") return [];
     return [{ region, lo, hi, dv: film.volumeChange * 100, side: r.x < 0 ? "ox" : "red" }];
   });
 
@@ -45,6 +47,20 @@ export function renderVolumeChartSvg(
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" class="volume-svg" role="img" aria-label="${escapeHtml(ariaLabel)}">`,
   ];
+  parts.push(`<style>
+    .volume-svg { font: 11px system-ui, sans-serif; }
+    .volume-svg text { fill: var(--fg, #202938); }
+    .volume-svg .grid { stroke: var(--grid, #e1e5eb); }
+    .volume-svg .grid.zero, .volume-svg .connector { stroke: var(--muted, #707b8b); }
+    .volume-svg .connector { stroke-dasharray: 2 3; }
+    .volume-svg .axis { fill: none; stroke: var(--fg, #202938); }
+    .volume-svg .level line { stroke-width: 2.5; }
+    .volume-svg .level .hit { stroke: transparent; stroke-width: 14; }
+    .volume-svg .ox { stroke: var(--ox, #c14545); }
+    .volume-svg .red { stroke: var(--red, #2874b5); }
+    .volume-svg .neutral { stroke: var(--fg, #202938); }
+    .volume-svg .level .selected { stroke-width: 5; }
+  </style>`);
   for (const v of ticks(0, vTop, 8)) {
     parts.push(
       `<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${M.top}" y2="${bottom}"/>`,
@@ -78,8 +94,8 @@ export function renderVolumeChartSvg(
   }
   parts.push(
     `<rect class="axis" x="${M.left}" y="${M.top}" width="${W - M.left - M.right}" height="${bottom - M.top}"/>`,
-    `<text x="${(M.left + W - M.right) / 2}" y="${H - 6}" text-anchor="middle">Voltage (V) vs ${escapeHtml(profile.ion)}/${escapeHtml(profile.ion)}${profile.charge > 1 ? profile.charge : ""}+</text>`,
-    `<text transform="translate(14 ${(M.top + bottom) / 2}) rotate(-90)" text-anchor="middle">ΔV of decomposed part (%)</text>`,
+    `<text x="${(M.left + W - M.right) / 2}" y="${H - 6}" text-anchor="middle">${escapeHtml(labels?.voltage ?? "Voltage (V)")} vs ${escapeHtml(profile.ion)}/${escapeHtml(profile.ion)}${profile.charge > 1 ? profile.charge : ""}+</text>`,
+    `<text transform="translate(14 ${(M.top + bottom) / 2}) rotate(-90)" text-anchor="middle">${escapeHtml(labels?.change ?? "ΔV of decomposed part (%)")}</text>`,
     `</svg>`,
   );
   return parts.join("");
