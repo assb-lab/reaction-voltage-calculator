@@ -1,4 +1,10 @@
-# reaction-voltage-calculator
+# reaction-voltage-calculator (Deprecated)
+
+> [!IMPORTANT]
+> **Deprecated — moved to [Materials Thermodynamics Lab](https://github.com/assb-lab/materials-thermodynamics-lab).**
+>
+> このアプリの機能は Materials Thermodynamics Lab に統合されました。今後の開発・修正・不具合報告は統合先で管理します。
+
 
 Materials Project (MP) の DFT 計算エネルギーから、指定した組成を作動イオン (Li, Na, Mg …) の開放系に置いたときの
 
